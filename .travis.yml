@@ -1,0 +1,12 @@
+language: ruby
+rvm:
+  - 2.1
+  - 2.0
+  - 1.9
+deploy:
+  provider: rubygems
+  api_key:
+    master:
+      secure: "hlC3/Vsqpw3RdA0g8nAuusXEpGiwLtndGQVd8eg8x7yCoubFmsruwJG2Cci4QF2aIVGovFzrrmlxPb204nndsmBCzTLZEnn2dsCqOt8TZDAyFRZf6xeZ53eT7AjOJvFIafS4YLQ975upzsQ/cW4OgWFRaqhHgckTUSapa7Dyeao="
+  gem:
+    master: "social-snippet"
