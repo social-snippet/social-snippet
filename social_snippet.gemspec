@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'social/snippet/version'
+require 'social_snippet/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "social-snippet"
-  spec.version       = Social::Snippet::VERSION
+  spec.name          = "social_snippet"
+  spec.version       = SocialSnippet::VERSION
   spec.authors       = ["Hiroyuki Sano"]
   spec.email         = ["sh19910711@gmail.com"]
   spec.summary       = %q{Social Snippet System}
