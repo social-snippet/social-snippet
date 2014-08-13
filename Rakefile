@@ -12,6 +12,14 @@ RSpec::Core::RakeTask.new(:spec) do |t|
   ]
 end
 
+# rake test
+RSpec::Core::RakeTask.new(:test) do |t|
+  t.pattern = 'test/**/*_test.rb'
+  t.rspec_opts = [
+    "--color",
+  ]
+end
+
 
 require "yard"
 require "yard/rake/yardoc_task"
