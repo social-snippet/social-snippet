@@ -12,5 +12,14 @@ module SocialSnippet
         @spaces = get_spaces(s)
       end
     end
+
+    class << self
+
+      # Check line text contains tag
+      def is_tag_line(s)
+        /(@snippet|@snip)\s*<.*?>/.match s
+      end
+
+    end
   end
 end
