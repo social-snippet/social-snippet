@@ -23,6 +23,11 @@ module SocialSnippet
         return /@snippet\s*<.*?>/.match(s)
       end
 
+      # Check given line to match @snip or @snippet tag
+      def is_snip_or_snippet_tag_line(s)
+        return is_snip_tag_line(s) || is_snippet_tag_line(s)
+      end
+
     end
   end
 end
