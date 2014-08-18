@@ -38,6 +38,17 @@ module SocialSnippet
         return is_snip_or_snippet_tag_line(s) && has_colon(s)
       end
 
+      # Get spaces from given line
+      def get_spaces(s)
+        if is_snip_or_snippet_tag_line(s)
+          # return spaces
+          return /(@snip|@snippet)(\s*?)</.match(s)[2]
+        end
+
+        # return empty string
+        return ""
+      end
+
       # Get suffix from given line
       def get_suffix(s)
         if is_snip_or_snippet_tag_line(s)
