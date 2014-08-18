@@ -11,6 +11,29 @@ module SocialSnippet
       @spaces = Tag.get_spaces(s)
     end
 
+    # Check to have repository
+    def has_repo()
+      return @repo != ""
+    end
+
+    # Get tag text by given tag
+    def to_tag_text(tag)
+      if has_repo()
+        return "#{@prefix}#{tag}#{@spaces}<#{@repo}:#{@path}>#{@suffix}"
+      end
+      "#{@prefix}#{tag}#{@spaces}<#{@path}>#{@suffix}"
+    end
+
+    # Get @snip tag text
+    def to_snip_tag()
+      return to_tag_text("@snip")
+    end
+
+    # Get @snip tag text
+    def to_snippet_tag()
+      return to_tag_text("@snippet")
+    end
+
     class << self
 
       # Check given line to match @snip tag
