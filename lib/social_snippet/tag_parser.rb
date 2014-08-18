@@ -19,5 +19,24 @@ module SocialSnippet
       return found_lines
     end
 
+    # Find `@snippet` tags from text
+    #
+    # @param s [String] parsed text
+    # @return [Array] found `@snippet` tags with line_no
+    def find_snippet_tags(s)
+      found_lines = []
+      s.split("\n").each.with_index do |line, i|
+        if Tag.is_snippet_tag_line(line)
+          found_lines.push(
+            {
+              :line_no => i,
+              :tag => Tag.new(line),
+            }
+          )
+        end
+      end
+      return found_lines
+    end
+
   end
 end

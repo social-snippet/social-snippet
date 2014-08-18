@@ -25,4 +25,25 @@ describe SocialSnippet::TagParser do
 
   end # find_snip_tags
 
+  describe "#find_snippet_tags()" do
+
+    context do
+
+      let(:input) do
+        [
+          "// @snip <path/to/file1.c>",
+          "// @snip <path/to/file2.c>",
+          "// @snippet <path/to/file3.c>",
+        ].join("\n")
+      end
+
+      context "find_snippet_tags" do
+        let(:result) { instance.find_snippet_tags(input) }
+        it { expect(result.length).to eq 1 }
+      end
+
+    end
+
+  end # find_snippet_tags
+
 end # SocialSnippet::TagParser
