@@ -38,6 +38,17 @@ module SocialSnippet
         return is_snip_or_snippet_tag_line(s) && has_colon(s)
       end
 
+      # Get prefix from given line
+      def get_prefix(s)
+        if is_snip_or_snippet_tag_line(s)
+          # return prefix text
+          return /(.*?)@/.match(s)[1]
+        end
+
+        # return empty string
+        return ""
+      end
+
       # Get path from given line
       def get_path(s)
         if is_snip_or_snippet_tag_line(s)
