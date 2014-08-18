@@ -4,6 +4,48 @@ module SocialSnippet
 
   describe Tag do
 
+    describe "#get_path" do
+
+      context "valid cases" do
+
+        context "without repo" do
+          it { expect(Tag.get_path("// @snip <path/to/file.cpp>")).to eq "path/to/file.cpp" }
+          it { expect(Tag.get_path("# @snip <path/to/file.rb>")).to eq "path/to/file.rb" }
+          it { expect(Tag.get_path("/* @snip <path/to/file.c> */")).to eq "path/to/file.c" }
+        end # without repo
+
+        context "with repo" do
+          it { expect(Tag.get_path("// @snip <repo:path/to/file.cpp>")).to eq "path/to/file.cpp" }
+          it { expect(Tag.get_path("# @snip <repo:path/to/file.rb>")).to eq "path/to/file.rb" }
+          it { expect(Tag.get_path("/* @snip <repo:path/to/file.rb> */")).to eq "path/to/file.rb" }
+          it { expect(Tag.get_path("// @snip <my-repo:path/to/file.cpp>")).to eq "path/to/file.cpp" }
+          it { expect(Tag.get_path("# @snip <my-repo:path/to/file.rb>")).to eq "path/to/file.rb" }
+          it { expect(Tag.get_path("/* @snip <my-repo:path/to/file.c> */")).to eq "path/to/file.c" }
+        end # with repo
+
+      end # valid cases
+
+      context "invalid cases" do
+
+        context "without repo" do
+          it { expect(Tag.get_path("// snip <path/to/file.cpp>")).to eq "" }
+          it { expect(Tag.get_path("# @sni <path/to/file.rb>")).to eq "" }
+          it { expect(Tag.get_path("/* @snipp <path/to/file.c> */")).to eq "" }
+        end # without repo
+
+        context "with repo" do
+          it { expect(Tag.get_path("// @snip repo:path/to/file.cpp")).to eq "" }
+          it { expect(Tag.get_path("# @snip <repo:path/to/file.rb")).to eq "" }
+          it { expect(Tag.get_path("/* @snip repo:path/to/file.rb> */")).to eq "" }
+          it { expect(Tag.get_path("//snip <my-repo:path/to/file.cpp>")).to eq "" }
+          it { expect(Tag.get_path("# @snip2 <my-repo:path/to/file.rb>")).to eq "" }
+          it { expect(Tag.get_path("/* @s <my-repo:path/to/file.c> */")).to eq "" }
+        end # with repo
+
+      end # valid cases
+
+    end # get_path
+
     describe "#get_repo" do
 
       context "without repo" do
