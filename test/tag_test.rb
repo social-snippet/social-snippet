@@ -4,6 +4,28 @@ module SocialSnippet
 
   describe Tag do
 
+    describe "#get_suffix" do
+
+      context "valid cases" do
+        it { expect(Tag.get_suffix("// @snip <path/to/file.cpp>")).to eq "" }
+        it { expect(Tag.get_suffix("# @snip <path/to/file.rb>")).to eq "" }
+        it { expect(Tag.get_suffix("/* @snip <path/to/file.c> */")).to eq " */" }
+        it { expect(Tag.get_suffix("@snip <path/to/file.c>")).to eq "" }
+
+        it { expect(Tag.get_suffix("// @snip <path/to/file.cpp>test1")).to eq "test1" }
+        it { expect(Tag.get_suffix("# @snip <path/to/file.rb>test2")).to eq "test2" }
+        it { expect(Tag.get_suffix("/* @snip <path/to/file.c>test3*/")).to eq "test3*/" }
+        it { expect(Tag.get_suffix("@snip <path/to/file.c>test4")).to eq "test4" }
+      end # valid caess
+
+      context "invalid cases" do
+        it { expect(Tag.get_suffix("// @snip <path/to/file.cpp")).to eq "" }
+        it { expect(Tag.get_suffix("# @snp <path/to/file.rb>")).to eq "" }
+        it { expect(Tag.get_suffix("/* @snip path/to/file.c> */")).to eq "" }
+      end # invalid cases
+
+    end # get_suffix
+
     describe "#get_prefix" do
 
       context "valid cases" do
