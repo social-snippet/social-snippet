@@ -38,6 +38,17 @@ module SocialSnippet
         return is_snip_or_snippet_tag_line(s) && has_colon(s)
       end
 
+      # Get repository name from given line
+      def get_repo(s)
+        if is_tag_line_with_repository(s)
+          # return repository name
+          return /<(.*?):/.match(s)[1]
+        end
+
+        # return empty string
+        return ""
+      end
+
     end
   end
 end

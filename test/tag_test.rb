@@ -4,6 +4,25 @@ module SocialSnippet
 
   describe Tag do
 
+    describe "#get_repo" do
+
+      context "without repo" do
+        it { expect(Tag.get_repo("// @snip <path/to/file.cpp>")).to eq "" }
+        it { expect(Tag.get_repo("# @snip <path/to/file.rb>")).to eq "" }
+        it { expect(Tag.get_repo("/* @snip <path/to/file.rb> */")).to eq "" }
+      end # without repo
+
+      context "with repo" do
+        it { expect(Tag.get_repo("// @snip <repo:path/to/file.cpp>")).to eq "repo" }
+        it { expect(Tag.get_repo("# @snip <repo:path/to/file.rb>")).to eq "repo" }
+        it { expect(Tag.get_repo("/* @snip <repo:path/to/file.rb> */")).to eq "repo" }
+        it { expect(Tag.get_repo("// @snip <my-repo:path/to/file.cpp>")).to eq "my-repo" }
+        it { expect(Tag.get_repo("# @snip <my-repo:path/to/file.rb>")).to eq "my-repo" }
+        it { expect(Tag.get_repo("/* @snip <my-repo:path/to/file.rb> */")).to eq "my-repo" }
+      end # with repo
+
+    end # get_repo
+
     describe "#is_snip_tag_line()" do
 
       context "valid cases" do
