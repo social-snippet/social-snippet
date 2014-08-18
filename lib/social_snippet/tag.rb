@@ -28,6 +28,16 @@ module SocialSnippet
         return is_snip_tag_line(s) || is_snippet_tag_line(s)
       end
 
+      # Check given line to match `:` character
+      def has_colon(s)
+        return /:/.match(s)
+      end
+
+      # Check given line to match snippet tag with repo
+      def is_tag_line_with_repository(s)
+        return is_snip_or_snippet_tag_line(s) && has_colon(s)
+      end
+
     end
   end
 end
