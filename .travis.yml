@@ -3,6 +3,9 @@ rvm:
   - 2.1
   - 2.0
   - 1.9
+script:
+  - bundle exec rake spec
+  - bundle exec rake test
 deploy:
   provider: rubygems
   api_key:
