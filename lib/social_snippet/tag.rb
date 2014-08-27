@@ -15,13 +15,13 @@ module SocialSnippet
     end
 
     # Check to have repository
-    def has_repo()
+    def has_repo?()
       return @repo != ""
     end
 
     # Get tag text by given tag
     def to_tag_text(tag)
-      if has_repo()
+      if has_repo?()
         return "#{@prefix}#{tag}#{@spaces}<#{@repo}:#{@path}>#{@suffix}"
       end
       "#{@prefix}#{tag}#{@spaces}<#{@path}>#{@suffix}"
