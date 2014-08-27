@@ -14,6 +14,13 @@ module SocialSnippet
         @path = path
         @cache_path = nil
       end
+
+      class << self
+        # Check given text is version string
+        def is_version(s)
+          return /^([0]|[1-9][0-9]*)\.([0]|[1-9][0-9]*)\.([0]|[1-9][0-9]*)$/ === s
+        end
+      end
     end
   end
 end
