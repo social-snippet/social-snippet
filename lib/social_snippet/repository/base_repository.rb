@@ -15,6 +15,11 @@ module SocialSnippet
         @cache_path = nil
       end
 
+      # Get current ref's commit id
+      def get_commit_id()
+        raise "not implement get_commit_id()"
+      end
+
       # Checkout to ref
       def checkout(ref)
         raise "not implement checkout()"
