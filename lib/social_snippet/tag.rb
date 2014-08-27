@@ -1,5 +1,8 @@
 module SocialSnippet
   class Tag
+    attr_reader :path
+    attr_reader :repo
+
     # Create instance
     #
     # @param s [String] tag line text
