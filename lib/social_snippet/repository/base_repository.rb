@@ -15,6 +15,11 @@ module SocialSnippet
         @cache_path = nil
       end
 
+      # Checkout to ref
+      def checkout(ref)
+        raise "not implement checkout()"
+      end
+
       class << self
         # Check given text is version string
         def is_version(s)
