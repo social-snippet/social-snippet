@@ -6,7 +6,7 @@ describe SocialSnippet::TagParser do
 
   describe "#find_snip_tags()" do
 
-    context do
+    context "there are two @snip" do
 
       let(:input) do
         [
@@ -16,7 +16,7 @@ describe SocialSnippet::TagParser do
         ].join("\n")
       end
 
-      context do
+      context "result" do
         let(:result) { instance.find_snip_tags(input) }
         it { expect(result.length).to eq 2 }
       end
@@ -27,7 +27,7 @@ describe SocialSnippet::TagParser do
 
   describe "#find_snippet_tags()" do
 
-    context do
+    context "there is a @snippet" do
 
       let(:input) do
         [
@@ -37,7 +37,7 @@ describe SocialSnippet::TagParser do
         ].join("\n")
       end
 
-      context "find_snippet_tags" do
+      context "result" do
         let(:result) { instance.find_snippet_tags(input) }
         it { expect(result.length).to eq 1 }
       end
