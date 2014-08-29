@@ -32,7 +32,7 @@ module SocialSnippet
       return to_tag_text("@snip")
     end
 
-    # Get @snip tag text
+    # Get @snippet tag text
     def to_snippet_tag()
       return to_tag_text("@snippet")
     end
@@ -78,7 +78,7 @@ module SocialSnippet
       # Get suffix from given line
       def get_suffix(s)
         if is_snip_or_snippet_tag_line(s)
-          # return prefix text
+          # return suffix text
           return />(.*)/.match(s)[1]
         end
 
