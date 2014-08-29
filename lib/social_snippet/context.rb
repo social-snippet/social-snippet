@@ -5,7 +5,7 @@ module SocialSnippet
 
     # Constructor
     def initialize(new_path, new_repo = nil)
-      @flag_absolute = false
+      @flag_absolute = is_absolute_path(new_path)
       @path = new_path
       @repo = new_repo
     end
@@ -18,6 +18,7 @@ module SocialSnippet
           @flag_absolute = true
           @path = new_path
         else
+          # relative path
           @path = move_to_new_path(new_path)
         end
       else
@@ -34,6 +35,10 @@ module SocialSnippet
       source_file = source.pop()
       dest = new_path.split("/")
       dest_file = dest.pop()
+
+      if is_absolute_path(@path)
+        source.shift
+      end
 
       dest.each do |x|
         if is_dotdot(x)
