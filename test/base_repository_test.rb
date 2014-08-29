@@ -52,8 +52,8 @@ module SocialSnippet::Repository
             context "snippet.json" do
               let(:result) { JSON.parse File.read "#{cache_path}/repo_1/#{commit_id[0..7]}/snippet.json" }
               it { expect(result["name"]).to eq "repo_1" }
-              # it { expect(result["desc"]).to eq "this is repo_1" }
-              # it { expect(result["language"]).to eq "Ruby" }
+              it { expect(result["desc"]).to eq "this is repo_1" }
+              it { expect(result["language"]).to eq "Ruby" }
             end
 
           end # create cache
