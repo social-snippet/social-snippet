@@ -32,9 +32,9 @@ module SocialSnippet
     # Move to new path from current path actually
     def move_to_new_path(new_path)
       source = @path.split("/")
-      source_file = source.pop()
+      source_file = source.pop
       dest = new_path.split("/")
-      dest_file = dest.pop()
+      dest_file = dest.pop
 
       if is_absolute_path(@path)
         source.shift
@@ -42,7 +42,7 @@ module SocialSnippet
 
       dest.each do |x|
         if is_dotdot(x)
-          source.pop()
+          source.pop
         elsif ! is_dot(x)
           source.push x
         end

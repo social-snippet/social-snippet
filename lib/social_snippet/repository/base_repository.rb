@@ -16,20 +16,20 @@ module SocialSnippet
       end
 
       # Check repository is cached
-      def is_cached?()
+      def is_cached?
         return @cache_path.nil? === false
       end
 
       # Create repository cache
       def create_cache(cache_path)
-        cache_to = get_commit_id()[0..7]
+        cache_to = get_commit_id[0..7]
         @cache_path = "#{cache_path}/#{@name}/#{cache_to}"
         FileUtils.mkdir_p "#{cache_path}/#{@name}"
         FileUtils.cp_r @path, @cache_path
       end
 
       # Load snippet.json file
-      def load_snippet_json()
+      def load_snippet_json
         text = File.read("#{@path}/snippet.json")
         snippet_json = JSON.parse(text)
         @name = snippet_json["name"]
@@ -38,13 +38,13 @@ module SocialSnippet
       end
 
       # Get current ref's commit id
-      def get_commit_id()
-        raise "not implement get_commit_id()"
+      def get_commit_id
+        raise "not implement get_commit_id"
       end
 
       # Checkout to ref
       def checkout(ref)
-        raise "not implement checkout()"
+        raise "not implement checkout"
       end
 
       class << self

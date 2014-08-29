@@ -2,9 +2,9 @@ require "spec_helper"
 
 describe SocialSnippet::TagParser do
 
-  let(:instance) { SocialSnippet::TagParser.new() }
+  let(:instance) { SocialSnippet::TagParser.new }
 
-  describe "#find_snip_tags()" do
+  describe "#find_snip_tags" do
 
     context "there are two @snip" do
 
@@ -25,7 +25,7 @@ describe SocialSnippet::TagParser do
 
   end # find_snip_tags
 
-  describe "#find_snippet_tags()" do
+  describe "#find_snippet_tags" do
 
     context "there is a @snippet" do
 

@@ -126,7 +126,7 @@ module SocialSnippet
 
     end # get_repo
 
-    describe "#is_snip_tag_line()" do
+    describe "#is_snip_tag_line" do
 
       context "valid cases" do
 
@@ -169,7 +169,7 @@ module SocialSnippet
 
     end # is_snip_tag_line
 
-    describe "#is_snippet_tag_line()" do
+    describe "#is_snippet_tag_line" do
 
       context "valid cases" do
 

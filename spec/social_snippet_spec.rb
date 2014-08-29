@@ -5,13 +5,13 @@ module SocialSnippet
   describe SocialSnippet::SocialSnippet do
 
     # Enable FakeFS
-    before { FakeFS.activate!() }
-    after { FakeFS.deactivate!() }
+    before { FakeFS.activate! }
+    after { FakeFS.deactivate! }
 
-    let(:instance) { SocialSnippet.new() }
+    let(:instance) { SocialSnippet.new }
 
 
-    describe "#resolve_snippet_path()" do
+    describe "#resolve_snippet_path" do
 
       context "without repo" do
 
@@ -96,10 +96,10 @@ module SocialSnippet
 
       end # with repo
 
-    end # resolve_snippet_path()
+    end # resolve_snippet_path
 
 
-    describe "#find_repository()" do
+    describe "#find_repository" do
 
       let(:repo_path) { "#{ENV["HOME"]}/.social-snippet/repo" }
 
@@ -145,7 +145,7 @@ module SocialSnippet
 
       end # create three repos
 
-    end # find_repository()
+    end # find_repository
 
   end # SocialSnippet::SocialSnippet
 

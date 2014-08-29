@@ -2,14 +2,14 @@ require "spec_helper"
 
 describe SocialSnippet::Config do
 
-  describe "#new()" do
+  describe "#new" do
 
     context "use default value" do
 
       before { ENV.delete "SOCIAL_SNIPPET_HOME" }
 
       let(:config) do
-        SocialSnippet::Config.new()
+        SocialSnippet::Config.new
       end
 
       context "#home" do
@@ -25,7 +25,7 @@ describe SocialSnippet::Config do
       after { ENV.delete "SOCIAL_SNIPPET_HOME" }
 
       let(:config) do
-        SocialSnippet::Config.new()
+        SocialSnippet::Config.new
       end
 
       context "#home" do
@@ -35,7 +35,7 @@ describe SocialSnippet::Config do
 
     end # ENV[SOCIAL_SNIPPET_HOME] = /path/to/home
 
-  end # new()
+  end # new
 
 end # SocialSnippet::Config
 

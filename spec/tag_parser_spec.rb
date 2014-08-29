@@ -2,9 +2,9 @@ require "spec_helper"
 
 describe SocialSnippet::TagParser do
 
-  let(:instance) { SocialSnippet::TagParser.new() }
+  let(:instance) { SocialSnippet::TagParser.new }
 
-  describe "#find_snip_tags()" do
+  describe "#find_snip_tags" do
 
     context "no @snip tags" do
 
@@ -47,8 +47,8 @@ describe SocialSnippet::TagParser do
           it { expect(result[0][:line_no]).to eq 2 }
         end
 
-        context "tag.to_snippet_tag()" do
-          it { expect(result[0][:tag].to_snippet_tag()).to eq "// @snippet <path/to/file.c>" }
+        context "tag.to_snippet_tag" do
+          it { expect(result[0][:tag].to_snippet_tag).to eq "// @snippet <path/to/file.c>" }
         end
 
       end
@@ -84,9 +84,9 @@ describe SocialSnippet::TagParser do
           it { expect(result[1][:line_no]).to eq 3 }
         end
 
-        context "tag.to_snippet_tag()" do
-          it { expect(result[0][:tag].to_snippet_tag()).to eq "// @snippet <path/to/file1.c>" }
-          it { expect(result[1][:tag].to_snippet_tag()).to eq "// @snippet <./path/to/file2.c>"}
+        context "tag.to_snippet_tag" do
+          it { expect(result[0][:tag].to_snippet_tag).to eq "// @snippet <path/to/file1.c>" }
+          it { expect(result[1][:tag].to_snippet_tag).to eq "// @snippet <./path/to/file2.c>"}
         end
 
       end
@@ -121,10 +121,10 @@ describe SocialSnippet::TagParser do
           it { expect(result[2][:line_no]).to eq 3 }
         end
 
-        context "tag.to_snippet_tag()" do
-          it { expect(result[0][:tag].to_snippet_tag()).to eq "# @snippet <repo-a:path/to/file1.rb>" }
-          it { expect(result[1][:tag].to_snippet_tag()).to eq "# @snippet  <repo-b:path/to/file1.rb>" }
-          it { expect(result[2][:tag].to_snippet_tag()).to eq "# @snippet   <repo-b:/path/to/file2.rb>" }
+        context "tag.to_snippet_tag" do
+          it { expect(result[0][:tag].to_snippet_tag).to eq "# @snippet <repo-a:path/to/file1.rb>" }
+          it { expect(result[1][:tag].to_snippet_tag).to eq "# @snippet  <repo-b:path/to/file1.rb>" }
+          it { expect(result[2][:tag].to_snippet_tag).to eq "# @snippet   <repo-b:/path/to/file2.rb>" }
         end
 
       end
@@ -133,7 +133,7 @@ describe SocialSnippet::TagParser do
 
   end # find_snip_tags
 
-  describe "#find_snippet_tags()" do
+  describe "#find_snippet_tags" do
 
     context "@snip tags with repository" do
 
@@ -161,8 +161,8 @@ describe SocialSnippet::TagParser do
           it { expect(result[0][:line_no]).to eq 4 }
         end
 
-        context "tag.to_snip_tag()" do
-          it { expect(result[0][:tag].to_snip_tag()).to eq "# @snip <path/to/file3.rb>" }
+        context "tag.to_snip_tag" do
+          it { expect(result[0][:tag].to_snip_tag).to eq "# @snip <path/to/file3.rb>" }
         end
 
       end

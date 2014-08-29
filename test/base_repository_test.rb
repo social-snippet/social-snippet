@@ -8,7 +8,7 @@ module SocialSnippet::Repository
     before { FakeFS.activate! }
     after { FakeFS.deactivate! }
 
-    describe ".new()" do
+    describe ".new" do
 
       let(:commit_id) { "thisisdummyyyyy" }
 
@@ -32,7 +32,7 @@ module SocialSnippet::Repository
 
           let(:instance) { BaseRepository.new("/path/to/repo_1") }
 
-          before { instance.load_snippet_json() }
+          before { instance.load_snippet_json }
 
           context "name" do
             subject { instance.name }
@@ -109,9 +109,9 @@ module SocialSnippet::Repository
           let(:instance_3) { BaseRepository.new("/path/to/repo_3") }
 
           before do
-            instance_1.load_snippet_json()
-            instance_b.load_snippet_json()
-            instance_3.load_snippet_json()
+            instance_1.load_snippet_json
+            instance_b.load_snippet_json
+            instance_3.load_snippet_json
           end
 
           context "name" do
@@ -175,9 +175,9 @@ module SocialSnippet::Repository
 
       end # there are three repos
 
-    end # .new()
+    end # .new
 
-    describe ".is_version()" do
+    describe ".is_version" do
 
       context "valid cases" do
         it { expect(BaseRepository.is_version("0.0.1")).to be_truthy }
@@ -209,7 +209,7 @@ module SocialSnippet::Repository
         it { expect(BaseRepository.is_version("1")).to be_falsey }
       end # invalid cases
 
-    end # is_version()
+    end # is_version
 
   end # SocialSnippet::Repository::BaseRepository
 

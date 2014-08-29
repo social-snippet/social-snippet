@@ -8,13 +8,13 @@ require_relative "social_snippet/context"
 module SocialSnippet
   class SocialSnippet
     # Constructor
-    def initialize()
-      @config = Config.new()
-      init_repo()
+    def initialize
+      @config = Config.new
+      init_repo
     end
 
     # Initialize for repository
-    def init_repo()
+    def init_repo
       # repositories
       @repo_paths = []
       @repo_paths.push "#{@config.home}/repo"
@@ -27,10 +27,10 @@ module SocialSnippet
 
     # Resolve snippet path from tag
     def resolve_snippet_path(context, tag)
-      if tag.has_repo?()
+      if tag.has_repo?
         context.move tag.path, tag.repo
         repo = find_repository(tag.repo)
-        if repo.is_cached?()
+        if repo.is_cached?
           return "#{repo.cache_path}/#{repo.main}/#{tag.path}"
         else
           return "#{repo.path}/#{repo.main}/#{tag.path}"
@@ -58,7 +58,7 @@ module SocialSnippet
       if is_git_dir(path)
         repo = Repository::GitRepository.new(path)
         repo.checkout(ref)
-        repo.load_snippet_json()
+        repo.load_snippet_json
         repo.create_cache(@repo_cache_path)
         return repo
       end
@@ -66,7 +66,7 @@ module SocialSnippet
       return nil
     end
 
-    # Alias for SocialSnippet.is_git_dir()
+    # Alias for SocialSnippet.is_git_dir
     def is_git_dir(path)
       return SocialSnippet.is_git_dir(path)
     end

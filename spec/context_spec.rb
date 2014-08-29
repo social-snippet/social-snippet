@@ -4,7 +4,7 @@ describe SocialSnippet::Context do
 
   let(:context) { SocialSnippet::Context.new("path/to/file.cpp") }
 
-  describe "#move()" do
+  describe "#move" do
 
     context "move ./file2.cpp" do
 
@@ -42,7 +42,7 @@ describe SocialSnippet::Context do
 
     end # move file2.cpp
 
-  end # move()
+  end # move
 
 end # SocialSnippet::Context
 
