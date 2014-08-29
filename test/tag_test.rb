@@ -103,7 +103,7 @@ module SocialSnippet
           it { expect(Tag.get_path("/* @s <my-repo:path/to/file.c> */")).to eq "" }
         end # with repo
 
-      end # valid cases
+      end # invalid cases
 
     end # get_path
 
