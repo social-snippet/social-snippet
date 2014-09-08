@@ -9,143 +9,125 @@ module SocialSnippet
     after { FakeFS.deactivate! }
 
     let(:instance) { SocialSnippet.new }
+    let(:repo_manager) { RepositoryManager.new(Config.new) }
+    let(:commit_id) { "dummycommitid" }
+    let(:short_commit_id) { commit_id[0..7] }
+    let(:repo_path) { "#{ENV["HOME"]}/.social-snippet/repo" }
+    let(:repo_cache_path) { "#{ENV["HOME"]}/.social-snippet/repo_cache" }
 
+    before { allow(instance).to receive(:repo_manager).and_return repo_manager }
 
-    describe "#resolve_snippet_path" do
+    describe "#insert_snippet" do
 
-      context "without repo" do
-
-        context "cur = path/to/file.cpp" do
-
-          let(:context) { Context.new("path/to/file.cpp") }
-
-          context "@snip<./file2.cpp>" do
-
-            let(:tag) { Tag.new("// @snip<./file2.cpp>") }
-
-            context "result" do
-              subject { instance.resolve_snippet_path(context, tag) }
-              it { should eq "path/to/file2.cpp" }
-            end
-
-          end # snip<./file2.cpp>
-
-          context "@snip <./subdir/file3.cpp>" do
-
-            let(:tag) { Tag.new("// @snip <./subdir/file3.cpp>") }
-
-            context "result" do
-              subject { instance.resolve_snippet_path(context, tag) }
-              it { should eq "path/to/subdir/file3.cpp" }
-            end
-
-          end # snip <./subdir/file3.cpp>
-
-        end # cur = path/to/file.cpp
-
-      end # without repo
-
-      context "with repo" do
-
-        before { ENV["SOCIAL_SNIPPET_HOME"] = "/path/to" }
-        after { ENV.delete "SOCIAL_SNIPPET_HOME" }
-
-        let(:repo_path) { "#{ENV["SOCIAL_SNIPPET_HOME"]}/repo" }
+      context "create files" do
 
         before do
-          # create files
-          FileUtils.mkdir_p "#{repo_path}/repo_a"
-          FileUtils.mkdir_p "#{repo_path}/repo_a/.git"
-          FileUtils.touch "#{repo_path}/repo_a/snippet.json"
-          File.write "#{repo_path}/repo_a/snippet.json", [
+          repo_name = "my-repo"
+
+          FileUtils.mkdir_p "#{repo_path}"
+          FileUtils.mkdir_p "#{repo_path}/my-repo"
+          FileUtils.mkdir_p "#{repo_path}/my-repo/.git"
+          FileUtils.mkdir_p "#{repo_path}/my-repo/src"
+          FileUtils.touch   "#{repo_path}/my-repo/snippet.json"
+          FileUtils.touch   "#{repo_path}/my-repo/src/get_42.cpp"
+
+          # snippet.json
+          File.write "#{repo_path}/my-repo/snippet.json", [
             '{',
-            '  "name": "repo_a",',
-            '  "desc": "this is repo_a",',
+            '  "name": "my-repo",',
             '  "language": "C++",',
-            '  "main": "src"',
+            '  "main": "src/"',
             '}',
           ].join("\n")
-        end
 
-        let(:commit_id) { "dummyyyyyyy" }
-
-        before do
-          # do dummy checkout
-          expect_any_instance_of(Repository::GitRepository).to receive(:checkout).and_return true
-
-          # return dummy commit id
-          expect_any_instance_of(Repository::GitRepository).to receive(:get_commit_id).and_return commit_id
-        end
-
-        context "cur = path/to/file.cpp" do
-
-          let(:context) { Context.new("path/to/file.cpp") }
-
-          context "@snip<repo_a:path/to/file2.cpp>" do
-
-            let(:tag) { Tag.new("// @snip<repo_a:path/to/file2.cpp>") }
-
-            context "result" do
-              subject { instance.resolve_snippet_path(context, tag) }
-              it { should eq "/path/to/repo_cache/repo_a/#{commit_id[0..7]}/src/path/to/file2.cpp" }
-            end
-
-          end # snip<./file2.cpp>
-
-        end # cur = path/to/file.cpp
-
-      end # with repo
-
-    end # resolve_snippet_path
-
-
-    describe "#find_repository" do
-
-      let(:repo_path) { "#{ENV["HOME"]}/.social-snippet/repo" }
-
-      context "create repo_a as a git repo" do
-
-        before do
-          # create files
-          FileUtils.mkdir_p "#{repo_path}/repo_a"
-          FileUtils.mkdir_p "#{repo_path}/repo_a/.git"
-          FileUtils.touch "#{repo_path}/repo_a/snippet.json"
-          File.write "#{repo_path}/repo_a/snippet.json", [
-            '{',
-            '  "name": "repo_a",',
-            '  "desc": "this is repo_a",',
-            '  "language": "C++"',
+          # src/get_42.cpp
+          File.write "#{repo_path}/my-repo/src/get_42.cpp", [
+            'int get_42() {',
+            '  return 42;',
             '}',
           ].join("\n")
-        end
 
-        before do
-          # do dummy checkout
-          expect_any_instance_of(Repository::GitRepository).to receive(:checkout).and_return true
-
-          # return dummy commit id
-          expect_any_instance_of(Repository::GitRepository).to receive(:get_commit_id).and_return "dummy_commit_id"
-        end
-
-        context "find repo_a" do
-
-          let(:repo) { instance.find_repository("repo_a") }
-
-          context "name" do
-            subject { repo.name }
-            it { should eq "repo_a" }
+          repo_config = Proc.new do |path|
+            repo = Repository::GitRepository.new("#{repo_path}/my-repo")
+            allow(repo).to receive(:get_commit_id).and_return commit_id
+            allow(repo).to receive(:get_refs).and_return []
+            repo.load_snippet_json
+            repo.create_cache repo_cache_path
+            repo
           end
 
-          context "desc" do
-            subject { repo.desc }
-            it { should eq "this is repo_a" }
+          allow(repo_manager).to receive(:find_repository).with("my-repo") { repo_config.call }
+          allow(repo_manager).to receive(:find_repository).with("my-repo", short_commit_id) { repo_config.call }
+        end # prepare for my-repo
+
+        context "there are no @snip tags" do
+
+          let(:input) do
+            [
+              '#include <iostream>',
+              '',
+              'int main() {',
+              '  std::cout << get_42() << std::endl;',
+              '  return 0;',
+              '}',
+            ].join("\n")
           end
 
-        end # find repo_a
+          let(:output) do
+            [
+              '#include <iostream>',
+              '',
+              'int main() {',
+              '  std::cout << get_42() << std::endl;',
+              '  return 0;',
+              '}',
+            ].join("\n")
+          end
 
-      end # create three repos
+          subject { instance.insert_snippet(input) }
+          it { should eq output }
 
-    end # find_repository
+        end # there is no @snip tags
+
+        context "there is a @snip tag" do
+
+          let(:input) do
+            [
+              '#include <iostream>',
+              '',
+              '// @snip <my-repo:get_42.cpp>',
+              '',
+              'int main() {',
+              '  std::cout << get_42() << std::endl;',
+              '  return 0;',
+              '}',
+            ].join("\n")
+          end
+
+          let(:output) do
+            [
+              '#include <iostream>',
+              '',
+              '// @snippet <my-repo#dummycom:get_42.cpp>',
+              'int get_42() {',
+              '  return 42;',
+              '}',
+              '',
+              'int main() {',
+              '  std::cout << get_42() << std::endl;',
+              '  return 0;',
+              '}',
+            ].join("\n")
+          end
+
+          subject { instance.insert_snippet(input) }
+          it { should eq output }
+
+        end # there is a @snip tag
+
+      end # create file
+
+    end # insert_snippet
 
   end # SocialSnippet::SocialSnippet
 
