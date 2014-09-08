@@ -2,35 +2,49 @@ module SocialSnippet
   class Context
     attr_reader :path
     attr_reader :repo
+    attr_reader :ref
 
     # Constructor
-    def initialize(new_path, new_repo = nil)
+    #
+    # @param new_path [String] The path of context
+    def initialize(new_path, new_repo = nil, new_ref = nil)
       @flag_absolute = is_absolute_path(new_path)
       @path = new_path
       @repo = new_repo
+      @ref  = new_ref
+    end
+
+    # Check context in repo
+    #
+    # @return [Boolean]
+    def is_in_repository?
+      return @repo.nil? === false
     end
 
     # Move to new path from current path
-    def move(new_path, new_repo = nil)
+    #
+    # @param new_path [String] The next path
+    # @param new_repo [String] The next repository
+    # @param new_ref [String] The next reference
+    def move(new_path, new_repo = nil, new_ref = nil)
       if new_repo.nil?
-        # without repo
         if is_absolute_path(new_path)
           @flag_absolute = true
           @path = new_path
         else
-          # relative path
-          @path = move_to_new_path(new_path)
+          @path = move_func(new_path)
         end
       else
-        # with repo
         @flag_absolute = false
         @path = new_path
         @repo = new_repo
+        @ref  = new_ref
       end
     end
 
-    # Move to new path from current path actually
-    def move_to_new_path(new_path)
+    private
+
+    def move_func(new_path)
       source = @path.split("/")
       source_file = source.pop
       dest = new_path.split("/")

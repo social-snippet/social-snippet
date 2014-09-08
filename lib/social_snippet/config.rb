@@ -8,6 +8,8 @@ module SocialSnippet
       load_default_value
     end
 
+    private
+
     # Load environmental variables
     def load_from_environment_variables
       @home = ENV['SOCIAL_SNIPPET_HOME']

@@ -2,8 +2,6 @@ require "spec_helper"
 
 describe SocialSnippet::TagParser do
 
-  let(:instance) { SocialSnippet::TagParser.new }
-
   describe "#find_snip_tags" do
 
     context "no @snip tags" do
@@ -15,7 +13,7 @@ describe SocialSnippet::TagParser do
       end
 
       it "returns an empty array" do
-        expect(instance.find_snip_tags(input_text)).to eq []
+        expect(SocialSnippet::TagParser.find_snip_tags(input_text)).to eq []
       end
 
     end # no snip tags
@@ -37,7 +35,7 @@ describe SocialSnippet::TagParser do
 
       context "result" do
 
-        let(:result) { instance.find_snip_tags(input_text) }
+        let(:result) { SocialSnippet::TagParser.find_snip_tags(input_text) }
         
         it "has one element" do
           expect(result.length).to eq 1
@@ -73,7 +71,7 @@ describe SocialSnippet::TagParser do
 
       context "result" do
 
-        let(:result) { instance.find_snip_tags(input_text) }
+        let(:result) { SocialSnippet::TagParser.find_snip_tags(input_text) }
 
         it "has two elements" do
           expect(result.length).to eq 2
@@ -86,7 +84,7 @@ describe SocialSnippet::TagParser do
 
         context "tag.to_snippet_tag" do
           it { expect(result[0][:tag].to_snippet_tag).to eq "// @snippet <path/to/file1.c>" }
-          it { expect(result[1][:tag].to_snippet_tag).to eq "// @snippet <./path/to/file2.c>"}
+          it { expect(result[1][:tag].to_snippet_tag).to eq "// @snippet <path/to/file2.c>"}
         end
 
       end
@@ -109,7 +107,7 @@ describe SocialSnippet::TagParser do
 
       context "result" do
 
-        let(:result) { instance.find_snip_tags(input_text) }
+        let(:result) { SocialSnippet::TagParser.find_snip_tags(input_text) }
 
         it "has three elements" do
           expect(result.length).to eq 3
@@ -124,7 +122,7 @@ describe SocialSnippet::TagParser do
         context "tag.to_snippet_tag" do
           it { expect(result[0][:tag].to_snippet_tag).to eq "# @snippet <repo-a:path/to/file1.rb>" }
           it { expect(result[1][:tag].to_snippet_tag).to eq "# @snippet  <repo-b:path/to/file1.rb>" }
-          it { expect(result[2][:tag].to_snippet_tag).to eq "# @snippet   <repo-b:/path/to/file2.rb>" }
+          it { expect(result[2][:tag].to_snippet_tag).to eq "# @snippet   <repo-b:path/to/file2.rb>" }
         end
 
       end
@@ -151,7 +149,7 @@ describe SocialSnippet::TagParser do
 
       context "result" do
 
-        let(:result) { instance.find_snippet_tags(input_text) }
+        let(:result) { SocialSnippet::TagParser.find_snippet_tags(input_text) }
 
         it "has one element" do
           expect(result.length).to eq 1
