@@ -48,6 +48,45 @@ describe SocialSnippet::Tag do
  
     end # snip <repo:use/repo.cpp>
 
+    context '// @snip <repo#ref:use/repo/and/version.cpp' do
+
+      let(:instance) { SocialSnippet::Tag.new('// @snip <repo#ref:use/repo/and/version.cpp>') }
+      it { expect(instance.repo).to eq "repo" }
+      it { expect(instance.ref).to eq "ref" }
+
+      context "to_snippet_tag" do
+        subject { instance.to_snippet_tag }
+        it { should eq "// @snippet <repo#ref:use/repo/and/version.cpp>" }
+      end
+
+    end # snip <repo#ref:use/repo/and/version.cpp
+
+    context '# @snip <repo#ref:use/repo/and/version.rb' do
+
+      let(:instance) { SocialSnippet::Tag.new('# @snip <repo#ref:use/repo/and/version.rb>') }
+      it { expect(instance.repo).to eq "repo" }
+      it { expect(instance.ref).to eq "ref" }
+
+      context "to_snippet_tag" do
+        subject { instance.to_snippet_tag }
+        it { should eq "# @snippet <repo#ref:use/repo/and/version.rb>" }
+      end
+
+    end # snip <repo#ref:use/repo/and/version.rb
+
+    context '# @snip <repo#ref:use/repo/and/version.rb #' do
+
+      let(:instance) { SocialSnippet::Tag.new('# @snip <repo#ref:use/repo/and/version.rb> #') }
+      it { expect(instance.repo).to eq "repo" }
+      it { expect(instance.ref).to eq "ref" }
+
+      context "to_snippet_tag" do
+        subject { instance.to_snippet_tag }
+        it { should eq "# @snippet <repo#ref:use/repo/and/version.rb> #" }
+      end
+
+    end # snip <repo#ref:use/repo/and/version.rb
+
   end # .new
 
 end
