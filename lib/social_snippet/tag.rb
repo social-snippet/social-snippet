@@ -2,6 +2,10 @@ module SocialSnippet
   class Tag
     attr_reader :path
     attr_reader :repo
+    attr_reader :ref
+    attr_reader :prefix
+    attr_reader :suffix
+    attr_reader :spaces
 
     # Create instance
     #
@@ -9,9 +13,45 @@ module SocialSnippet
     def initialize(s)
       @path   = Tag.get_path(s)
       @repo   = Tag.get_repo(s)
+      @ref    = Tag.get_ref(s)
       @prefix = Tag.get_prefix(s)
       @suffix = Tag.get_suffix(s)
       @spaces = Tag.get_spaces(s)
+
+      # to normalize repo's path
+      set_path Tag.get_path(s)
+    end
+
+    # Set information by another tag
+    def set_by_tag(base_tag)
+      return self if base_tag.nil?
+      @prefix = base_tag.prefix
+      @suffix = base_tag.suffix
+      @spaces = base_tag.spaces
+      self
+    end
+
+    # Set path
+    def set_path(new_path)
+      @path = new_path
+
+      # repo:/path/to/file -> repo:path/to/file
+      @path[0] = "" if has_repo? && @path[0] == "/"
+    end
+
+    # Set repo
+    def set_repo(new_repo)
+      @repo = new_repo
+    end
+
+    # Set ref
+    def set_ref(new_ref)
+      @ref = new_ref
+    end
+
+    # Check to have ref
+    def has_ref?
+      return @ref.nil? === false && @ref != ""
     end
 
     # Check to have repository
@@ -19,12 +59,22 @@ module SocialSnippet
       return @repo != ""
     end
 
-    # Get tag text by given tag
-    def to_tag_text(tag)
+    # Get path text
+    def to_path
       if has_repo?
-        return "#{@prefix}#{tag}#{@spaces}<#{@repo}:#{@path}>#{@suffix}"
+        if has_ref?
+          "#{@repo}##{@ref}:#{@path}"
+        else
+          "#{@repo}:#{@path}"
+        end
+      else
+        "#{@path}"
       end
-      "#{@prefix}#{tag}#{@spaces}<#{@path}>#{@suffix}"
+    end
+
+    # Get tag text by given tag text
+    def to_tag_text(tag_text)
+      "#{@prefix}#{tag_text}#{@spaces}<#{to_path}>#{@suffix}"
     end
 
     # Get @snip tag text
@@ -41,12 +91,12 @@ module SocialSnippet
 
       # Check given line to match @snip tag
       def is_snip_tag_line(s)
-        return /@snip\s*<.*?>/.match(s)
+        return /@snip\s*<.*?>/ === s
       end
 
       # Check given line to match @snippet tag
       def is_snippet_tag_line(s)
-        return /@snippet\s*<.*?>/.match(s)
+        return /@snippet\s*<.*?>/ === s
       end
 
       # Check given line to match @snip or @snippet tag
@@ -54,14 +104,23 @@ module SocialSnippet
         return is_snip_tag_line(s) || is_snippet_tag_line(s)
       end
 
+      # Check given line to have `#` character
+      def has_ref_text(s)
+        return /<.*?#(.*?):/ === s
+      end
+
       # Check given line to match `:` character
       def has_colon(s)
-        return /:/.match(s)
+        return /:/ === s
       end
 
       # Check given line to match snippet tag with repo
       def is_tag_line_with_repository(s)
         return is_snip_or_snippet_tag_line(s) && has_colon(s)
+      end
+
+      def is_tag_line_with_repository_have_ref(s)
+        return is_tag_line_with_repository(s) && has_ref_text(s)
       end
 
       # Get spaces from given line
@@ -101,10 +160,21 @@ module SocialSnippet
       def get_path(s)
         if is_snip_or_snippet_tag_line(s)
           # return snippet path (without repo name)
-          return /<(.*?:)?(.*?)>/.match(s)[2]
+          path = Pathname.new(/<(.*?:)?(.*?)>/.match(s)[2])
+          return path.cleanpath.to_s
         end
 
         # return empty string
+        return ""
+      end
+
+      # Get repo's ref from given line
+      def get_ref(s)
+        if is_tag_line_with_repository_have_ref(s)
+          # return ref text
+          return /<.+?#(.*?):/.match(s)[1]
+        end
+
         return ""
       end
 
@@ -112,7 +182,7 @@ module SocialSnippet
       def get_repo(s)
         if is_tag_line_with_repository(s)
           # return repository name
-          return /<(.*?):/.match(s)[1]
+          return /<(.*?)[:#]/.match(s)[1]
         end
 
         # return empty string
