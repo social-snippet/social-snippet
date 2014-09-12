@@ -72,7 +72,123 @@ describe SocialSnippet::SocialSnippet do
         ].join("\n")
       end # prepare directly#3.2.1
 
+      before do
+        repo_name = "loop-1"
+        ref_name = "1.1.1"
+
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/loop"
+
+        # snippet.json
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+          '{"name": "' + repo_name + '"}'
+        ].join("\n")
+
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/loop", [
+          '@snip<loop-2:loop>',
+          'loop-1',
+        ].join("\n")
+      end # prepare loop-1#1.1.1
+
+      before do
+        repo_name = "loop-2"
+        ref_name = "1.1.1"
+
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/loop"
+
+        # snippet.json
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+          '{"name": "' + repo_name + '"}'
+        ].join("\n")
+
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/loop", [
+          '@snip<loop-3:loop>',
+          'loop-2',
+        ].join("\n")
+      end # prepare loop-2#1.1.1
+
+      before do
+        repo_name = "loop-3"
+        ref_name = "1.1.1"
+
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/loop"
+
+        # snippet.json
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+          '{"name": "' + repo_name + '"}'
+        ].join("\n")
+
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/loop", [
+          '@snip<loop-1:loop>',
+          '@snip<non-loop-4:non-loop>',
+          'loop-3',
+        ].join("\n")
+      end # prepare loop-3#1.1.1
+
+      before do
+        repo_name = "non-loop-4"
+        ref_name = "1.1.1"
+
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/non-loop"
+
+        # snippet.json
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+          '{"name": "' + repo_name + '"}'
+        ].join("\n")
+
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/non-loop", [
+          'non-loop-4',
+        ].join("\n")
+      end # prepare non-loop-4#1.1.1
+
       before { find_repo_mock }
+
+      context "indirectly" do
+
+        context "has cyclic loop" do
+
+          let(:input) do
+            [
+              '@snip<loop-1:loop>',
+              'main',
+            ].join("\n")
+          end
+
+          let(:output) do
+            [
+              '@snippet<non-loop-4#1.1.1:non-loop>',
+              'non-loop-4',
+              '@snippet<loop-3#1.1.1:loop>',
+              'loop-3',
+              '@snippet<loop-2#1.1.1:loop>',
+              'loop-2',
+              '@snippet<loop-1#1.1.1:loop>',
+              'loop-1',
+              'main',
+            ].join("\n")
+          end
+
+          subject { instance.insert_snippet input }
+          it { should eq output }
+
+        end # has loop
+
+      end # indirectly
 
       context "directly" do
 
