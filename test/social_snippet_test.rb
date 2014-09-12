@@ -49,6 +49,114 @@ describe SocialSnippet::SocialSnippet do
 
   describe "#insert_snippet" do
 
+    context "snippet snippets" do
+
+      before do
+        repo_name = "my-repo"
+        ref_name = "0.0.1"
+
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/1"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/2"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/3"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/4"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/5"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/6"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/7"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/8"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/9"
+
+        # snippet.json
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+          '{"name": "' + repo_name + '"}'
+        ].join("\n")
+
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/1", [
+          '@snip<5>',
+          '@snip<4>',
+          '@snip<3>',
+          '@snip<2>',
+          '1',
+        ].join("\n")
+
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/2", [
+          '@snip<9>',
+          '@snip<8>',
+          '@snip<7>',
+          '@snip<6>',
+          '2',
+        ].join("\n")
+
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/3", [
+          '3',
+        ].join("\n")
+
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/4", [
+          '4',
+        ].join("\n")
+
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/5", [
+          '5',
+        ].join("\n")
+
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/6", [
+          '6',
+        ].join("\n")
+
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/7", [
+          '7',
+        ].join("\n")
+
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/8", [
+          '8',
+        ].join("\n")
+
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/9", [
+          '9',
+        ].join("\n")
+      end
+
+      before { find_repo_mock }
+
+      let(:input) do
+        [
+          '@snip<my-repo:1>',
+          'main',
+        ].join("\n").freeze
+      end
+
+      let(:output) do
+        [
+          '@snippet<my-repo#0.0.1:5>',
+          '5',
+          '@snippet<my-repo#0.0.1:4>',
+          '4',
+          '@snippet<my-repo#0.0.1:3>',
+          '3',
+          '@snippet<my-repo#0.0.1:9>',
+          '9',
+          '@snippet<my-repo#0.0.1:8>',
+          '8',
+          '@snippet<my-repo#0.0.1:7>',
+          '7',
+          '@snippet<my-repo#0.0.1:6>',
+          '6',
+          '@snippet<my-repo#0.0.1:2>',
+          '2',
+          '@snippet<my-repo#0.0.1:1>',
+          '1',
+          'main',
+        ].join("\n")
+      end
+
+      subject { instance.insert_snippet input }
+      it { should eq output }
+
+    end # snippet snippets
+
     context "use multiple repos and multiple versions" do
 
       before do
