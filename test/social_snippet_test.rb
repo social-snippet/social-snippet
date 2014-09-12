@@ -9,11 +9,43 @@ describe SocialSnippet::SocialSnippet do
   let(:instance) { SocialSnippet::SocialSnippet.new }
   let(:repo_manager) { SocialSnippet::RepositoryManager.new(SocialSnippet::Config.new) }
   let(:repo_path) { "#{ENV["HOME"]}/.social-snippet/repo" }
+  let(:tmp_repo_path) { "/tmp/repos" }
+  let(:tmp_repo_path_no_ver) { "/tmp/repos_no_ver" }
   let(:repo_cache_path) { "#{ENV["HOME"]}/.social-snippet/repo_cache" }
   let(:commit_id) { "thisisdummy" }
   let(:short_commit_id) { commit_id[0..7] }
 
   before { allow(instance).to receive(:repo_manager).and_return repo_manager }
+
+  def find_repo_mock
+    repo_versions = {}
+    repos = Dir.glob("#{tmp_repo_path}/*").map{|path| Pathname.new(path).basename.to_s }
+    repos.each do |repo_name|
+      repo_versions[repo_name] = Dir.glob("#{tmp_repo_path}/#{repo_name}/*").map {|path| Pathname.new(path).basename.to_s }
+    end
+
+    repos_no_ver = Dir.glob("#{tmp_repo_path_no_ver}/*").map {|path| Pathname.new(path).basename.to_s }
+
+    allow(repo_manager).to receive(:find_repository).with(any_args) do |repo_name, ref|
+      repo_versions[repo_name] ||= []
+      if repos_no_ver.include?(repo_name)
+        repo_path = "#{tmp_repo_path_no_ver}/#{repo_name}"
+      else
+        base_repo_path = "#{tmp_repo_path}/#{repo_name}/#{repo_versions[repo_name].first}"
+        base_repo = SocialSnippet::Repository::GitRepository.new(base_repo_path)
+        allow(base_repo).to receive(:get_refs).and_return repo_versions[repo_name]
+        base_repo.load_snippet_json
+        repo_version = base_repo.get_latest_version ref
+        repo_path = "#{tmp_repo_path}/#{repo_name}/#{repo_version}"
+      end
+      repo = SocialSnippet::Repository::GitRepository.new(repo_path)
+      allow(repo).to receive(:get_refs).and_return repo_versions[repo_name]
+      allow(repo).to receive(:get_commit_id).and_return "#{repo_version}#{commit_id}"
+      repo.load_snippet_json
+      repo.create_cache repo_cache_path
+      repo
+    end
+  end
 
   describe "#insert_snippet" do
 
@@ -23,27 +55,27 @@ describe SocialSnippet::SocialSnippet do
         repo_name = "my-repo"
         ref_name = "0.0.3"
 
-        FileUtils.mkdir_p "/tmp/repos/#{repo_name}"
-        FileUtils.mkdir_p "/tmp/repos/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "/tmp/repos/#{repo_name}/#{ref_name}/.git"
-        FileUtils.mkdir_p "/tmp/repos/#{repo_name}/#{ref_name}/src"
-        FileUtils.touch   "/tmp/repos/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.touch   "/tmp/repos/#{repo_name}/#{ref_name}/src/1.rb"
-        FileUtils.touch   "/tmp/repos/#{repo_name}/#{ref_name}/src/2.rb"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb"
 
         # snippet.json
-        File.write "/tmp/repos/#{repo_name}/#{ref_name}/snippet.json", [
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
         ].join("\n")
 
         # src/1.rb
-        File.write "/tmp/repos/#{repo_name}/#{ref_name}/src/1.rb", [
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
           '# @snip</2.rb>',
           'OK',
         ].join("\n")
 
         # src/2.rb
-        File.write "/tmp/repos/#{repo_name}/#{ref_name}/src/2.rb", [
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
           '0.0.3',
         ].join("\n")
 
@@ -53,21 +85,21 @@ describe SocialSnippet::SocialSnippet do
         repo_name = "my-repo"
         ref_name = "0.0.2"
 
-        FileUtils.mkdir_p "/tmp/repos/#{repo_name}"
-        FileUtils.mkdir_p "/tmp/repos/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "/tmp/repos/#{repo_name}/#{ref_name}/.git"
-        FileUtils.mkdir_p "/tmp/repos/#{repo_name}/#{ref_name}/src"
-        FileUtils.touch   "/tmp/repos/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.touch   "/tmp/repos/#{repo_name}/#{ref_name}/src/1.rb"
-        FileUtils.touch   "/tmp/repos/#{repo_name}/#{ref_name}/src/2.rb"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb"
 
         # snippet.json
-        File.write "/tmp/repos/#{repo_name}/#{ref_name}/snippet.json", [
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
         ].join("\n")
 
         # src/1.rb
-        File.write "/tmp/repos/#{repo_name}/#{ref_name}/src/1.rb", [
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
           '# @snip</2.rb>',
           'def func_1',
           '  return 2 * func_2()',
@@ -75,7 +107,7 @@ describe SocialSnippet::SocialSnippet do
         ].join("\n")
 
         # src/2.rb
-        File.write "/tmp/repos/#{repo_name}/#{ref_name}/src/2.rb", [
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
           'ERROR_CASE',
         ].join("\n")
 
@@ -85,21 +117,21 @@ describe SocialSnippet::SocialSnippet do
         repo_name = "my-repo"
         ref_name = "0.0.1"
 
-        FileUtils.mkdir_p "/tmp/repos/#{repo_name}"
-        FileUtils.mkdir_p "/tmp/repos/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "/tmp/repos/#{repo_name}/#{ref_name}/.git"
-        FileUtils.mkdir_p "/tmp/repos/#{repo_name}/#{ref_name}/src"
-        FileUtils.touch   "/tmp/repos/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.touch   "/tmp/repos/#{repo_name}/#{ref_name}/src/1.rb"
-        FileUtils.touch   "/tmp/repos/#{repo_name}/#{ref_name}/src/2.rb"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb"
 
         # snippet.json
-        File.write "/tmp/repos/#{repo_name}/#{ref_name}/snippet.json", [
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
         ].join("\n")
 
         # src/1.rb
-        File.write "/tmp/repos/#{repo_name}/#{ref_name}/src/1.rb", [
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
           '# @snip</2.rb>',
           'def func_1',
           '  return 2 * func_2()',
@@ -107,7 +139,7 @@ describe SocialSnippet::SocialSnippet do
         ].join("\n")
 
         # src/2.rb
-        File.write "/tmp/repos/#{repo_name}/#{ref_name}/src/2.rb", [
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
           'ERROR_CASE',
         ].join("\n")
 
@@ -117,21 +149,21 @@ describe SocialSnippet::SocialSnippet do
         repo_name = "my-repo"
         ref_name = "1.0.0"
 
-        FileUtils.mkdir_p "/tmp/repos/#{repo_name}"
-        FileUtils.mkdir_p "/tmp/repos/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "/tmp/repos/#{repo_name}/#{ref_name}/.git"
-        FileUtils.mkdir_p "/tmp/repos/#{repo_name}/#{ref_name}/src"
-        FileUtils.touch   "/tmp/repos/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.touch   "/tmp/repos/#{repo_name}/#{ref_name}/src/1.rb"
-        FileUtils.touch   "/tmp/repos/#{repo_name}/#{ref_name}/src/2.rb"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb"
 
         # snippet.json
-        File.write "/tmp/repos/#{repo_name}/#{ref_name}/snippet.json", [
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
         ].join("\n")
 
         # src/1.rb
-        File.write "/tmp/repos/#{repo_name}/#{ref_name}/src/1.rb", [
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
           '# @snip</2.rb>',
           'def func_1',
           '  return 2 * func_2()',
@@ -139,7 +171,7 @@ describe SocialSnippet::SocialSnippet do
         ].join("\n")
 
         # src/2.rb
-        File.write "/tmp/repos/#{repo_name}/#{ref_name}/src/2.rb", [
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
           'THIS_IS_OK',
         ].join("\n")
       end # prepare my-repo#1.0.0
@@ -148,20 +180,20 @@ describe SocialSnippet::SocialSnippet do
         repo_name = "new-my-repo"
         ref_name = "0.0.1"
 
-        FileUtils.mkdir_p "/tmp/repos/#{repo_name}"
-        FileUtils.mkdir_p "/tmp/repos/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "/tmp/repos/#{repo_name}/#{ref_name}/.git"
-        FileUtils.mkdir_p "/tmp/repos/#{repo_name}/#{ref_name}/src"
-        FileUtils.touch   "/tmp/repos/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.touch   "/tmp/repos/#{repo_name}/#{ref_name}/src/1.rb"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb"
 
         # snippet.json
-        File.write "/tmp/repos/#{repo_name}/#{ref_name}/snippet.json", [
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
         ].join("\n")
 
         # src/1.rb
-        File.write "/tmp/repos/#{repo_name}/#{ref_name}/src/1.rb", [
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
           'OLD VERSION',
         ].join("\n")
       end # prepare new-my-repo#0.0.1
@@ -170,22 +202,22 @@ describe SocialSnippet::SocialSnippet do
         repo_name = "new-my-repo"
         ref_name = "0.0.2"
 
-        FileUtils.mkdir_p "/tmp/repos/#{repo_name}"
-        FileUtils.mkdir_p "/tmp/repos/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "/tmp/repos/#{repo_name}/#{ref_name}/.git"
-        FileUtils.mkdir_p "/tmp/repos/#{repo_name}/#{ref_name}/src"
-        FileUtils.touch   "/tmp/repos/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.touch   "/tmp/repos/#{repo_name}/#{ref_name}/src/1.rb"
-        FileUtils.touch   "/tmp/repos/#{repo_name}/#{ref_name}/src/2.rb"
-        FileUtils.touch   "/tmp/repos/#{repo_name}/#{ref_name}/src/3.rb"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/3.rb"
 
         # snippet.json
-        File.write "/tmp/repos/#{repo_name}/#{ref_name}/snippet.json", [
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
         ].join("\n")
 
         # src/1.rb
-        File.write "/tmp/repos/#{repo_name}/#{ref_name}/src/1.rb", [
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
           '# @snip <my-repo#0:1.rb>',
           '# @snip </2.rb>',
           '# @snip <3.rb>',
@@ -193,39 +225,19 @@ describe SocialSnippet::SocialSnippet do
         ].join("\n")
 
         # src/2.rb
-        File.write "/tmp/repos/#{repo_name}/#{ref_name}/src/2.rb", [
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
           'OK: 2.rb',
         ].join("\n")
 
         # src/3.rb
-        File.write "/tmp/repos/#{repo_name}/#{ref_name}/src/3.rb", [
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/3.rb", [
           'OK: 3.rb',
         ].join("\n")
       end # prepare new-my-repo#0.0.2
 
       before do
-        repo_versions = {}
-        repos = Dir.glob("/tmp/repos/*").map{|path| Pathname.new(path).basename.to_s }
-        repos.each do |repo_name|
-          repo_versions[repo_name] = Dir.glob("/tmp/repos/#{repo_name}/*").map {|path| Pathname.new(path).basename.to_s }
-        end
-
-        allow(repo_manager).to receive(:find_repository).with(any_args) do |repo_name, ref|
-          base_repo_path = "/tmp/repos/#{repo_name}/#{repo_versions[repo_name].first}"
-          base_repo = SocialSnippet::Repository::GitRepository.new(base_repo_path)
-          allow(base_repo).to receive(:get_refs).and_return repo_versions[repo_name]
-          base_repo.load_snippet_json
-
-          repo_version = base_repo.get_latest_version ref
-          repo_path = "/tmp/repos/#{repo_name}/#{repo_version}"
-          repo = SocialSnippet::Repository::GitRepository.new(repo_path)
-          allow(repo).to receive(:get_refs).and_return repo_versions[repo_name]
-          allow(repo).to receive(:get_commit_id).and_return "#{repo_version}#{commit_id}"
-          repo.load_snippet_json
-          repo.create_cache repo_cache_path
-          repo
-        end
-      end # find_repo mock
+        find_repo_mock
+      end
 
       context "use my-repo" do
 
@@ -879,17 +891,17 @@ describe SocialSnippet::SocialSnippet do
         before do
           repo_name = "my-repo"
 
-          FileUtils.mkdir_p "#{repo_path}"
-          FileUtils.mkdir_p "#{repo_path}/#{repo_name}"
-          FileUtils.mkdir_p "#{repo_path}/#{repo_name}/.git"
-          FileUtils.mkdir_p "#{repo_path}/#{repo_name}/src"
-          FileUtils.touch   "#{repo_path}/#{repo_name}/snippet.json"
-          FileUtils.touch   "#{repo_path}/#{repo_name}/src/1"
-          FileUtils.touch   "#{repo_path}/#{repo_name}/src/2"
-          FileUtils.touch   "#{repo_path}/#{repo_name}/src/3"
+          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}"
+          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}"
+          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/.git"
+          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/src"
+          FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json"
+          FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/src/1"
+          FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/src/2"
+          FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/src/3"
 
           # snippet.json
-          File.write "#{repo_path}/#{repo_name}/snippet.json", [
+          File.write "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json", [
             '{',
             '  "name": "' + repo_name + '",',
             '  "main": "src"',
@@ -897,33 +909,200 @@ describe SocialSnippet::SocialSnippet do
           ].join("\n")
 
           # src/1
-          File.write "#{repo_path}/#{repo_name}/src/1", [
+          File.write "#{tmp_repo_path_no_ver}/#{repo_name}/src/1", [
             '@snip<2>',
             '@snip<3>',
           ].join("\n")
 
           # src/2
-          File.write "#{repo_path}/#{repo_name}/src/2", [
+          File.write "#{tmp_repo_path_no_ver}/#{repo_name}/src/2", [
             '2',
           ].join("\n")
 
           # src/3
-          File.write "#{repo_path}/#{repo_name}/src/3", [
+          File.write "#{tmp_repo_path_no_ver}/#{repo_name}/src/3", [
             '3',
           ].join("\n")
+        end # prepare for my-repo
 
-          repo_config = Proc.new do |path|
-            repo = SocialSnippet::Repository::GitRepository.new("#{repo_path}/#{repo_name}")
-            allow(repo).to receive(:get_commit_id).and_return commit_id
-            allow(repo).to receive(:get_refs).and_return []
-            repo.load_snippet_json
-            repo.create_cache repo_cache_path
-            repo
+        before do
+          repo_name = "has-version"
+          repo_version = "0.0.1"
+
+          FileUtils.mkdir_p "#{tmp_repo_path}"
+          FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+          FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{repo_version}"
+          FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{repo_version}/.git"
+          FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src"
+          FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{repo_version}/snippet.json"
+          FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/1"
+          FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/2"
+          FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/3"
+
+          # snippet.json
+          File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/snippet.json", [
+            '{',
+            '  "name": "' + repo_name + '",',
+            '  "main": "src"',
+            '}',
+          ].join("\n")
+
+          # src/1
+          File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/1", [
+            '@snip<2>',
+            '@snip<3>',
+            '0.0.1: 1',
+          ].join("\n")
+
+          # src/2
+          File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/2", [
+            '0.0.1: 2',
+          ].join("\n")
+
+          # src/3
+          File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/3", [
+            '0.0.1: 3',
+          ].join("\n")
+        end # prepare has-version#0.0.1
+
+        before do
+          repo_name = "has-version"
+          repo_version = "1.2.3"
+
+          FileUtils.mkdir_p "#{tmp_repo_path}"
+          FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+          FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{repo_version}"
+          FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{repo_version}/.git"
+          FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src"
+          FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{repo_version}/snippet.json"
+          FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/1"
+          FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/2"
+          FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/3"
+
+          # snippet.json
+          File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/snippet.json", [
+            '{',
+            '  "name": "' + repo_name + '",',
+            '  "main": "src"',
+            '}',
+          ].join("\n")
+
+          # src/1
+          File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/1", [
+            '@snip<2>',
+            '@snip<3>',
+            '1.2.3: 1',
+          ].join("\n")
+
+          # src/2
+          File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/2", [
+            '1.2.3: 2',
+          ].join("\n")
+
+          # src/3
+          File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/3", [
+            '1.2.3: 3',
+          ].join("\n")
+        end # prepare has-version#1.2.3
+
+        before do
+          find_repo_mock
+        end
+
+        context "already snipped using version" do
+
+          context "not already snipped" do
+
+            let(:input) do
+              [
+                '@snip<has-version#0:1>',
+                '@snip<has-version#1:1>',
+              ].join("\n").freeze
+            end
+
+            let(:output) do
+              [
+                '@snippet<has-version#0.0.1:2>',
+                '0.0.1: 2',
+                '@snippet<has-version#0.0.1:3>',
+                '0.0.1: 3',
+                '@snippet<has-version#0.0.1:1>',
+                '0.0.1: 1',
+                '@snippet<has-version#1.2.3:2>',
+                '1.2.3: 2',
+                '@snippet<has-version#1.2.3:3>',
+                '1.2.3: 3',
+                '@snippet<has-version#1.2.3:1>',
+                '1.2.3: 1',
+              ].join("\n").freeze
+            end
+
+            subject { instance.insert_snippet(input) }
+            it { should eq output }
+
           end
 
-          allow(repo_manager).to receive(:find_repository).with(repo_name) { repo_config.call }
-          allow(repo_manager).to receive(:find_repository).with(repo_name, short_commit_id) { repo_config.call }
-        end # prepare for my-repo
+          context "snipped", :force => true do
+
+            let(:input) do
+              [
+                '@snippet<has-version#0.0.1:1>',
+                '@snip<has-version#0:1>',
+                '@snip<has-version#1:1>',
+              ].join("\n").freeze
+            end
+
+            let(:output) do
+              [
+                '@snippet<has-version#0.0.1:1>',
+                '@snippet<has-version#1.2.3:2>',
+                '1.2.3: 2',
+                '@snippet<has-version#1.2.3:3>',
+                '1.2.3: 3',
+                '@snippet<has-version#1.2.3:1>',
+                '1.2.3: 1',
+              ].join("\n").freeze
+            end
+
+            subject { instance.insert_snippet(input) }
+            it { should eq output }
+
+          end # snipped
+
+          context "use another repo" do
+
+            let(:input) do
+              [
+                '@snippet<has-version#0.0.1:1>',
+                '@snip<has-version#0:1>',
+                '@snip<my-repo:1>',
+                '@snip<has-version:1>',
+              ].join("\n").freeze
+            end
+
+            let(:output) do
+              [
+                '@snippet<has-version#0.0.1:1>',
+                '@snippet<my-repo#thisisdu:2>',
+                '2',
+                '@snippet<my-repo#thisisdu:3>',
+                '3',
+                '@snippet<my-repo#thisisdu:1>',
+                '@snippet<has-version#1.2.3:2>',
+                '1.2.3: 2',
+                '@snippet<has-version#1.2.3:3>',
+                '1.2.3: 3',
+                '@snippet<has-version#1.2.3:1>',
+                '1.2.3: 1',
+              ].join("\n").freeze
+            end
+
+            subject { instance.insert_snippet(input) }
+            it { should eq output }
+
+          end
+
+        end # already snipped using version
 
         context "already snipped case" do
 
@@ -985,15 +1164,15 @@ describe SocialSnippet::SocialSnippet do
         before do
           repo_name = "my_lib"
 
-          FileUtils.mkdir_p "#{repo_path}"
-          FileUtils.mkdir_p "#{repo_path}/#{repo_name}"
-          FileUtils.mkdir_p "#{repo_path}/#{repo_name}/.git"
-          FileUtils.mkdir_p "#{repo_path}/#{repo_name}/src/lib"
-          FileUtils.touch   "#{repo_path}/#{repo_name}/snippet.json"
-          FileUtils.touch   "#{repo_path}/#{repo_name}/src/lib/add_func.cpp"
+          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}"
+          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}"
+          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/.git"
+          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/src/lib"
+          FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json"
+          FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/src/lib/add_func.cpp"
 
           # snippet.json
-          File.write "#{repo_path}/#{repo_name}/snippet.json", [
+          File.write "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json", [
             '{',
             '  "name": "' + repo_name + '",',
             '  "main": "src"',
@@ -1001,94 +1180,60 @@ describe SocialSnippet::SocialSnippet do
           ].join("\n")
 
           # src/add_func.cpp
-          File.write "#{repo_path}/#{repo_name}/src/add_func.cpp", [
+          File.write "#{tmp_repo_path_no_ver}/#{repo_name}/src/add_func.cpp", [
             'int add_func( int a, int b ) {',
             '  return a + b;',
             '}',
           ].join("\n")
-
-          repo_config = Proc.new do |path|
-            repo = SocialSnippet::Repository::GitRepository.new("#{repo_path}/#{repo_name}")
-            allow(repo).to receive(:get_commit_id).and_return commit_id
-            allow(repo).to receive(:get_refs).and_return []
-            repo.load_snippet_json
-            repo.create_cache repo_cache_path
-            repo
-          end
-
-          allow(repo_manager).to receive(:find_repository).with(repo_name).and_return repo_config.call
-          allow(repo_manager).to receive(:find_repository).with(repo_name, short_commit_id).and_return repo_config.call
         end # prepare for my_lib repo
 
         before do
           repo_name = "my_repo_a"
 
-          FileUtils.mkdir_p "#{repo_path}"
-          FileUtils.mkdir_p "#{repo_path}/#{repo_name}"
-          FileUtils.mkdir_p "#{repo_path}/#{repo_name}/.git"
-          FileUtils.touch   "#{repo_path}/#{repo_name}/snippet.json"
-          FileUtils.touch   "#{repo_path}/#{repo_name}/use_add_func.cpp"
+          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}"
+          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}"
+          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/.git"
+          FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json"
+          FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/use_add_func.cpp"
 
           # snippet.json
-          File.write "#{repo_path}/#{repo_name}/snippet.json", [
+          File.write "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json", [
             '{"name": "' + repo_name + '"}',
           ].join("\n")
 
           # use_add_func.cpp
-          File.write "#{repo_path}/#{repo_name}/use_add_func.cpp", [
+          File.write "#{tmp_repo_path_no_ver}/#{repo_name}/use_add_func.cpp", [
             '// @snip <my_lib:add_func.cpp>',
             'int my_repo_a_use_add_func( int a, int b ) {',
             '  return add_func(a, b);',
             '}',
           ].join("\n")
-
-          repo_config = Proc.new do |path|
-            repo = SocialSnippet::Repository::GitRepository.new("#{repo_path}/#{repo_name}")
-            allow(repo).to receive(:get_commit_id).and_return commit_id
-            allow(repo).to receive(:get_refs).and_return []
-            repo.load_snippet_json
-            repo.create_cache repo_cache_path
-            repo
-          end
-
-          allow(repo_manager).to receive(:find_repository).with(repo_name) { repo_config.call }
-          allow(repo_manager).to receive(:find_repository).with(repo_name, short_commit_id) { repo_config.call }
         end # prepare for my_repo_a repo
 
         before do
           repo_name = "my_repo_b"
 
-          FileUtils.mkdir_p "#{repo_path}"
-          FileUtils.mkdir_p "#{repo_path}/#{repo_name}"
-          FileUtils.mkdir_p "#{repo_path}/#{repo_name}/.git"
-          FileUtils.touch   "#{repo_path}/#{repo_name}/snippet.json"
-          FileUtils.touch   "#{repo_path}/#{repo_name}/use_add_func.cpp"
+          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}"
+          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}"
+          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/.git"
+          FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json"
+          FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/use_add_func.cpp"
 
           # snippet.json
-          File.write "#{repo_path}/#{repo_name}/snippet.json", [
+          File.write "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json", [
             '{"name": "' + repo_name + '"}',
           ].join("\n")
 
           # use_add_func.cpp
-          File.write "#{repo_path}/#{repo_name}/use_add_func.cpp", [
+          File.write "#{tmp_repo_path_no_ver}/#{repo_name}/use_add_func.cpp", [
             '// @snip <my_lib:add_func.cpp>',
             'int my_repo_b_use_add_func( int a, int b ) {',
             '  return add_func(a, b);',
             '}',
           ].join("\n")
-
-          repo_config = Proc.new do |path|
-            repo = SocialSnippet::Repository::GitRepository.new("#{repo_path}/#{repo_name}")
-            allow(repo).to receive(:get_commit_id).and_return commit_id
-            allow(repo).to receive(:get_refs).and_return []
-            repo.load_snippet_json
-            repo.create_cache repo_cache_path
-            repo
-          end
-
-          allow(repo_manager).to receive(:find_repository).with(repo_name).and_return repo_config.call
-          allow(repo_manager).to receive(:find_repository).with(repo_name, short_commit_id).and_return repo_config.call
         end # prepare for my_repo_b repo
+
+        before { find_repo_mock }
 
         let(:input) do
           [
