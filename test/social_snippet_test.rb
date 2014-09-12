@@ -49,6 +49,81 @@ describe SocialSnippet::SocialSnippet do
 
   describe "#insert_snippet" do
 
+    context "use parent path" do
+
+      before do
+        repo_name = "my-repo"
+        ref_name = "1.2.3"
+
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/file_1"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_a"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_a/file_2"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_b"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_b/file_3"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_c"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_c/file_4"
+
+        # snippet.json
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+          '{"name": "' + repo_name + '", "main": "src"}'
+        ].join("\n")
+
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/file_1", [
+          '@snip<subdir_a/file_2>',
+          'file_1',
+        ].join("\n")
+
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_a/file_2", [
+          '@snip<../subdir_b/file_3>',
+          'file_2',
+        ].join("\n")
+
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_b/file_3", [
+          '@snip<../subdir_c/file_4>',
+          'file_3',
+        ].join("\n")
+
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_c/file_4", [
+          'file_4',
+        ].join("\n")
+      end # prepare my-repo#1.2.3
+
+      before { find_repo_mock }
+
+      context "snip my-repo:file_1" do
+
+        let(:input) do
+          [
+            '@snip <my-repo:file_1>',
+            'main',
+          ].join("\n").freeze
+        end
+
+        let(:output) do
+          [
+            '@snippet <my-repo#1.2.3:subdir_c/file_4>',
+            'file_4',
+            '@snippet <my-repo#1.2.3:subdir_b/file_3>',
+            'file_3',
+            '@snippet <my-repo#1.2.3:subdir_a/file_2>',
+            'file_2',
+            '@snippet <my-repo#1.2.3:file_1>',
+            'file_1',
+            'main',
+          ].join("\n").freeze
+        end
+
+        subject { instance.insert_snippet input }
+        it { should eq output }
+
+      end
+
+    end # use parent path
+
     context "snip self" do
 
       before do
