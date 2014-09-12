@@ -1,37 +1,42 @@
 module SocialSnippet
   class Inserter
-    attr_reader :index
+    attr_reader :src_index
+    attr_reader :dest_index
+    attr_reader :src
     attr_reader :dest
 
     # Constructor
     #
     # @param src [Array<String>] The source code
     def initialize(src)
-      @index = 0
-      @real_index = 0
-      if src.empty?
-        @offset = -1
-      else
-        @offset = 0
-      end
+      @src_index = 0
+      @dest_index = -1
       @src = src.clone.freeze
-      @dest = src.clone
-    end
-
-    # Set offset
-    #
-    # @param new_offset [Number] The next offset
-    def set_offset(new_offset)
-      @offset = new_offset
-      @real_index = @offset + @index
+      @dest = []
     end
 
     # Set index
     #
     # @param new_index [Number] The next index
     def set_index(new_index)
-      @index = new_index
-      @real_index = @offset + @index
+      if new_index > src.length
+        raise "invalid index"
+      end
+      if new_index > src_index
+        last_index = [new_index - 1, src.length - 1].min
+        insert src[src_index .. last_index]
+        @src_index = new_index
+      end
+    end
+
+    # Set index to last
+    def set_index_last
+      set_index src.length
+    end
+
+    # Ignore current line
+    def ignore
+      @src_index += 1
     end
 
     # Insert text
@@ -40,53 +45,20 @@ module SocialSnippet
     def insert(line_or_lines)
       if line_or_lines.is_a?(Array)
         lines = line_or_lines
-        if @offset == -1
-          @dest.insert @real_index, *lines
-        else
-          @dest.insert @real_index + 1, *lines
-        end
-        add_lines lines.length
+        @dest.insert dest_index + 1, *lines
+        @dest_index += lines.length
       else
         line = line_or_lines
-        @dest.insert @real_index + 1, line
-        add_lines 1
+        @dest.insert dest_index + 1, line
+        @dest_index += 1
       end
-    end
-
-    # Replace current line
-    #
-    # @param line [String] The replaced text
-    def replace(line)
-      @dest[@real_index] = line
-    end
-
-    # Delete current line
-    def remove()
-      @dest.delete_at @real_index
-      remove_lines 1
     end
 
     # Get text
     #
     # @return [String]
-    def to_s()
-      return @dest.join("\n")
-    end
-
-    private
-
-    # Add lines
-    def add_lines(len)
-      if @offset == -1
-        set_offset 0
-      else
-        set_offset @offset + len
-      end
-    end
-
-    # Remove lines
-    def remove_lines(len)
-      set_offset @offset - len
+    def to_s
+      return dest.join("\n")
     end
   end
 end

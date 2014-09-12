@@ -35,17 +35,15 @@ module SocialSnippet
         # replace each @snip tags
         each_snip_tags(code, context, base_tag) do |tag, line_no, snippet, new_context|
           inserter.set_index line_no
+          inserter.ignore
 
-          if is_visited(tag)
-            inserter.remove
-            next
-          end
+          next if is_visited(tag)
 
-          inserter.remove
           insert_depended_snippets! inserter, snippet, new_context, tag
           insert_by_tag_and_context! inserter, snippet, new_context, tag
         end
 
+        inserter.set_index_last
         return inserter.dest
       end
 
