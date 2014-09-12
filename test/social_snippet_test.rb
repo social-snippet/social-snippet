@@ -49,6 +49,153 @@ describe SocialSnippet::SocialSnippet do
 
   describe "#insert_snippet" do
 
+    context "version up" do
+
+      context "snip my-repo#1" do
+
+        let(:input) do
+          [
+            '/* @snip<my-repo#1:func.c> */',
+            'main',
+          ].join("\n")
+        end
+
+        context "release 1.0.0" do
+
+          before do
+            repo_name = "my-repo"
+            ref_name = "1.0.0"
+
+            FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+              FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+              FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+              FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c"
+
+              # snippet.json
+              File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+                '{"name": "' + repo_name + '"}'
+              ].join("\n")
+
+              File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c", [
+                'func: 1.0.0',
+              ].join("\n")
+          end # prepare my-repo#1.0.0
+
+          before { find_repo_mock }
+
+          it do
+            expect(instance.insert_snippet(input)).to eq [
+              '/* @snippet<my-repo#1.0.0:func.c> */',
+              'func: 1.0.0',
+              'main',
+            ].join("\n").freeze
+          end
+
+          context "release 1.0.1" do
+
+            before do
+              repo_name = "my-repo"
+              ref_name = "1.0.1"
+
+              FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+                FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+                FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+                FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c"
+
+                # snippet.json
+                File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+                  '{"name": "' + repo_name + '"}'
+                ].join("\n")
+
+                File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c", [
+                  'func: 1.0.1',
+                ].join("\n")
+            end # prepare my-repo#1.0.1
+
+            before { find_repo_mock }
+
+            it do
+              expect(instance.insert_snippet(input)).to eq [
+                '/* @snippet<my-repo#1.0.1:func.c> */',
+                'func: 1.0.1',
+                'main',
+              ].join("\n").freeze
+            end
+
+            context "release 1.1.0" do
+
+              before do
+                repo_name = "my-repo"
+                ref_name = "1.1.0"
+
+                FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+                  FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+                  FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+                  FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c"
+
+                  # snippet.json
+                  File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+                    '{"name": "' + repo_name + '"}'
+                  ].join("\n")
+
+                  File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c", [
+                    'func: 1.1.0',
+                  ].join("\n")
+              end # prepare my-repo#1.1.0
+
+              before { find_repo_mock }
+
+              it do
+                expect(instance.insert_snippet(input)).to eq [
+                  '/* @snippet<my-repo#1.1.0:func.c> */',
+                  'func: 1.1.0',
+                  'main',
+                ].join("\n").freeze
+              end
+
+              context "release 9.9.9" do
+
+                before do
+                  repo_name = "my-repo"
+                  ref_name = "9.9.9"
+
+                  FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+                    FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+                    FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+                    FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c"
+
+                    # snippet.json
+                    File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+                      '{"name": "' + repo_name + '"}'
+                    ].join("\n")
+
+                    File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c", [
+                      'func: 9.9.9',
+                    ].join("\n")
+                end # prepare my-repo#9.9.9
+
+                before { find_repo_mock }
+
+                it do
+                  expect(instance.insert_snippet(input)).to eq [
+                    '/* @snippet<my-repo#1.1.0:func.c> */',
+                    'func: 1.1.0',
+                    'main',
+                  ].join("\n").freeze
+                end
+
+              end # release 9.9.9
+
+            end # release 1.1.0
+
+          end # release 1.0.1
+
+        end # release 1.0.0
+
+      end # snip my-repo#1
+
+    end # version up
+
     context "use parent path" do
 
       before do
