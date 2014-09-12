@@ -49,6 +49,57 @@ describe SocialSnippet::SocialSnippet do
 
   describe "#insert_snippet" do
 
+    context "snip self" do
+
+      before do
+        repo_name = "directly"
+        ref_name = "3.2.1"
+
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/1"
+
+        # snippet.json
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+          '{"name": "' + repo_name + '"}'
+        ].join("\n")
+
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/1", [
+          '@snip<1>',
+          '1',
+        ].join("\n")
+      end # prepare directly#3.2.1
+
+      before { find_repo_mock }
+
+      context "directly" do
+
+        context "snip directly:1" do
+
+          let(:input) do
+            [
+              '@snip<directly:1>',
+            ].join("\n").freeze
+          end
+
+          let(:output) do
+            [
+              '@snippet<directly#3.2.1:1>',
+              '1',
+            ].join("\n")
+          end
+
+          subject { instance.insert_snippet input }
+          it { should eq output }
+
+        end
+
+      end # directly
+
+    end # snip self
+
     context "snippet snippet ... snippet" do
 
       before do
