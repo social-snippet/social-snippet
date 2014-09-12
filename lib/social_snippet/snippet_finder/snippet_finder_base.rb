@@ -91,6 +91,10 @@ module SocialSnippet
       def is_visited(tag)
         return @visited.include?(tag.to_path)
       end
+
+      def is_self(tag, context)
+        return tag.repo === context.repo && tag.path === context.path
+      end
     end
   end
 end

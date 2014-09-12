@@ -37,6 +37,7 @@ module SocialSnippet
           inserter.set_index line_no
           inserter.ignore
 
+          visit(tag) if is_self(tag, context)
           next if is_visited(tag)
 
           insert_depended_snippets! inserter, snippet, new_context, tag
@@ -64,6 +65,7 @@ module SocialSnippet
           sub_t = tag_info[:tag]
           sub_c = tag_info[:context]
 
+          visit(tag) if is_self(tag, context)
           next if is_visited(sub_t)
 
           sub_snippet = repo_manager.get_snippet(sub_c, sub_t)
