@@ -48,6 +48,33 @@ module SocialSnippet
         @dependencies = snippet_json["dependencies"] || {}
       end
 
+      # Get JSON text from repo instance
+      # 
+      # @return JSON text
+      def to_snippet_json
+        required = [
+          :name,
+        ]
+
+        optional = [
+          :desc,
+          :main,
+          :dependencies,
+        ]
+
+        data = {}
+        required.each do |key|
+          data[key] = send(key)
+        end
+        optional.each do |key|
+          val = send(key)
+          if val.nil? === false && val != ""
+            data[key] = send(key)
+          end
+        end
+        return data.to_json
+      end
+
       # Get latest version
       #
       # @param pattern [String] The pattern of version
