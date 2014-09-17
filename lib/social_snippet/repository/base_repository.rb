@@ -8,20 +8,30 @@ module SocialSnippet
       attr_reader :name
       attr_reader :desc
       attr_reader :main
+      attr_reader :ref
 
       # Constructor
       #
       # @param path [String] The path of repository
-      def initialize(path)
-        @path = path
+      def initialize(new_path, new_ref = nil)
+        @path = new_path
         @cache_path = nil
+        @ref = new_ref
+
+        unless ref.nil?
+          unless get_refs.empty?
+            unless get_refs.include?(ref)
+              raise Errors::NotExistRef
+            end
+          end
+        end
       end
 
       # Create repository cache
       #
       # @param cache_path [String] The path of cache dir
       def create_cache(cache_path)
-        cache_to = get_commit_id[0..7]
+        cache_to = get_short_commit_id
         @cache_path = "#{cache_path}/#{@name}/#{cache_to}"
         FileUtils.mkdir_p "#{cache_path}/#{@name}"
         FileUtils.cp_r @path, @cache_path
@@ -88,7 +98,7 @@ module SocialSnippet
       # Checkout to ref
       #
       # @param ref [String] The reference of repository
-      def checkout(ref)
+      def checkout(new_ref)
         raise "not implement checkout"
       end
 

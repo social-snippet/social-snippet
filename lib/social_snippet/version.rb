@@ -7,7 +7,7 @@ module SocialSnippet
 
       # Check given text matches version pattern
       def is_matched_version_pattern(pattern, version)
-        return true if pattern == ""
+        return true if pattern == "" || pattern.nil?
         return true if pattern == version
 
         # "2.1.0" and "2.1.1" match "2.1"

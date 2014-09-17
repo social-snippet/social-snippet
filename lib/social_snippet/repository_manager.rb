@@ -21,7 +21,7 @@ module SocialSnippet
     # @param path [String] The path of repository
     def create_repository_instance(path, ref = nil)
       if is_git_dir(path)
-        repo = Repository::GitRepository.new(path)
+        repo = Repository::GitRepository.new(path, ref)
         if ref.nil? && repo.has_versions?
           repo.checkout repo.get_latest_version
         end
