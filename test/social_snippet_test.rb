@@ -18,29 +18,35 @@ describe SocialSnippet::SocialSnippet do
   before { allow(instance).to receive(:repo_manager).and_return repo_manager }
 
   def find_repo_mock
-    repo_versions = {}
+    repo_refs = {}
     repos = Dir.glob("#{tmp_repo_path}/*").map{|path| Pathname.new(path).basename.to_s }
     repos.each do |repo_name|
-      repo_versions[repo_name] = Dir.glob("#{tmp_repo_path}/#{repo_name}/*").map {|path| Pathname.new(path).basename.to_s }
+      repo_refs[repo_name] = Dir.glob("#{tmp_repo_path}/#{repo_name}/*").map {|path| Pathname.new(path).basename.to_s }
     end
 
     repos_no_ver = Dir.glob("#{tmp_repo_path_no_ver}/*").map {|path| Pathname.new(path).basename.to_s }
 
     allow(repo_manager).to receive(:find_repository).with(any_args) do |repo_name, ref|
-      repo_versions[repo_name] ||= []
+      repo_refs[repo_name] ||= []
+      versions = repo_refs[repo_name].select {|ver| SocialSnippet::Version.is_matched_version_pattern(ref, ver) }
+      latest_version = VersionSorter.rsort(versions).first
+
+      repo_ref = ref
       if repos_no_ver.include?(repo_name)
         repo_path = "#{tmp_repo_path_no_ver}/#{repo_name}"
       else
-        base_repo_path = "#{tmp_repo_path}/#{repo_name}/#{repo_versions[repo_name].first}"
-        base_repo = SocialSnippet::Repository::GitRepository.new(base_repo_path)
-        allow(base_repo).to receive(:get_refs).and_return repo_versions[repo_name]
-        base_repo.load_snippet_json
-        repo_version = base_repo.get_latest_version ref
-        repo_path = "#{tmp_repo_path}/#{repo_name}/#{repo_version}"
+        unless versions.empty?
+          repo_ref = latest_version
+        end
+        repo_path = "#{tmp_repo_path}/#{repo_name}/#{repo_ref}"
       end
-      repo = SocialSnippet::Repository::GitRepository.new(repo_path)
-      allow(repo).to receive(:get_refs).and_return repo_versions[repo_name]
-      allow(repo).to receive(:get_commit_id).and_return "#{repo_version}#{commit_id}"
+
+      allow_any_instance_of(SocialSnippet::Repository::GitRepository).to(
+        receive(:get_refs).and_return repo_refs[repo_name]
+      )
+      repo = SocialSnippet::Repository::GitRepository.new(repo_path, repo_ref)
+      allow(repo).to receive(:get_refs).and_return repo_refs[repo_name]
+      allow(repo).to receive(:get_commit_id).and_return "#{repo_ref}#{commit_id}"
       repo.load_snippet_json
       repo.create_cache repo_cache_path
       repo
@@ -48,6 +54,71 @@ describe SocialSnippet::SocialSnippet do
   end
 
   describe "#insert_snippet" do
+
+    context "use commit id" do
+
+      before do
+        repo_name = "my-repo"
+        ref_name = "thisisdu"
+
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/file.c"
+
+        # snippet.json
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+          '{"name": "' + repo_name + '"}'
+        ].join("\n")
+
+        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/file.c", [
+          '/* file.c */'
+        ].join("\n")
+
+      end # prepare my-repo#thisisdu
+
+      before { find_repo_mock }
+
+      context "snip my-repo#thisisdu" do
+
+        let(:input) do
+          [
+            '/* main.c */',
+            '@snip<my-repo#thisisdu:file.c>',
+          ].join("\n")
+        end
+
+        let(:output) do
+          [
+            '/* main.c */',
+            '@snippet<my-repo#thisisdu:file.c>',
+            '/* file.c */',
+          ].join("\n")
+        end
+
+        subject { instance.insert_snippet input }
+        it { should eq output }
+
+      end # snip my-repo#thisisdu
+
+      context "snip my-repo#notexist" do
+
+        let(:input) do
+          [
+            '/* main.c */',
+            '@snip<my-repo#notexist:file.c>',
+          ].join("\n")
+        end
+
+        it do
+          expect { instance.insert_snippet input }.to(
+            raise_error(SocialSnippet::Repository::Errors::NotExistRef)
+          )
+        end
+
+      end # snip my-repo#thisisdu
+
+    end # use commid id
 
     context "version up" do
 
