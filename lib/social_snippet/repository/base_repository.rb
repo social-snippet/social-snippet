@@ -118,9 +118,9 @@ module SocialSnippet
       # @param target_path [String] The real path of repo's file or directory
       def get_real_path(target_path)
         if is_cached?
-          return "#{@cache_path}/#{@main}/#{target_path}"
+          return "#{cache_path}/#{main}/#{target_path}"
         else
-          return "#{@path}/#{@main}/#{target_path}"
+          return "#{path}/#{main}/#{target_path}"
         end
       end
 
