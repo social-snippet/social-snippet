@@ -9,6 +9,7 @@ require_relative "social_snippet/snippet"
 require_relative "social_snippet/inserter"
 require_relative "social_snippet/snippet_finder"
 
+require "rugged"
 require "version_sorter"
 require "tsort"
 
