@@ -21,8 +21,8 @@ module SocialSnippet
           t = tag_info[:tag].set_by_tag(base_tag)
           new_context = context.clone
 
-          overwrite_tag_in_same_repository! context, t
           move_context_by_tag! new_context, t
+          overwrite_tag_in_same_repository! context, t
           update_tag_path_by_context! new_context, t
           resolve_tag_repo_ref! t
 
@@ -90,6 +90,10 @@ module SocialSnippet
 
       def is_visited(tag)
         return @visited.include?(tag.to_path)
+      end
+
+      def is_self(tag, context)
+        return tag.repo === context.repo && tag.path === context.path
       end
     end
   end
