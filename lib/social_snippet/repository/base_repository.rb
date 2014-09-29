@@ -9,6 +9,7 @@ module SocialSnippet
       attr_reader :desc
       attr_reader :main
       attr_reader :ref
+      attr_reader :dependencies
 
       # Constructor
       #
@@ -44,6 +45,7 @@ module SocialSnippet
         @name = snippet_json["name"]
         @desc = snippet_json["desc"]
         @main = snippet_json["main"] || ""
+        @dependencies = snippet_json["dependencies"] || {}
       end
 
       # Get latest version
