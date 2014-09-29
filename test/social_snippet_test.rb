@@ -35,18 +35,23 @@ describe SocialSnippet::SocialSnippet do
       if repos_no_ver.include?(repo_name)
         repo_path = "#{tmp_repo_path_no_ver}/#{repo_name}"
       else
-        unless versions.empty?
-          repo_ref = latest_version
+        base_repo_path = "#{tmp_repo_path}/#{repo_name}/#{repo_refs[repo_name].first}"
+        base_repo = SocialSnippet::Repository::BaseRepository.new(base_repo_path)
+        allow(base_repo).to receive(:get_refs).and_return repo_refs[repo_name]
+        base_repo.load_snippet_json
+        repo_version = base_repo.get_latest_version ref
+        if repo_version.nil?
+          repo_path = "#{tmp_repo_path}/#{repo_name}/#{repo_ref}"
+          unless Dir.exists?(repo_path)
+            raise SocialSnippet::Repository::Errors::NotExistRef
+          end
+        else
+          repo_path = "#{tmp_repo_path}/#{repo_name}/#{repo_version}"
         end
-        repo_path = "#{tmp_repo_path}/#{repo_name}/#{repo_ref}"
       end
-
-      allow_any_instance_of(SocialSnippet::Repository::GitRepository).to(
-        receive(:get_refs).and_return repo_refs[repo_name]
-      )
-      repo = SocialSnippet::Repository::GitRepository.new(repo_path, repo_ref)
+      repo = SocialSnippet::Repository::BaseRepository.new(repo_path)
       allow(repo).to receive(:get_refs).and_return repo_refs[repo_name]
-      allow(repo).to receive(:get_commit_id).and_return "#{repo_ref}#{commit_id}"
+      allow(repo).to receive(:get_commit_id).and_return "#{repo_version}#{commit_id}"
       repo.load_snippet_json
       repo.create_cache repo_cache_path
       repo
