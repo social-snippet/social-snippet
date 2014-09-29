@@ -69,7 +69,7 @@ module SocialSnippet
           ].join("\n")
 
           allow(instance).to receive(:find_repository).with("repo_a") do |path|
-            repo = Repository::GitRepository.new("#{repo_path}/repo_a")
+            repo = Repository::BaseRepository.new("#{repo_path}/repo_a")
             expect(repo).to receive(:get_commit_id).and_return commit_id
             repo.load_snippet_json
             repo.create_cache instance.repo_cache_path
@@ -119,8 +119,11 @@ module SocialSnippet
         end
 
         before do
-          expect_any_instance_of(Repository::GitRepository).to receive(:get_refs).and_return []
-          expect_any_instance_of(Repository::GitRepository).to receive(:get_commit_id).and_return commit_id
+          expect(Repository::GitRepository).to receive(:new) do |path|
+            Repository::BaseRepository.new(path)
+          end
+          expect_any_instance_of(Repository::BaseRepository).to receive(:get_refs).and_return []
+          expect_any_instance_of(Repository::BaseRepository).to receive(:get_commit_id).and_return commit_id
         end
 
         context "find repo_a" do

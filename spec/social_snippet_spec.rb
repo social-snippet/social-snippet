@@ -48,7 +48,7 @@ module SocialSnippet
           ].join("\n")
 
           repo_config = Proc.new do |path|
-            repo = Repository::GitRepository.new("#{repo_path}/my-repo")
+            repo = Repository::BaseRepository.new("#{repo_path}/my-repo")
             allow(repo).to receive(:get_commit_id).and_return commit_id
             allow(repo).to receive(:get_refs).and_return []
             repo.load_snippet_json

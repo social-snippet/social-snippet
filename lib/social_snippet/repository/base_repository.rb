@@ -9,6 +9,9 @@ module SocialSnippet
       attr_reader :desc
       attr_reader :main
       attr_reader :ref
+      attr_reader :dependencies
+      attr_reader :ref
+      attr_reader :url
 
       # Constructor
       #
@@ -25,25 +28,59 @@ module SocialSnippet
             end
           end
         end
+        @url = nil
+      end
+
+      # Set repo's URL
+      def set_url(new_url)
+        @url = new_url
       end
 
       # Create repository cache
       #
       # @param cache_path [String] The path of cache dir
-      def create_cache(cache_path)
-        cache_to = get_short_commit_id
-        @cache_path = "#{cache_path}/#{@name}/#{cache_to}"
-        FileUtils.mkdir_p "#{cache_path}/#{@name}"
-        FileUtils.cp_r @path, @cache_path
+      def create_cache(base_cache_path)
+        cache_to = get_commit_id[0..7]
+        @cache_path = "#{base_cache_path}/#{name}/#{cache_to}"
+        FileUtils.mkdir_p "#{base_cache_path}/#{name}"
+        FileUtils.cp_r path, cache_path
       end
 
       # Load snippet.json file
       def load_snippet_json
-        text = File.read("#{@path}/snippet.json")
+        text = File.read("#{path}/snippet.json")
         snippet_json = JSON.parse(text)
         @name = snippet_json["name"]
         @desc = snippet_json["desc"]
         @main = snippet_json["main"] || ""
+        @dependencies = snippet_json["dependencies"] || {}
+      end
+
+      # Get JSON text from repo instance
+      # 
+      # @return JSON text
+      def to_snippet_json
+        required = [
+          :name,
+        ]
+
+        optional = [
+          :desc,
+          :main,
+          :dependencies,
+        ]
+
+        data = {}
+        required.each do |key|
+          data[key] = send(key)
+        end
+        optional.each do |key|
+          val = send(key)
+          if val.nil? === false && val != ""
+            data[key] = send(key)
+          end
+        end
+        return data.to_json
       end
 
       # Get latest version
@@ -89,9 +126,9 @@ module SocialSnippet
       # @param target_path [String] The real path of repo's file or directory
       def get_real_path(target_path)
         if is_cached?
-          return "#{@cache_path}/#{@main}/#{target_path}"
+          return "#{cache_path}/#{main}/#{target_path}"
         else
-          return "#{@path}/#{@main}/#{target_path}"
+          return "#{path}/#{main}/#{target_path}"
         end
       end
 
