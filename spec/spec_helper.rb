@@ -1,5 +1,6 @@
 require "social_snippet"
 require "json"
+require "cgi"
 
 require "fakefs/safe"
 
@@ -8,3 +9,5 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.0.0')
 else
   require "debugger"
 end
+
+require "webmock"
