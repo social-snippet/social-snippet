@@ -1,4 +1,9 @@
 language: ruby
+cache:
+  bundler: true
+  directories:
+    - node_modules
+    - bower_components
 rvm:
   - "2.1"
   - "2.0"
