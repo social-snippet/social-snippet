@@ -9,11 +9,13 @@ require_relative "social_snippet/snippet"
 require_relative "social_snippet/inserter"
 require_relative "social_snippet/snippet_finder"
 require_relative "social_snippet/registry_client"
+require_relative "social_snippet/command_line"
 
 require "rugged"
 require "version_sorter"
 require "tsort"
 require "rest_client"
+require "optparse"
 
 # Extend Hash tsortable
 class Hash
