@@ -1,14 +1,19 @@
 module SocialSnippet
   class RepositoryManager
+
+    attr_reader :install_path
+    attr_reader :repo_paths
     attr_reader :repo_cache_path
 
     # Constructor
     #
     # @param config [SocialSnippet::Config] The config of manager
     def initialize(config)
+      @install_path = "#{config.home}/repo"
+
       # path
       @repo_paths = []
-      @repo_paths.push "#{config.home}/repo"
+      @repo_paths.push install_path
       @repo_paths.each {|path| FileUtils.mkdir_p path }
 
       # cache path
@@ -71,7 +76,7 @@ module SocialSnippet
     #
     # @param name [String] The name of repository
     def find_repository(name, ref = nil)
-      @repo_paths.each do |repo_path|
+      repo_paths.each do |repo_path|
         path = "#{repo_path}/#{name}"
         if Dir.exists?(path)
           return create_repository_instance(path, ref)
@@ -79,6 +84,10 @@ module SocialSnippet
       end
 
       return nil
+    end
+
+    def install_repository(repo)
+      FileUtils.cp_r repo.path, "#{install_path}/#{repo.name}"
     end
 
     private

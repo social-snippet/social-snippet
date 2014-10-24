@@ -28,6 +28,7 @@ module SocialSnippet
 
   class SocialSnippet
     attr_reader :repo_manager
+    attr_reader :config
 
     # Constructor
     def initialize
@@ -46,6 +47,13 @@ module SocialSnippet
     def insert_snippet(src)
       searcher = SnippetFinder::SnippetFinderWithInsert.new(repo_manager)
       return searcher.insert(src)
+    end
+
+    # Install repository
+    #
+    # @param repo [SocialSnippet::BaseRepository]
+    def install_repository(repo)
+      repo_manager.install_repository repo
     end
 
   end
