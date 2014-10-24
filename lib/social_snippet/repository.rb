@@ -14,6 +14,7 @@ module SocialSnippet
           path = GitRepository.download uri
           repo = create_git_repo(path)
           repo.set_url repo_url
+          repo.load_snippet_json
           return repo
         else
           raise "unknown repository type"
