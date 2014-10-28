@@ -8,10 +8,16 @@ require_relative "social_snippet/context"
 require_relative "social_snippet/snippet"
 require_relative "social_snippet/inserter"
 require_relative "social_snippet/snippet_finder"
+require_relative "social_snippet/registry_client"
+require_relative "social_snippet/command_line"
 
 require "rugged"
 require "version_sorter"
 require "tsort"
+require "rest_client"
+require "optparse"
+require "json"
+require "pathname"
 
 # Extend Hash tsortable
 class Hash
@@ -26,6 +32,7 @@ module SocialSnippet
 
   class SocialSnippet
     attr_reader :repo_manager
+    attr_reader :config
 
     # Constructor
     def initialize
@@ -44,6 +51,13 @@ module SocialSnippet
     def insert_snippet(src)
       searcher = SnippetFinder::SnippetFinderWithInsert.new(repo_manager)
       return searcher.insert(src)
+    end
+
+    # Install repository
+    #
+    # @param repo [SocialSnippet::BaseRepository]
+    def install_repository(repo)
+      repo_manager.install_repository repo
     end
 
   end

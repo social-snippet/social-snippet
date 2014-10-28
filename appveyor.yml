@@ -1,0 +1,34 @@
+version: "{build}"
+
+install:
+  - ps: iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
+  - choco install pkgconfiglite
+  - git clone --branch v0.21.1 --depth 1 --single-branch git://github.com/libgit2/libgit2 libgit2
+  - cd libgit2
+  - cmake -DCMAKE_BUILD_TYPE=Release -DTHREADSAFE=ON -DBUILD_CLAR=OFF -DCMAKE_INSTALL_PREFIX=%PREFIX%\libgit2 .
+  - cmake --build . --target install
+
+  - SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
+  - ruby --version
+  - SET PATH=%PREFIX%\libgit2\bin;%PATH%
+
+  - gem install rugged --no-ri --no-rdoc -- --use-system-libraries --with-git2-dir=%PREFIX%\libgit2
+  - gem install bundler --no-ri --no-rdoc
+  - bundle install --jobs 2
+
+test_script:
+  - cmd: bundle exec rake spec
+  - cmd: bundle exec rake spec_use_fs
+  - cmd: bundle exec rake test
+
+build: off
+
+environment:
+
+  global:
+    PREFIX: c:\libs
+
+  matrix:
+    - ruby_version: "21"
+    - ruby_version: "20"
+    - ruby_version: "19"

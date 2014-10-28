@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+require_relative "../lib/social_snippet"
+
+cli = SocialSnippet::CommandLine::Sspm::MainCommand.new(ARGV)
+cli.init
+cli.run
+

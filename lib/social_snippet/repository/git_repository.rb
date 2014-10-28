@@ -4,7 +4,7 @@ module SocialSnippet
 
       attr_reader :repo
 
-      def initialize(repo_path)
+      def initialize(repo_path, new_ref = nil)
         @repo = Rugged::Repository.new(repo_path)
         super(repo_path)
       end
