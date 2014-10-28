@@ -16,6 +16,7 @@ require "version_sorter"
 require "tsort"
 require "rest_client"
 require "optparse"
+require "json"
 
 # Extend Hash tsortable
 class Hash
