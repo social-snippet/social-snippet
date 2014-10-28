@@ -87,7 +87,13 @@ module SocialSnippet
     end
 
     def install_repository(repo)
-      FileUtils.cp_r repo.path, "#{install_path}/#{repo.name}"
+      dest_dir = "#{install_path}/#{repo.name}"
+      if Dir.exists?(dest_dir)
+        # TODO: update repo
+        raise "exists dir"
+      else
+        FileUtils.cp_r repo.path, dest_dir
+      end
     end
 
     private
