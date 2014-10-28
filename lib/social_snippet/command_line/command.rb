@@ -17,12 +17,14 @@ module SocialSnippet
       attr_reader :tokens
       attr_reader :options
       attr_reader :opt_parser
+      attr_reader :input
 
-      def initialize(new_args)
+      def initialize(new_args, input = "")
         @args = new_args.clone
         @options = {}
         @tokens = [] # init after parse options
         @opt_parser = OptionParser.new
+        @input = input
       end
 
       def define_options
