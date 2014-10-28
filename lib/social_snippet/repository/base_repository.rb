@@ -42,6 +42,7 @@ module SocialSnippet
       def create_cache(base_cache_path)
         cache_to = get_commit_id[0..7]
         @cache_path = "#{base_cache_path}/#{name}/#{cache_to}"
+        return if Dir.exists?(@cache_path)
         FileUtils.mkdir_p "#{base_cache_path}/#{name}"
         FileUtils.cp_r path, cache_path
       end
