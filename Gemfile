@@ -12,14 +12,20 @@ gem "guard", :require => false
 gem "guard-shell", :require => false
 
 # Test
-gem "rspec", :require => false
-gem "fakefs", :require => false
-gem "webmock", :require => false
+group :test do
+  gem "rspec", :require => false
+  gem "fakefs", :require => false
+  gem "webmock", :require => false
+  gem "simplecov", :require => false
+  gem "codecov", :require => false
+end
 
 # Debug
-if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.0.0')
-  gem "byebug", :require => false
-  gem "pry-byebug", :require => false
-else
-  gem "debugger", :require => false
+group :debug do
+  if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.0.0')
+    gem "byebug", :require => false
+    gem "pry-byebug", :require => false
+  else
+    gem "debugger", :require => false
+  end
 end
