@@ -1,17 +1,21 @@
 language: ruby
-cache:
-  bundler: true
-  directories:
-    - node_modules
-    - bower_components
+
 rvm:
+  - "2.2"
   - "2.1"
   - "2.0"
   - "1.9"
+
+bundler_args: "--without debug --jobs 3"
+
+sudo: false
+
 script:
   - bundle exec rake spec
-  - bundle exec rake spec_use_fs
+  - bundle exec rake spec_without_fakefs
   - bundle exec rake test
+  - bundle exec rake test_without_fakefs
+
 deploy:
   provider: rubygems
   api_key:
@@ -19,3 +23,9 @@ deploy:
       secure: "hlC3/Vsqpw3RdA0g8nAuusXEpGiwLtndGQVd8eg8x7yCoubFmsruwJG2Cci4QF2aIVGovFzrrmlxPb204nndsmBCzTLZEnn2dsCqOt8TZDAyFRZf6xeZ53eT7AjOJvFIafS4YLQ975upzsQ/cW4OgWFRaqhHgckTUSapa7Dyeao="
   gem:
     master: social_snippet
+
+cache:
+  bundler: true
+  directories:
+    - node_modules
+    - bower_components
