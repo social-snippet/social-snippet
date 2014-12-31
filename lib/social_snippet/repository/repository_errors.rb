@@ -1,13 +1,5 @@
-module SocialSnippet
+module SocialSnippet::Repository::Errors
 
-  module Repository
-
-    module Errors
-
-      class NotExistRef < StandardError; end
-
-    end
-
-  end
+  class NotExistRef < StandardError; end
 
 end
