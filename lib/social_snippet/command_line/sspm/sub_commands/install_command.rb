@@ -1,61 +1,101 @@
-module SocialSnippet
+module SocialSnippet::CommandLine
 
-  module CommandLine
+  require "uri"
+  require "pathname"
+  require "json"
     
-    module Sspm
+  class SSpm::SubCommands::InstallCommand < Command
 
-      module SubCommands
+    def usage
+      <<EOF
+Usage: sspm install [options] [--] <repo> [<repo> ...]
 
-        class InstallCommand < Command
+    <repo>'s format:
+        <name> (e.g. "example-repo")
+        <name>#<version> (e.g. "example-repo#0.0.1")
 
-          attr_reader :social_snippet
-          attr_reader :client
+Example:
+    $ sspm install example-repo
+    -> Installed latest version (or remote's current ref)
 
-          def initialize(new_args)
-            super
+    $ sspm install example-repo#0.0.1
+    -> Installed as the specified version
+EOF
+    end
 
-            @social_snippet = ::SocialSnippet::SocialSnippet.new
+    def desc
+      "Install snippet repository"
+    end
 
-            @client = ::SocialSnippet::RegistryClient.new(
-              SSPM_API_HOST,
-              SSPM_API_VERSION,
-              SSPM_API_PROTOCOL,
-            )
-          end
+    def define_options
+      define_option :dry_run, :type => :flag, :short => true, :default => false
+      define_option :name, :short => true, :default => nil
+    end
 
-          def define_options
-            # Does not install
-            opt_parser.on "-d", "--dry-run" do
-              options[:dry_run] = true
-            end
-          end
-
-          def set_default_options
-            options[:dry_run] if options[:dry_run].nil?
-          end
-
-          def run
-            repo_name = next_token
-            client.get_dependencies(repo_name).each do |repo_info|
-              say "Install: #{repo_info["name"]}"
-
-              next if options[:dry_run]
-
-              say "Download: #{repo_info["url"]}"
-              repo = Repository.clone repo_info["url"]
-
-              say "Copy: #{repo.path}"
-              social_snippet.install_repository repo
-
-              say "Success: #{repo_info["name"]}"
-            end
-
-          end
-
-        end
-
+    def run
+      if has_next_token?
+        install_by_names
+      else
+        install_by_snippet_json
       end
+    end
 
+    def install_by_snippet_json
+      snippet_json = ::JSON.parse(File.read("snippet.json"))
+      snippet_json["dependencies"].each do |name, ref|
+        social_snippet.api.install_repository_by_name name, ref, options
+      end
+    end
+
+    def install_by_names
+      while has_next_token?
+        token_str = next_token
+        if is_name?(token_str)
+          repo_info = parse_repo_token(token_str)
+          social_snippet.api.install_repository_by_name repo_info[:name], repo_info[:ref], options
+        elsif is_url?(token_str)
+          repo_info = parse_repo_token(token_str)
+          repo_url  = repo_info[:name]
+          social_snippet.api.install_repository_by_url repo_url, repo_info[:ref], options
+        elsif is_path?(token_str)
+          repo_info = parse_repo_token(token_str)
+          repo_path = repo_info[:name]
+          social_snippet.api.install_repository_by_path repo_path, repo_info[:ref], options
+        end
+      end
+    end
+
+    private
+
+    def is_name?(s)
+      not /\// === s
+    end
+
+    def is_path?(s)
+      pathname = ::Pathname.new(s)
+      pathname.absolute? || pathname.relative?
+    end
+
+    def is_url?(s)
+      ::URI::regexp === s
+    end
+
+    def parse_repo_token(token_str)
+      if has_ref?(token_str)
+        words = token_str.split("#", 2)
+        {
+          :name => words.shift,
+          :ref => words.shift,
+        }
+      else
+        {
+          :name => token_str,
+        }
+      end
+    end
+
+    def has_ref?(token_str)
+      /#/ === token_str
     end
 
   end
