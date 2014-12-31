@@ -1,12 +1,8 @@
 require "spec_helper"
 
-module SocialSnippet::Repository
+module SocialSnippet::Repository::Drivers
 
   describe BaseRepository do
-
-    # enable FakeFS
-    before { FakeFS.activate! }
-    after { FakeFS.deactivate! }
 
     describe "version" do
 
@@ -19,31 +15,31 @@ module SocialSnippet::Repository
           context "has 0.0.1" do
 
             before do
-              allow(repo).to receive(:get_refs).and_return([
+              allow(repo).to receive(:refs).and_return([
                 '0.0.1',
               ])
             end
 
-            describe "get_versions" do
-              let(:result) { repo.get_versions }
+            describe "versions" do
+              let(:result) { repo.versions }
               it { expect(result.length).to eq 1 }
               it { expect(result).to include '0.0.1' }
-            end # get_versions
+            end # versions
 
-            describe "get_latest_version" do
-              it { expect(repo.get_latest_version).to eq '0.0.1' }
-              it { expect(repo.get_latest_version('0')).to eq '0.0.1' }
-              it { expect(repo.get_latest_version('0.0')).to eq '0.0.1' }
-              it { expect(repo.get_latest_version('0.0.1')).to eq '0.0.1' }
-              it { expect(repo.get_latest_version('1.0')).to be_nil }
-            end # get_latest_version
+            describe "latest_version" do
+              it { expect(repo.latest_version).to eq '0.0.1' }
+              it { expect(repo.latest_version('0')).to eq '0.0.1' }
+              it { expect(repo.latest_version('0.0')).to eq '0.0.1' }
+              it { expect(repo.latest_version('0.0.1')).to eq '0.0.1' }
+              it { expect(repo.latest_version('1.0')).to be_nil }
+            end # latest_version
 
           end # has 0.0.1
 
           context "has 0.0.1, 0.0.2, 0.0.3, 1.0.0" do
             
             before do
-              allow(repo).to receive(:get_refs).and_return([
+              allow(repo).to receive(:refs).and_return([
                 '0.0.1',
                 '0.0.2',
                 '0.0.3',
@@ -51,9 +47,9 @@ module SocialSnippet::Repository
               ])
             end
 
-            describe "get_versions" do
+            describe "versions" do
 
-              let(:result) { repo.get_versions }
+              let(:result) { repo.versions }
 
               it { expect(result.length).to eq 4 }
 
@@ -65,31 +61,31 @@ module SocialSnippet::Repository
                 it { should include '1.0.0' }
               end
 
-            end # get_versions
+            end # versions
 
-            describe "get_latest_version" do
-              it { expect(repo.get_latest_version).to eq '1.0.0' }
-              it { expect(repo.get_latest_version('0')).to eq '0.0.3' }
-              it { expect(repo.get_latest_version('0.0')).to eq '0.0.3' }
-              it { expect(repo.get_latest_version('1')).to eq '1.0.0' }
-              it { expect(repo.get_latest_version('0.1')).to be_nil }
-            end # get_latest_version
+            describe "latest_version" do
+              it { expect(repo.latest_version).to eq '1.0.0' }
+              it { expect(repo.latest_version('0')).to eq '0.0.3' }
+              it { expect(repo.latest_version('0.0')).to eq '0.0.3' }
+              it { expect(repo.latest_version('1')).to eq '1.0.0' }
+              it { expect(repo.latest_version('0.1')).to be_nil }
+            end # latest_version
 
           end # has 0.0.1, 0.0.2, 0.0.3, 1.0.0
 
           context "has 1.2.3, 100.2.300, 123.456.789" do
             
             before do
-              allow(repo).to receive(:get_refs).and_return([
+              allow(repo).to receive(:refs).and_return([
                 '1.2.3',
                 '100.2.300',
                 '123.456.789',
               ])
             end
 
-            describe "get_versions" do
+            describe "versions" do
 
-              let(:result) { repo.get_versions }
+              let(:result) { repo.versions }
 
               it { expect(result.length).to eq 3 }
 
@@ -100,18 +96,18 @@ module SocialSnippet::Repository
                 it { should include '123.456.789' }
               end
 
-            end # get_versions
+            end # versions
 
-            describe "get_latest_version" do
-              it { expect(repo.get_latest_version).to eq '123.456.789' }
-              it { expect(repo.get_latest_version('0')).to be_nil }
-              it { expect(repo.get_latest_version('0.0')).to be_nil }
-              it { expect(repo.get_latest_version('1')).to eq '1.2.3' }
-              it { expect(repo.get_latest_version('100')).to eq '100.2.300' }
-              it { expect(repo.get_latest_version('100.2')).to eq '100.2.300' }
-              it { expect(repo.get_latest_version('123')).to eq '123.456.789' }
-              it { expect(repo.get_latest_version('123.456')).to eq '123.456.789' }
-            end # get_latest_version
+            describe "latest_version" do
+              it { expect(repo.latest_version).to eq '123.456.789' }
+              it { expect(repo.latest_version('0')).to be_nil }
+              it { expect(repo.latest_version('0.0')).to be_nil }
+              it { expect(repo.latest_version('1')).to eq '1.2.3' }
+              it { expect(repo.latest_version('100')).to eq '100.2.300' }
+              it { expect(repo.latest_version('100.2')).to eq '100.2.300' }
+              it { expect(repo.latest_version('123')).to eq '123.456.789' }
+              it { expect(repo.latest_version('123.456')).to eq '123.456.789' }
+            end # latest_version
 
           end # has 1.2.3, 100.2.300, 123.456.789
 
@@ -122,7 +118,7 @@ module SocialSnippet::Repository
           context "has master, develop, 0.0.1, 0.1.0, 1.0.0" do
 
             before do
-              allow(repo).to receive(:get_refs).and_return([
+              allow(repo).to receive(:refs).and_return([
                 'master',
                 'develop',
                 '0.0.1',
@@ -131,8 +127,8 @@ module SocialSnippet::Repository
               ])
             end
 
-            describe "get_versions" do
-              let(:result) { repo.get_versions }
+            describe "versions" do
+              let(:result) { repo.versions }
 
               it { expect(result.length).to eq 3 }
 
@@ -142,27 +138,27 @@ module SocialSnippet::Repository
                 it { should include '0.1.0' }
                 it { should include '1.0.0' }
               end
-            end # get_versions
+            end # versions
 
-            describe "get_latest_version" do
-              it { expect(repo.get_latest_version).to eq '1.0.0' }
-              it { expect(repo.get_latest_version('0')).to eq '0.1.0' }
-              it { expect(repo.get_latest_version('0.0')).to eq '0.0.1' }
-              it { expect(repo.get_latest_version('1')).to eq '1.0.0' }
-              it { expect(repo.get_latest_version('100')).to be_nil }
-              it { expect(repo.get_latest_version('100.2')).to be_nil }
-              it { expect(repo.get_latest_version('123')).to be_nil}
-              it { expect(repo.get_latest_version('123.456')).to be_nil }
-              it { expect(repo.get_latest_version('master')).to be_nil }
-              it { expect(repo.get_latest_version('develop')).to be_nil }
-            end # get_latest_version
+            describe "latest_version" do
+              it { expect(repo.latest_version).to eq '1.0.0' }
+              it { expect(repo.latest_version('0')).to eq '0.1.0' }
+              it { expect(repo.latest_version('0.0')).to eq '0.0.1' }
+              it { expect(repo.latest_version('1')).to eq '1.0.0' }
+              it { expect(repo.latest_version('100')).to be_nil }
+              it { expect(repo.latest_version('100.2')).to be_nil }
+              it { expect(repo.latest_version('123')).to be_nil}
+              it { expect(repo.latest_version('123.456')).to be_nil }
+              it { expect(repo.latest_version('master')).to be_nil }
+              it { expect(repo.latest_version('develop')).to be_nil }
+            end # latest_version
 
           end # has master, develop, 0.0.1, 0.1.0, 1.0.0
 
           context "has master, feature/0.0.1, 0.0.1/test, 001, 0.0, 1, 1.2.3" do
 
             before do
-              allow(repo).to receive(:get_refs).and_return([
+              allow(repo).to receive(:refs).and_return([
                 'master',
                 'feature/0.0.1',
                 '0.0.1/test',
@@ -173,27 +169,27 @@ module SocialSnippet::Repository
               ])
             end
 
-            describe "get_versions" do
+            describe "versions" do
 
-              let(:result) { repo.get_versions }
+              let(:result) { repo.versions }
 
               it { expect(result.length).to eq 1 }
               it { expect(result).to include '1.2.3' }
 
-            end # get_versions
+            end # versions
 
-            describe "get_latest_version" do
-              it { expect(repo.get_latest_version).to eq '1.2.3' }
-              it { expect(repo.get_latest_version('0')).to be_nil }
-              it { expect(repo.get_latest_version('0.0')).to be_nil }
-              it { expect(repo.get_latest_version('1')).to eq '1.2.3' }
-              it { expect(repo.get_latest_version('100')).to be_nil }
-              it { expect(repo.get_latest_version('100.2')).to be_nil }
-              it { expect(repo.get_latest_version('123')).to be_nil}
-              it { expect(repo.get_latest_version('123.456')).to be_nil }
-              it { expect(repo.get_latest_version('master')).to be_nil }
-              it { expect(repo.get_latest_version('develop')).to be_nil }
-            end # get_latest_version
+            describe "latest_version" do
+              it { expect(repo.latest_version).to eq '1.2.3' }
+              it { expect(repo.latest_version('0')).to be_nil }
+              it { expect(repo.latest_version('0.0')).to be_nil }
+              it { expect(repo.latest_version('1')).to eq '1.2.3' }
+              it { expect(repo.latest_version('100')).to be_nil }
+              it { expect(repo.latest_version('100.2')).to be_nil }
+              it { expect(repo.latest_version('123')).to be_nil}
+              it { expect(repo.latest_version('123.456')).to be_nil }
+              it { expect(repo.latest_version('master')).to be_nil }
+              it { expect(repo.latest_version('develop')).to be_nil }
+            end # latest_version
 
           end # has master, feature/0.0.1, 0.0.1/test, 001, 0.0, 1, 1.2.3
 
@@ -201,7 +197,7 @@ module SocialSnippet::Repository
 
       end # new path/to/repo
 
-    end # get_versions
+    end # versions
 
     describe "cache test" do
 
@@ -241,7 +237,7 @@ module SocialSnippet::Repository
 
           context "create cache" do
             before do
-              expect(instance).to receive(:get_commit_id).and_return commit_id
+              expect(instance).to receive(:commit_id).and_return commit_id
               instance.create_cache(cache_path)
             end
 
@@ -323,9 +319,9 @@ module SocialSnippet::Repository
             before { FileUtils.mkdir_p(cache_path) }
 
             before do
-              expect(instance_1).to receive(:get_commit_id).and_return commit_id
-              expect(instance_b).to receive(:get_commit_id).and_return commit_id
-              expect(instance_3).to receive(:get_commit_id).and_return commit_id
+              expect(instance_1).to receive(:commit_id).and_return commit_id
+              expect(instance_b).to receive(:commit_id).and_return commit_id
+              expect(instance_3).to receive(:commit_id).and_return commit_id
             end
 
             before do
