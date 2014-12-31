@@ -2,7 +2,9 @@
 
 require_relative "../lib/social_snippet"
 
-cli = SocialSnippet::CommandLine::Sspm::MainCommand.new(ARGV)
-cli.init
-cli.run
+module SocialSnippet::CommandLine
+  cli = SSpm::MainCommand.new ARGV.clone
+  cli.init
+  cli.run
+end
 
