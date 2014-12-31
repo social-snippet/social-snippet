@@ -1,31 +1,27 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in social-snippet.gemspec
-gemspec
+gem "bundler"
+gem "rake"
+gem "version_sorter"
+gem "rugged"
+gem "rest-client"
 
-# Misc
-gem "bundler", "~> 1.6", :require => false
-gem "rake", "~> 10.0", :require => false
-gem "yard", :require => false
-gem "pry", :require => false
-gem "guard", :require => false
-gem "guard-shell", :require => false
+group :development do
+  gem "yard", :require => false
+  gem "pry", :require => false
+  gem "guard", :require => false
+  gem "guard-shell", :require => false
+end
 
-# Test
 group :test do
   gem "rspec", :require => false
   gem "fakefs", :require => false
   gem "webmock", :require => false
   gem "simplecov", :require => false
-  gem "codecov", :require => false
+  gem "codeclimate-test-reporter", :require => false
 end
 
-# Debug
+# should be disabled on travis-ci
 group :debug do
-  if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.0.0')
-    gem "byebug", :require => false
-    gem "pry-byebug", :require => false
-  else
-    gem "debugger", :require => false
-  end
+  gem "pry-byebug", :require => false
 end
