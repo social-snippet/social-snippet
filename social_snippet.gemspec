@@ -17,8 +17,22 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "version_sorter"
-  spec.add_dependency "rugged"
-  spec.add_dependency "rest-client"
+  spec.add_runtime_dependency "bundler"
+  spec.add_runtime_dependency "rake"
+  spec.add_runtime_dependency "version_sorter"
+  spec.add_runtime_dependency "rugged"
+  spec.add_runtime_dependency "rest-client"
+
+  spec.add_development_dependency "yard"
+  spec.add_development_dependency "pry"
+  spec.add_development_dependency "guard"
+  spec.add_development_dependency "guard-shell"
+  spec.add_development_dependency "pry-byebug"
+
+  spec.add_development_dependency "rspec"
+  spec.add_development_dependency "fakefs"
+  spec.add_development_dependency "webmock"
+  spec.add_development_dependency "codeclimate-test-reporter"
+
 
 end
