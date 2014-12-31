@@ -1,5 +1,6 @@
+require "bundler/setup"
+require_relative "helpers/codeclimate_helper"
 require_relative "helpers/webmock_helper"
-require_relative "helpers/simplecov_helper"
 
 require "social_snippet"
 require "json"
