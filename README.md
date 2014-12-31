@@ -1,5 +1,6 @@
 # Social Snippet
 
+[![Gem Version](https://badge.fury.io/rb/social_snippet.svg)](http://badge.fury.io/rb/social_snippet)
 [![Build Status](https://travis-ci.org/social-snippet/social-snippet.svg?branch=master)](https://travis-ci.org/social-snippet/social-snippet)
 [![Code Climate](https://codeclimate.com/github/social-snippet/social-snippet/badges/gpa.svg)](https://codeclimate.com/github/social-snippet/social-snippet)
 [![Test Coverage](https://codeclimate.com/github/social-snippet/social-snippet/badges/coverage.svg)](https://codeclimate.com/github/social-snippet/social-snippet)
