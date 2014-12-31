@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = SocialSnippet::VERSION
   spec.authors       = ["Hiroyuki Sano"]
   spec.email         = ["sh19910711@gmail.com"]
-  spec.summary       = %q{Social Snippet System}
+  spec.summary       = %q{Share and use snippet libraries for the online judges}
   spec.homepage      = "https://github.com/social-snippet/social-snippet"
   spec.license       = "MIT"
 
