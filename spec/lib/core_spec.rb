@@ -2,20 +2,12 @@ require "spec_helper"
 
 module SocialSnippet
 
-  describe SocialSnippet::SocialSnippet do
+  describe Core do
 
-    # Enable FakeFS
-    before { FakeFS.activate! }
-    after { FakeFS.deactivate! }
-
-    let(:instance) { SocialSnippet.new }
-    let(:repo_manager) { RepositoryManager.new(Config.new) }
     let(:commit_id) { "dummycommitid" }
     let(:short_commit_id) { commit_id[0..7] }
     let(:repo_path) { "#{ENV["HOME"]}/.social-snippet/repo" }
     let(:repo_cache_path) { "#{ENV["HOME"]}/.social-snippet/repo_cache" }
-
-    before { allow(instance).to receive(:repo_manager).and_return repo_manager }
 
     describe "#insert_snippet" do
 
@@ -48,16 +40,16 @@ module SocialSnippet
           ].join("\n")
 
           repo_config = Proc.new do |path|
-            repo = Repository::BaseRepository.new("#{repo_path}/my-repo")
-            allow(repo).to receive(:get_commit_id).and_return commit_id
-            allow(repo).to receive(:get_refs).and_return []
+            repo = ::SocialSnippet::Repository::Drivers::BaseRepository.new("#{repo_path}/my-repo")
+            allow(repo).to receive(:commit_id).and_return commit_id
+            allow(repo).to receive(:refs).and_return []
             repo.load_snippet_json
             repo.create_cache repo_cache_path
             repo
           end
 
-          allow(repo_manager).to receive(:find_repository).with("my-repo") { repo_config.call }
-          allow(repo_manager).to receive(:find_repository).with("my-repo", short_commit_id) { repo_config.call }
+          allow(fake_social_snippet.repo_manager).to receive(:find_repository).with("my-repo") { repo_config.call }
+          allow(fake_social_snippet.repo_manager).to receive(:find_repository).with("my-repo", short_commit_id) { repo_config.call }
         end # prepare for my-repo
 
         context "there are no @snip tags" do
@@ -84,7 +76,7 @@ module SocialSnippet
             ].join("\n")
           end
 
-          subject { instance.insert_snippet(input) }
+          subject { fake_social_snippet.api.insert_snippet(input) }
           it { should eq output }
 
         end # there is no @snip tags
@@ -120,7 +112,7 @@ module SocialSnippet
             ].join("\n")
           end
 
-          subject { instance.insert_snippet(input) }
+          subject { fake_social_snippet.api.insert_snippet(input) }
           it { should eq output }
 
         end # there is a @snip tag
@@ -129,7 +121,6 @@ module SocialSnippet
 
     end # insert_snippet
 
-  end # SocialSnippet::SocialSnippet
-
+  end # SocialSnippet::Core
 
 end # SocialSnippet
