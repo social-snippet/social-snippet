@@ -1,31 +1,24 @@
-module SocialSnippet
+module SocialSnippet::CommandLine
 
-  module CommandLine
+  class SSnip::MainCommand < Command
 
-    module SSnip
+    attr_reader :sub_commands
 
-      class MainCommand < Command
+    def usage
+      <<EOF
+Usage: ssnip [options]
 
-        attr_reader :sub_commands
-        attr_reader :social_snippet
+Example:
+    $ cat target_file | ssnip > snipped_file
 
-        def initialize(new_args, input = "")
-          super
-          @social_snippet = SocialSnippet.new
-        end
+EOF
+    end
 
-        def define_options
-        end
+    def define_options
+    end
 
-        def set_default_options
-        end
-
-        def run
-          puts social_snippet.insert_snippet(input)
-        end
-
-      end
-
+    def run
+      social_snippet.api.insert_snippet(input_stream.read)
     end
 
   end
