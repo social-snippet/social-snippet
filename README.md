@@ -1,9 +1,9 @@
 # Social Snippet
 
-[![Gem Version](https://badge.fury.io/rb/social_snippet.svg)](http://badge.fury.io/rb/social_snippet)
-[![Build Status](https://travis-ci.org/social-snippet/social-snippet.svg?branch=master)](https://travis-ci.org/social-snippet/social-snippet)
-[![Code Climate](https://codeclimate.com/github/social-snippet/social-snippet/badges/gpa.svg)](https://codeclimate.com/github/social-snippet/social-snippet)
-[![Test Coverage](https://codeclimate.com/github/social-snippet/social-snippet/badges/coverage.svg)](https://codeclimate.com/github/social-snippet/social-snippet)
+[![Gem Version](https://img.shields.io/gem/v/social_snippet.svg)](https://rubygems.org/gems/social_snippet)
+[![Build Status](https://img.shields.io/travis/social-snippet/social-snippet.svg)](https://travis-ci.org/social-snippet/social-snippet)
+[![Code Climate](https://img.shields.io/codeclimate/github/social-snippet/social-snippet.svg)](https://codeclimate.com/github/social-snippet/social-snippet)
+[![Test Coverage](https://img.shields.io/codeclimate/coverage/github/social-snippet/social-snippet.svg)](https://codeclimate.com/github/social-snippet/social-snippet)
 
 TODO: Write a gem description
 
