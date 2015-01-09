@@ -63,12 +63,12 @@ module SocialSnippet::Repository::Drivers
 
           describe "#commit_id" do
             subject { repo.commit_id }
-            it { should eq "073f4411f5251745b339d57356e2560f386e268c" }
+            it { should eq "38ebf733622174e24d76d28ab264c52b4fd7bda9" }
           end
 
           describe "#short_commit_id" do
             subject { repo.short_commit_id }
-            it { should eq "073f4411" }
+            it { should eq "38ebf733" }
           end
 
         end # checkout 1.0.x
