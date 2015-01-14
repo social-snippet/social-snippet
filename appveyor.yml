@@ -12,18 +12,27 @@ install:
   - ruby --version
   - SET PATH=%PREFIX%\libgit2\bin;%PATH%
 
-  - gem update --system
-  - gem install rugged --no-ri --no-rdoc -- --use-system-libraries --with-git2-dir=%PREFIX%\libgit2
-  - gem install bundler --no-ri --no-rdoc
-  - bundle install --jobs 2
+# - gem update --system
+# - gem install rugged --no-ri --no-rdoc -- --use-system-libraries --with-git2-dir=%PREFIX%\libgit2
+# - gem install bundler --no-ri --no-rdoc
+# - bundle install --jobs 2
 
 test_script:
-  - cmd: bundle exec rake spec
-  - cmd: bundle exec rake spec_without_fakefs
-  - cmd: bundle exec rake test
-  - cmd: bundle exec rake test_without_fakefs
+  - cmd: echo starting test...
+# - cmd: bundle exec rake spec
+# - cmd: bundle exec rake spec_without_fakefs
+# - cmd: bundle exec rake test
+# - cmd: bundle exec rake test_without_fakefs
 
 build: off
+
+cache:
+  - libgit2
+  - c:\libs
+# - vendor/bundle
+  - C:\Ruby193\lib\ruby\gems
+  - C:\Ruby20\lib\ruby\gems
+  - C:\Ruby21\lib\ruby\gems
 
 environment:
 
@@ -33,4 +42,4 @@ environment:
   matrix:
     - ruby_version: "21"
     - ruby_version: "20"
-    - ruby_version: "19"
+    - ruby_version: "193"
