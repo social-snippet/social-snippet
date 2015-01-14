@@ -2,17 +2,18 @@ version: "{build}"
 
 install:
   - ps: iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
-  - choco install pkgconfiglite
-  - git clone --branch v0.21.1 --depth 1 --single-branch git://github.com/libgit2/libgit2 libgit2
-  - cd libgit2
-  - cmake -DCMAKE_BUILD_TYPE=Release -DTHREADSAFE=ON -DBUILD_CLAR=OFF -DCMAKE_INSTALL_PREFIX=%PREFIX%\libgit2 .
-  - cmake --build . --target install
+  - cmd: choco install pkgconfiglite
+  - cmd: git clone --branch v0.21.1 --depth 1 --single-branch git://github.com/libgit2/libgit2 c:\src\libgit2
+  - cmd: cd c:\src\libgit2
+  - cmd: cmake -DCMAKE_BUILD_TYPE=Release -DTHREADSAFE=ON -DBUILD_CLAR=OFF -DCMAKE_INSTALL_PREFIX=%PREFIX%\libgit2 .
+  - cmd: cmake --build . --target install
 
-  - SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
-  - ruby --version
-  - SET PATH=%PREFIX%\libgit2\bin;%PATH%
+  - cmd: SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
+  - cmd: ruby --version
+  - cmd: SET PATH=%PREFIX%\libgit2\bin;%PATH%
 
-# - gem update --system
+  - cmd: gem --version
+  - cmd: gem update --system
 # - gem install rugged --no-ri --no-rdoc -- --use-system-libraries --with-git2-dir=%PREFIX%\libgit2
 # - gem install bundler --no-ri --no-rdoc
 # - bundle install --jobs 2
@@ -27,11 +28,11 @@ test_script:
 build: off
 
 cache:
-  - libgit2
+  - c:\src
   - c:\libs
-# - vendor/bundle
+  - vendor/bundle
   - C:\Ruby193\lib\ruby\gems
-  - C:\Ruby20\lib\ruby\gems
+  - C:\Ruby200\lib\ruby\gems
   - C:\Ruby21\lib\ruby\gems
 
 environment:
@@ -41,5 +42,5 @@ environment:
 
   matrix:
     - ruby_version: "21"
-    - ruby_version: "20"
+    - ruby_version: "200"
     - ruby_version: "193"
