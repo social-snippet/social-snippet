@@ -3,7 +3,7 @@ version: "{build}"
 install:
   - ps: iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
   - cmd: choco install pkgconfiglite
-  - cmd: git clone --branch v0.21.1 --depth 1 --single-branch git://github.com/libgit2/libgit2 c:\src\libgit2
+  - cmd: if not exist c:\src\libgit2 git clone --branch v0.21.1 --depth 1 --single-branch git://github.com/libgit2/libgit2 c:\src\libgit2
   - cmd: cd c:\src\libgit2
   - cmd: cmake -DCMAKE_BUILD_TYPE=Release -DTHREADSAFE=ON -DBUILD_CLAR=OFF -DCMAKE_INSTALL_PREFIX=%PREFIX%\libgit2 .
   - cmd: cmake --build . --target install
@@ -14,7 +14,7 @@ install:
 
   - cmd: gem --version
   - cmd: gem update --system
-# - gem install rugged --no-ri --no-rdoc -- --use-system-libraries --with-git2-dir=%PREFIX%\libgit2
+  - gem install rugged --no-ri --no-rdoc -- --use-system-libraries --with-git2-dir=%PREFIX%\libgit2
 # - gem install bundler --no-ri --no-rdoc
 # - bundle install --jobs 2
 
@@ -31,9 +31,12 @@ cache:
   - c:\src
   - c:\libs
   - vendor/bundle
-  - C:\Ruby193\lib\ruby\gems
-  - C:\Ruby200\lib\ruby\gems
-  - C:\Ruby21\lib\ruby\gems
+  - C:\Ruby193\lib\ruby\gems\1.9.1
+  - C:\Ruby193\bin
+  - C:\Ruby200\lib\ruby\gems\2.0.0
+  - C:\Ruby200\bin
+  - C:\Ruby21\lib\ruby\gems\2.1.0
+  - C:\Ruby21\bin
 
 environment:
 
@@ -42,5 +45,5 @@ environment:
 
   matrix:
     - ruby_version: "21"
-    - ruby_version: "200"
-    - ruby_version: "193"
+#     - ruby_version: "200"
+#     - ruby_version: "193"
