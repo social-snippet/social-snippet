@@ -9,6 +9,14 @@ class SocialSnippet::Api
     @social_snippet = new_social_snippet
   end
 
+  def config_set(key, value)
+    raise "not implement"
+  end
+
+  def config_get(key)
+    raise "not implement"
+  end
+
   # Insert snippets to given text
   #
   # @param src [String] The text of source code
