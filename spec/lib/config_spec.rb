@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe SocialSnippet::Config, :without_fakefs => $WITHOUT_FAKEFS do
+describe SocialSnippet::Config, :without_fakefs => $WITHOUT_FAKEFS, :current => true do
 
   let(:logger) do
     logger = ::SocialSnippet::Logger.new(STDOUT)
@@ -8,49 +8,46 @@ describe SocialSnippet::Config, :without_fakefs => $WITHOUT_FAKEFS do
     logger
   end
 
-  let(:config) do
-    ::SocialSnippet::Config.new(social_snippet)
-  end
-
   let(:social_snippet) do
     class Fake; end
     Fake.new
   end
 
-  describe "#new" do
+  let(:config) do
+    ::SocialSnippet::Config.new(social_snippet)
+  end
 
-    before { stub_const "ENV", "HOME" => Dir.mktmpdir }
+  before { stub_const "ENV", "HOME" => Dir.mktmpdir }
 
-    context "use default value" do
+  describe "getter / setter" do
 
-      let(:config) do
-        ::SocialSnippet::Config.new(social_snippet)
+    context "set key" do
+
+      before { config.set "key", "value1" }
+
+      context "get key" do
+        it { expect(config.get "key").to eq "value1" }
       end
 
-      context "#home" do
-        subject { config.home }
-        it { should eq "#{ENV["HOME"]}/.social-snippet" }
-      end
+    end
 
-    end # use default value
+  end # getter / setter
 
-    context "set ENV[SOCIAL_SNIPPET_HOME]" do
+  describe "use default value" do
 
-      before { stub_const "ENV", "SOCIAL_SNIPPET_HOME" => Dir.mktmpdir }
+    it { expect(config.home).to eq File.join(ENV["HOME"], ".social-snippet") }
+    it { expect(config.filepath).to eq File.join(ENV["HOME"], ".social-snippet", "settings.json") }
 
-      let(:config) do
-        ::SocialSnippet::Config.new(social_snippet)
-      end
+  end # use default value
 
-      context "#home" do
-        subject { config.home }
-        it { should_not eq "#{ENV["HOME"]}/.social-snippet" }
-        it { should eq ENV["SOCIAL_SNIPPET_HOME"] }
-      end
+  context "set ENV[SOCIAL_SNIPPET_HOME]" do
 
-    end # set ENV[SOCIAL_SNIPPET_HOME]
+    before { stub_const "ENV", "SOCIAL_SNIPPET_HOME" => Dir.mktmpdir }
+    it { expect(config.home).to_not eq File.join(ENV["HOME"], ".social-snippet") }
+    it { expect(config.home).to eq ENV["SOCIAL_SNIPPET_HOME"] }
+    it { expect(config.filepath).to eq FIle.join(ENV["SOCIAL_SNIPPET_HOME"], "settings.json") }
 
-  end # new
+  end # set ENV[SOCIAL_SNIPPET_HOME]
 
 end # SocialSnippet::Config
 
