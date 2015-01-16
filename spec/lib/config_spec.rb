@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe SocialSnippet::Config, :without_fakefs => $WITHOUT_FAKEFS do
+describe SocialSnippet::Config, :without_fakefs => $WITHOUT_FAKEFS, :current => true do
 
   let(:logger) do
     logger = ::SocialSnippet::Logger.new(STDOUT)
@@ -8,49 +8,110 @@ describe SocialSnippet::Config, :without_fakefs => $WITHOUT_FAKEFS do
     logger
   end
 
-  let(:config) do
-    ::SocialSnippet::Config.new(social_snippet)
-  end
-
   let(:social_snippet) do
     class Fake; end
     Fake.new
   end
 
-  describe "#new" do
+  let(:config) do
+    ::SocialSnippet::Config.new(social_snippet)
+  end
 
-    before { stub_const "ENV", "HOME" => Dir.mktmpdir }
+  before { stub_const "ENV", "HOME" => Dir.mktmpdir }
 
-    context "use default value" do
+  describe "sspm_url" do
 
-      let(:config) do
-        ::SocialSnippet::Config.new(social_snippet)
+    context "set info" do
+      before { config.set :sspm_host, "api.test" }
+      before { config.set :sspm_protocol, "https" }
+      before { config.set :sspm_version, "v0" }
+      it { expect(config.sspm_url).to eq "https://api.test/api/v0" }
+    end
+
+  end # sspm_url
+
+  describe "getter / setter" do
+
+    context "get undefined key" do
+      it { expect(config.get "this-is-undefined").to be_nil }
+    end
+
+    context "set key without saving" do
+
+      before { config.set "key", "value1" }
+
+      context "get key" do
+        it { expect(config.get "key").to eq "value1" }
       end
 
-      context "#home" do
-        subject { config.home }
-        it { should eq "#{ENV["HOME"]}/.social-snippet" }
+      context "reload file" do
+
+        before { config.load_file }
+
+        context "get key" do
+          it { expect(config.get "key").to be_nil }
+        end
+
       end
 
-    end # use default value
+    end # set key without saving
 
-    context "set ENV[SOCIAL_SNIPPET_HOME]" do
+    context "set key with saving" do
 
-      before { stub_const "ENV", "SOCIAL_SNIPPET_HOME" => Dir.mktmpdir }
+      describe "set!()" do
 
-      let(:config) do
-        ::SocialSnippet::Config.new(social_snippet)
+        before { config.set! "key", "value" }
+
+        context "reload file" do
+
+          before { config.load_file }
+
+          context "get key" do
+            it { expect(config.get "key").to eq "value" }
+          end
+
+        end
+
       end
 
-      context "#home" do
-        subject { config.home }
-        it { should_not eq "#{ENV["HOME"]}/.social-snippet" }
-        it { should eq ENV["SOCIAL_SNIPPET_HOME"] }
+      describe "save_file()" do
+
+        before do
+          config.set "key", "value"
+          config.save_file
+        end
+
+        context "reload file" do
+
+          before { config.load_file }
+
+          context "get key" do
+            it { expect(config.get "key").to eq "value" }
+          end
+
+        end
+
       end
 
-    end # set ENV[SOCIAL_SNIPPET_HOME]
+    end # set key with saving
 
-  end # new
+  end # getter / setter
+
+  describe "use default value" do
+
+    it { expect(config.home).to eq ::File.join(ENV["HOME"], ".social-snippet") }
+    it { expect(config.file_path).to eq ::File.join(ENV["HOME"], ".social-snippet", "config.json") }
+
+  end # use default value
+
+  context "set ENV[SOCIAL_SNIPPET_HOME]" do
+
+    before { stub_const "ENV", "HOME" => Dir.mktmpdir, "SOCIAL_SNIPPET_HOME" => Dir.mktmpdir }
+    it { expect(config.home).to_not eq ::File.join(ENV["HOME"], ".social-snippet") }
+    it { expect(config.home).to eq ENV["SOCIAL_SNIPPET_HOME"] }
+    it { expect(config.file_path).to eq ::File.join(ENV["SOCIAL_SNIPPET_HOME"], "config.json") }
+
+  end # set ENV[SOCIAL_SNIPPET_HOME]
 
 end # SocialSnippet::Config
 

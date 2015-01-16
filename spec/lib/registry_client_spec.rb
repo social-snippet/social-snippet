@@ -18,15 +18,10 @@ module SocialSnippet
     end
 
     let(:config) do
-      config = Config.new(
-        social_snippet,
-        {
-          :sspm_host => "api.server",
-          :sspm_version => "v0",
-          :sspm_protocol => "http",
-        }
-      )
+      Config.new social_snippet
     end
+
+    before { allow(config).to receive(:sspm_url).and_return "http://api.server/api/v0" }
 
     def logger
       ::Logger.new(::StringIO.new)
