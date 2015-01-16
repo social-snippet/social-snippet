@@ -10,11 +10,12 @@ class SocialSnippet::Api
   end
 
   def config_set(key, value)
-    raise "not implement"
+    social_snippet.config.set! key, value
   end
 
   def config_get(key)
-    raise "not implement"
+    value = social_snippet.config.get(key)
+    social_snippet.logger.say "#{key}=#{value}"
   end
 
   # Insert snippets to given text
