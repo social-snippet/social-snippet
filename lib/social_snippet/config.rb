@@ -114,14 +114,14 @@ class SocialSnippet::Config
     get :debug
   end
 
-  private
-
   def init_directories
     ::FileUtils.mkdir_p home
     ::FileUtils.mkdir_p install_path
     ::FileUtils.mkdir_p repository_cache_path
     ::File.write file_path, {}.to_json unless ::File.exists?(file_path)
   end
+
+  private
 
   # Key => key
   # :Key => key
