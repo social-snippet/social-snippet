@@ -19,6 +19,17 @@ describe SocialSnippet::Config, :without_fakefs => $WITHOUT_FAKEFS, :current => 
 
   before { stub_const "ENV", "HOME" => Dir.mktmpdir }
 
+  describe "sspm_url" do
+
+    context "set info" do
+      before { config.set :sspm_host, "api.test" }
+      before { config.set :sspm_protocol, "https" }
+      before { config.set :sspm_version, "v0" }
+      it { expect(config.sspm_url).to eq "https://api.test/api/v0" }
+    end
+
+  end # sspm_url
+
   describe "getter / setter" do
 
     context "get undefined key" do
