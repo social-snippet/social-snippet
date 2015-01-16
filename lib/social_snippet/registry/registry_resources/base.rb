@@ -7,19 +7,13 @@ module SocialSnippet::Registry::RegistryResources
 
     attr_reader :social_snippet
     attr_reader :rest_client
-    attr_reader :protocol
-    attr_reader :host
-    attr_reader :api_version
     attr_reader :end_point
     attr_reader :cookies
     attr_reader :default_headers
 
     def initialize(new_social_snippet)
       @social_snippet = new_social_snippet
-      @host           = social_snippet.config.get(:sspm_host)
-      @api_version    = social_snippet.config.get(:sspm_version)
-      @protocol       = social_snippet.config.get(:sspm_protocol)
-      @end_point      = "#{protocol}://#{host}/api/#{api_version}"
+      @end_point      = social_snippet.config.sspm_url
       @rest_client    = ::RestClient::Resource.new(end_point)
       @cookies        = {}
       @default_headers = {
