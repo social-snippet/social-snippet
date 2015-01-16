@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe SocialSnippet::Config, :without_fakefs => $WITHOUT_FAKEFS, :current => true do
+describe SocialSnippet::Config, :without_fakefs => $WITHOUT_FAKEFS do
 
   let(:logger) do
     logger = ::SocialSnippet::Logger.new(STDOUT)

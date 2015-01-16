@@ -2,7 +2,7 @@ require "spec_helper"
 
 module SocialSnippet::CommandLine
 
-  describe SSpm::SubCommands::ConfigCommand, :current => true do
+  describe SSpm::SubCommands::ConfigCommand do
 
     describe "$ sspm config key" do
 
