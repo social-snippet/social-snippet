@@ -19,6 +19,22 @@ describe SocialSnippet::Config, :without_fakefs => $WITHOUT_FAKEFS, :current => 
 
   before { stub_const "ENV", "HOME" => Dir.mktmpdir }
 
+  describe "priority" do
+
+    example do
+      conf = ::SocialSnippet::Config.new(
+        social_snippet,
+        {
+          :sspm_host => "this.is.host",
+          :sspm_protocol => "proto",
+          :sspm_version => "version",
+        }
+      )
+      expect(conf.sspm_url).to eq "proto://this.is.host/api/version"
+    end
+
+  end
+
   describe "case insensitivility" do
 
     context "set key" do
