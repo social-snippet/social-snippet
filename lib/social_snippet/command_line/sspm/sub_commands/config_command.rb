@@ -38,7 +38,7 @@ EOF
           end
         end
       else
-        usage
+        help
       end
     end
 
