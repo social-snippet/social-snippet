@@ -27,7 +27,7 @@ describe ::SocialSnippet::Repository::RepositoryManager do
     ::SocialSnippet::Repository::RepositoryManager.new(social_snippet)
   end
 
-  describe "complete (repo)", :current => true do
+  describe "complete (repo)" do
     
     before do
       install_path = "/path/to/install/path"
@@ -53,7 +53,7 @@ describe ::SocialSnippet::Repository::RepositoryManager do
 
   end # complete (repo)
 
-  describe "is_completing_file_path?", :current => true do
+  describe "is_completing_file_path?" do
 
     context "valid cases" do
       it { expect(repo_manager.is_completing_file_path? "// @snip <repo:").to be_truthy }
@@ -83,7 +83,7 @@ describe ::SocialSnippet::Repository::RepositoryManager do
 
   end # is_completing_repo_name?
 
-  describe "is_completing_repo_name?", :current => true do
+  describe "is_completing_repo_name?" do
 
     context "valid cases" do
       it { expect(repo_manager.is_completing_repo_name? "@snip <repo").to be_truthy }
