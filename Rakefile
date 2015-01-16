@@ -15,6 +15,16 @@ RSpec::Core::RakeTask.new(:spec) do |t|
   ]
 end
 
+# rake spec_current
+RSpec::Core::RakeTask.new(:spec_current) do |t|
+  ENV["RSPEC_WITHOUT_FAKEFS"] = "false"
+  t.rspec_opts = [
+    "--format documentation",
+    "--color",
+    "--tag current",
+  ]
+end
+
 # rake spec_without_fs
 RSpec::Core::RakeTask.new(:spec_without_fakefs) do |t|
   ENV["RSPEC_WITHOUT_FAKEFS"] = "true"
