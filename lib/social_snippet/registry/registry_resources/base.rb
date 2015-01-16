@@ -16,9 +16,9 @@ module SocialSnippet::Registry::RegistryResources
 
     def initialize(new_social_snippet)
       @social_snippet = new_social_snippet
-      @host           = social_snippet.config.sspm_host
-      @api_version    = social_snippet.config.sspm_version
-      @protocol       = social_snippet.config.sspm_protocol
+      @host           = social_snippet.config.get(:sspm_host)
+      @api_version    = social_snippet.config.get(:sspm_version)
+      @protocol       = social_snippet.config.get(:sspm_protocol)
       @end_point      = "#{protocol}://#{host}/api/#{api_version}"
       @rest_client    = ::RestClient::Resource.new(end_point)
       @cookies        = {}
