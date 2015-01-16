@@ -21,7 +21,11 @@ describe SocialSnippet::Config, :without_fakefs => $WITHOUT_FAKEFS, :current => 
 
   describe "getter / setter" do
 
-    context "set key" do
+    context "get undefined key" do
+      it { expect(config.get "this-is-undefined").to be_nil }
+    end
+
+    context "set key without saving" do
 
       before { config.set "key", "value1" }
 
@@ -29,7 +33,56 @@ describe SocialSnippet::Config, :without_fakefs => $WITHOUT_FAKEFS, :current => 
         it { expect(config.get "key").to eq "value1" }
       end
 
-    end
+      context "reload file" do
+
+        before { config.load_file }
+
+        context "get key" do
+          it { expect(config.get "key").to be_nil }
+        end
+
+      end
+
+    end # set key without saving
+
+    context "set key with saving" do
+
+      describe "set!()" do
+
+        before { config.set! "key", "value" }
+
+        context "reload file" do
+
+          before { config.load_file }
+
+          context "get key" do
+            it { expect(config.get "key").to eq "value" }
+          end
+
+        end
+
+      end
+
+      describe "save_file()" do
+
+        before do
+          config.set "key", "value"
+          config.save_file
+        end
+
+        context "reload file" do
+
+          before { config.load_file }
+
+          context "get key" do
+            it { expect(config.get "key").to eq "value" }
+          end
+
+        end
+
+      end
+
+    end # set key with saving
 
   end # getter / setter
 
