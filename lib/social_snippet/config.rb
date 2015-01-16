@@ -131,7 +131,8 @@ class SocialSnippet::Config
 
   def load_environment_variables
     ENV_FIELDS.each do |field_sym|
-      set field_sym, load_env(field_sym)
+      value = load_env(field_sym)
+      set field_sym, value unless value.nil?
     end
   end
 
