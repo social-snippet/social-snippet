@@ -88,17 +88,17 @@ describe SocialSnippet::Config, :without_fakefs => $WITHOUT_FAKEFS, :current => 
 
   describe "use default value" do
 
-    it { expect(config.home).to eq File.join(ENV["HOME"], ".social-snippet") }
-    it { expect(config.filepath).to eq File.join(ENV["HOME"], ".social-snippet", "settings.json") }
+    it { expect(config.home).to eq ::File.join(ENV["HOME"], ".social-snippet") }
+    it { expect(config.file_path).to eq ::File.join(ENV["HOME"], ".social-snippet", "config.json") }
 
   end # use default value
 
   context "set ENV[SOCIAL_SNIPPET_HOME]" do
 
-    before { stub_const "ENV", "SOCIAL_SNIPPET_HOME" => Dir.mktmpdir }
-    it { expect(config.home).to_not eq File.join(ENV["HOME"], ".social-snippet") }
+    before { stub_const "ENV", "HOME" => Dir.mktmpdir, "SOCIAL_SNIPPET_HOME" => Dir.mktmpdir }
+    it { expect(config.home).to_not eq ::File.join(ENV["HOME"], ".social-snippet") }
     it { expect(config.home).to eq ENV["SOCIAL_SNIPPET_HOME"] }
-    it { expect(config.filepath).to eq FIle.join(ENV["SOCIAL_SNIPPET_HOME"], "settings.json") }
+    it { expect(config.file_path).to eq ::File.join(ENV["SOCIAL_SNIPPET_HOME"], "config.json") }
 
   end # set ENV[SOCIAL_SNIPPET_HOME]
 

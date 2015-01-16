@@ -42,6 +42,27 @@ describe SocialSnippet::Config, :without_fakefs => $WITHOUT_FAKEFS, :current => 
       it { expect(config.get "KEY").to eq "value" }
     end
 
+    context "set! key" do
+      before { config.set! "key", "value" }
+      it { expect(config.get "key").to eq "value" }
+      it { expect(config.get "Key").to eq "value" }
+      it { expect(config.get "KEY").to eq "value" }
+    end
+
+    context "set! Key" do
+      before { config.set! "Key", "value" }
+      it { expect(config.get "key").to eq "value" }
+      it { expect(config.get "Key").to eq "value" }
+      it { expect(config.get "KEY").to eq "value" }
+    end
+
+    context "set! KEY" do
+      before { config.set! "KEY", "value" }
+      it { expect(config.get "key").to eq "value" }
+      it { expect(config.get "Key").to eq "value" }
+      it { expect(config.get "KEY").to eq "value" }
+    end
+
   end # case insensitivility
 
 end
