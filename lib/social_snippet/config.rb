@@ -34,6 +34,7 @@ class SocialSnippet::Config
     # env vars > args > config.json
     init_directories
     load_file
+    load_options options
     load_environment_variables
 
     # set default values
@@ -105,6 +106,10 @@ class SocialSnippet::Config
     ::File.join home, "repo"
   end
 
+  def sspm_url
+    "#{get :sspm_protocol}://#{get :sspm_host}/api/#{get :sspm_version}"
+  end
+
   def debug?
     get :debug
   end
@@ -126,7 +131,7 @@ class SocialSnippet::Config
 
   def load_environment_variables
     ENV_FIELDS.each do |field_sym|
-      set_default field_sym, load_env(field_sym)
+      set field_sym, load_env(field_sym)
     end
   end
 
@@ -138,6 +143,12 @@ class SocialSnippet::Config
       ENV[key] === "true"
     else
       ENV[key]
+    end
+  end
+
+  def load_options(options)
+    options.each do |key, value|
+      set key, value
     end
   end
 
