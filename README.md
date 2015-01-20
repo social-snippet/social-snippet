@@ -4,6 +4,7 @@
 [![Build Status](https://img.shields.io/travis/social-snippet/social-snippet.svg)](https://travis-ci.org/social-snippet/social-snippet)
 [![Code Climate](https://img.shields.io/codeclimate/github/social-snippet/social-snippet.svg)](https://codeclimate.com/github/social-snippet/social-snippet)
 [![Test Coverage](https://img.shields.io/codeclimate/coverage/github/social-snippet/social-snippet.svg)](https://codeclimate.com/github/social-snippet/social-snippet)
+[![API Doc](http://img.shields.io/badge/RubyDocs-API-green.svg)](http://www.rubydoc.info/github/social-snippet/social-snippet)
 
 TODO: Write a gem description
 
