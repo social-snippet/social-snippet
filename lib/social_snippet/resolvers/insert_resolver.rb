@@ -3,13 +3,21 @@ module SocialSnippet
   class Resolvers::InsertResolver < Resolvers::BaseResolver
 
     attr_reader :deps_resolver
+    attr_reader :options
 
     # Constructor
     #
     # @param social_snippet [::SocialSnippet::Core]
-    def initialize(social_snippet)
+    def initialize(social_snippet, new_options = {})
+      @options = new_options
       @deps_resolver = Resolvers::DepResolver.new(social_snippet)
       super(social_snippet)
+      init_options
+    end
+
+    def init_options
+      options[:margin_bottom] = options.fetch(:margin_bottom, 0)
+      options[:margin_top] = options.fetch(:margin_top, 0)
     end
 
     # Insert snippets to given text
@@ -17,14 +25,14 @@ module SocialSnippet
     # @param src [Array<String>] The text of source code
     def insert(src)
       context = Context.new("")
-      lines = src.split("\n")
+      lines = src.split($/)
 
       TagParser.find_snippet_tags(lines).each do |tag_info|
         visit tag_info[:tag]
       end
 
       dest = insert_func(lines, context)
-      return dest.join("\n")
+      return dest.join($/)
     end
 
     private
@@ -51,15 +59,19 @@ module SocialSnippet
 
     # Insert snippet by tag and context
     def insert_by_tag_and_context!(inserter, snippet, context, tag)
-      src = insert_func(snippet.lines, context, tag)
+      src = insert_func(snippet.lines.to_a, context, tag)
+
+      options[:margin_top].times { inserter.insert "" }
       inserter.insert tag.to_snippet_tag # @snip -> @snippet
       inserter.insert src
+      options[:margin_bottom].times { inserter.insert "" }
+
       visit tag
     end
 
     # Insert depended snippet
     def insert_depended_snippets!(inserter, snippet, context, tag)
-      dep_tags = deps_resolver.find(snippet.lines, context, tag)
+      dep_tags = deps_resolver.find(snippet.lines.to_a, context, tag)
       dep_tags = sort_dep_tags_by_dep(dep_tags)
 
       dep_tags.each do |tag_info|
@@ -85,7 +97,7 @@ module SocialSnippet
       end
 
       # generate dependency graph
-      dep_tags_hash = {}
+      dep_tags_hash = TSortableHash.new
       dep_tags.each do |tag_info|
         tag = tag_info[:tag].to_path
         dep_ind = dep_tags_index[tag]

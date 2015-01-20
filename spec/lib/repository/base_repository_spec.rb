@@ -19,7 +19,7 @@ module SocialSnippet::Repository::Drivers
           '  "desc": "my-desc",',
           '  "main": "my-src"',
           '}',
-        ].join("\n")
+        ].join($/)
       end # prepare /path/to/repo
 
       context "load snippet.json" do
@@ -56,7 +56,7 @@ module SocialSnippet::Repository::Drivers
           '  "desc": "my-desc",',
           '  "main": "src"',
           '}',
-        ].join("\n")
+        ].join($/)
       end # prepare install_path
 
       context "load snippet.json" do

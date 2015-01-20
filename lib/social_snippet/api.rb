@@ -50,8 +50,8 @@ class SocialSnippet::Api
   #
   # @param src [String] The text of source code
   #
-  def insert_snippet(src)
-    resolver = ::SocialSnippet::Resolvers::InsertResolver.new(social_snippet)
+  def insert_snippet(src, options = {})
+    resolver = ::SocialSnippet::Resolvers::InsertResolver.new(social_snippet, options)
     res = resolver.insert(src)
     output res
     res

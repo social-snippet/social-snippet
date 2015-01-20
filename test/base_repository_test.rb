@@ -216,7 +216,7 @@ module SocialSnippet::Repository::Drivers
             '  "desc": "this is repo_1",',
             '  "language": "Ruby"',
             '}',
-          ].join("\n")
+          ].join($/)
         end
 
         context "create repo_1 instance" do
@@ -267,7 +267,7 @@ module SocialSnippet::Repository::Drivers
             '  "desc": "this is repo_1",',
             '  "language": "Ruby"',
             '}',
-          ].join("\n")
+          ].join($/)
 
           # create repo_b
           FileUtils.mkdir_p "/path/to/repo_b"
@@ -279,7 +279,7 @@ module SocialSnippet::Repository::Drivers
             '  "desc": "this is repo_b",',
             '  "language": "Ruby"',
             '}',
-          ].join("\n")
+          ].join($/)
 
           # create repo_3
           FileUtils.mkdir_p "/path/to/repo_3"
@@ -291,7 +291,7 @@ module SocialSnippet::Repository::Drivers
             '  "desc": "this is repo_3",',
             '  "language": "Ruby"',
             '}',
-          ].join("\n")
+          ].join($/)
         end # before 
 
         context "create three instances" do

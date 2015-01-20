@@ -70,11 +70,11 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '"}'
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/file.c", [
           '/* file.c */'
-        ].join("\n")
+        ].join($/)
 
       end # prepare my-repo#thisisdu
 
@@ -86,7 +86,7 @@ describe SocialSnippet::Core do
           [
             '/* main.c */',
             '@snip<my-repo#thisisdu:file.c>',
-          ].join("\n")
+          ].join($/)
         end
 
         let(:output) do
@@ -94,7 +94,7 @@ describe SocialSnippet::Core do
             '/* main.c */',
             '@snippet<my-repo#thisisdu:file.c>',
             '/* file.c */',
-          ].join("\n")
+          ].join($/)
         end
 
         subject { fake_social_snippet.api.insert_snippet input }
@@ -108,7 +108,7 @@ describe SocialSnippet::Core do
           [
             '/* main.c */',
             '@snip<my-repo#notexist:file.c>',
-          ].join("\n")
+          ].join($/)
         end
 
         it do
@@ -129,7 +129,7 @@ describe SocialSnippet::Core do
           [
             '/* @snip<my-repo#1:func.c> */',
             'main',
-          ].join("\n")
+          ].join($/)
         end
 
         context "release 1.0.0" do
@@ -146,11 +146,11 @@ describe SocialSnippet::Core do
               # snippet.json
               File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
                 '{"name": "' + repo_name + '"}'
-              ].join("\n")
+              ].join($/)
 
               File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c", [
                 'func: 1.0.0',
-              ].join("\n")
+              ].join($/)
           end # prepare my-repo#1.0.0
 
           before { find_repo_mock }
@@ -160,7 +160,7 @@ describe SocialSnippet::Core do
               '/* @snippet<my-repo#1.0.0:func.c> */',
               'func: 1.0.0',
               'main',
-            ].join("\n").freeze
+            ].join($/).freeze
           end
 
           context "release 1.0.1" do
@@ -177,11 +177,11 @@ describe SocialSnippet::Core do
               # snippet.json
               File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
                 '{"name": "' + repo_name + '"}'
-              ].join("\n")
+              ].join($/)
 
               File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c", [
                 'func: 1.0.1',
-              ].join("\n")
+              ].join($/)
             end # prepare my-repo#1.0.1
 
             before { find_repo_mock }
@@ -191,7 +191,7 @@ describe SocialSnippet::Core do
                 '/* @snippet<my-repo#1.0.1:func.c> */',
                 'func: 1.0.1',
                 'main',
-              ].join("\n").freeze
+              ].join($/).freeze
             end
 
             context "release 1.1.0" do
@@ -208,11 +208,11 @@ describe SocialSnippet::Core do
                 # snippet.json
                 File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
                   '{"name": "' + repo_name + '"}'
-                ].join("\n")
+                ].join($/)
 
                 File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c", [
                   'func: 1.1.0',
-                ].join("\n")
+                ].join($/)
               end # prepare my-repo#1.1.0
 
               before { find_repo_mock }
@@ -222,7 +222,7 @@ describe SocialSnippet::Core do
                   '/* @snippet<my-repo#1.1.0:func.c> */',
                   'func: 1.1.0',
                   'main',
-                ].join("\n").freeze
+                ].join($/).freeze
               end
 
               context "release 9.9.9" do
@@ -239,11 +239,11 @@ describe SocialSnippet::Core do
                   # snippet.json
                   File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
                     '{"name": "' + repo_name + '"}'
-                  ].join("\n")
+                  ].join($/)
 
                   File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c", [
                     'func: 9.9.9',
-                  ].join("\n")
+                  ].join($/)
                 end # prepare my-repo#9.9.9
 
                 before { find_repo_mock }
@@ -253,7 +253,7 @@ describe SocialSnippet::Core do
                     '/* @snippet<my-repo#1.1.0:func.c> */',
                     'func: 1.1.0',
                     'main',
-                  ].join("\n").freeze
+                  ].join($/).freeze
                 end
 
               end # release 9.9.9
@@ -289,26 +289,26 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}'
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/file_1", [
           '@snip<subdir_a/file_2>',
           'file_1',
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_a/file_2", [
           '@snip<../subdir_b/file_3>',
           'file_2',
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_b/file_3", [
           '@snip<../subdir_c/file_4>',
           'file_3',
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_c/file_4", [
           'file_4',
-        ].join("\n")
+        ].join($/)
       end # prepare my-repo#1.2.3
 
       before { find_repo_mock }
@@ -319,7 +319,7 @@ describe SocialSnippet::Core do
           [
             '@snip <my-repo:file_1>',
             'main',
-          ].join("\n").freeze
+          ].join($/).freeze
         end
 
         let(:output) do
@@ -333,7 +333,7 @@ describe SocialSnippet::Core do
             '@snippet <my-repo#1.2.3:file_1>',
             'file_1',
             'main',
-          ].join("\n").freeze
+          ].join($/).freeze
         end
 
         subject { fake_social_snippet.api.insert_snippet input }
@@ -358,12 +358,12 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '"}'
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/1", [
           '@snip<1>',
           '1',
-        ].join("\n")
+        ].join($/)
       end # prepare directly#3.2.1
 
       before do
@@ -379,12 +379,12 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '"}'
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/loop", [
           '@snip<loop-2:loop>',
           'loop-1',
-        ].join("\n")
+        ].join($/)
       end # prepare loop-1#1.1.1
 
       before do
@@ -400,12 +400,12 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '"}'
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/loop", [
           '@snip<loop-3:loop>',
           'loop-2',
-        ].join("\n")
+        ].join($/)
       end # prepare loop-2#1.1.1
 
       before do
@@ -421,13 +421,13 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '"}'
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/loop", [
           '@snip<loop-1:loop>',
           '@snip<non-loop-4:non-loop>',
           'loop-3',
-        ].join("\n")
+        ].join($/)
       end # prepare loop-3#1.1.1
 
       before do
@@ -443,11 +443,11 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '"}'
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/non-loop", [
           'non-loop-4',
-        ].join("\n")
+        ].join($/)
       end # prepare non-loop-4#1.1.1
 
       before { find_repo_mock }
@@ -460,7 +460,7 @@ describe SocialSnippet::Core do
             [
               '@snip<loop-1:loop>',
               'main',
-            ].join("\n")
+            ].join($/)
           end
 
           let(:output) do
@@ -474,7 +474,7 @@ describe SocialSnippet::Core do
               '@snippet<loop-1#1.1.1:loop>',
               'loop-1',
               'main',
-            ].join("\n")
+            ].join($/)
           end
 
           subject { fake_social_snippet.api.insert_snippet input }
@@ -491,14 +491,14 @@ describe SocialSnippet::Core do
           let(:input) do
             [
               '@snip<directly:1>',
-            ].join("\n").freeze
+            ].join($/).freeze
           end
 
           let(:output) do
             [
               '@snippet<directly#3.2.1:1>',
               '1',
-            ].join("\n")
+            ].join($/)
           end
 
           subject { fake_social_snippet.api.insert_snippet input }
@@ -525,12 +525,12 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '"}'
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/1", [
           '@snip<my-repo-2#0:2>',
           'my-repo-1:1',
-        ].join("\n")
+        ].join($/)
       end # prepare my-repo-1
 
       before do
@@ -546,12 +546,12 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '"}'
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/2", [
           '@snip<my-repo-3:path/to/3>',
           'my-repo-2:2',
-        ].join("\n")
+        ].join($/)
       end # prepare my-repo-2#0.0.1
 
       before do
@@ -567,11 +567,11 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '"}'
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/2", [
           'miss!!',
-        ].join("\n")
+        ].join($/)
       end # prepare my-repo-2#1.2.3
 
       before do
@@ -589,12 +589,12 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '"}'
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/path/to/3", [
           '@snip<my-repo-4:path/to/4>',
           'my-repo-3:path/to/3',
-        ].join("\n")
+        ].join($/)
       end # prepare my-repo-3#1.2.3
 
       before do
@@ -614,12 +614,12 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "sources"}'
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to/4", [
           '@snip<my-repo-5:path/to/5>',
           'my-repo-4:sources/path/to/4',
-        ].join("\n")
+        ].join($/)
       end # prepare my-repo-4#1.2.3
 
       before do
@@ -639,12 +639,12 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "sources"}'
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to/5", [
           '@snip<my-repo-6:path/to/6>',
           'my-repo-5:sources/path/to/5',
-        ].join("\n")
+        ].join($/)
       end # prepare my-repo-5#100.200.300
 
       before do
@@ -664,12 +664,12 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "sources"}'
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to/5", [
           'miss!!',
           'my-repo-5:5',
-        ].join("\n")
+        ].join($/)
       end # prepare my-repo-5#99.999.999
 
       before do
@@ -686,12 +686,12 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "sources"}'
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path_no_ver}/#{repo_name}/sources/path/to/6", [
           '@snip<my-repo-7:path/to/7>',
           'my-repo-6:sources/path/to/6',
-        ].join("\n")
+        ].join($/)
       end # prepare my-repo-6
 
       before do
@@ -711,12 +711,12 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "sources"}'
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to/7", [
           'end',
           'my-repo-7:sources/path/to/7',
-        ].join("\n")
+        ].join($/)
       end # prepare my-repo-7#1.2.3
 
       before { find_repo_mock }
@@ -726,7 +726,7 @@ describe SocialSnippet::Core do
         let(:input) do
           [
             '/* @snip <my-repo-1:1> */',
-          ].join("\n").freeze
+          ].join($/).freeze
         end
 
         let(:output) do
@@ -746,7 +746,7 @@ describe SocialSnippet::Core do
             'my-repo-2:2',
             '/* @snippet <my-repo-1#0.0.1:1> */',
             'my-repo-1:1',
-          ].join("\n").freeze
+          ].join($/).freeze
         end
 
         subject { fake_social_snippet.api.insert_snippet input }
@@ -779,7 +779,7 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '"}'
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/1", [
           '@snip<5>',
@@ -787,7 +787,7 @@ describe SocialSnippet::Core do
           '@snip<3>',
           '@snip<2>',
           '1',
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/2", [
           '@snip<9>',
@@ -795,35 +795,35 @@ describe SocialSnippet::Core do
           '@snip<7>',
           '@snip<6>',
           '2',
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/3", [
           '3',
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/4", [
           '4',
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/5", [
           '5',
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/6", [
           '6',
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/7", [
           '7',
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/8", [
           '8',
-        ].join("\n")
+        ].join($/)
 
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/9", [
           '9',
-        ].join("\n")
+        ].join($/)
       end
 
       before { find_repo_mock }
@@ -832,7 +832,7 @@ describe SocialSnippet::Core do
         [
           '@snip<my-repo:1>',
           'main',
-        ].join("\n").freeze
+        ].join($/).freeze
       end
 
       let(:output) do
@@ -856,7 +856,7 @@ describe SocialSnippet::Core do
           '@snippet<my-repo#0.0.1:1>',
           '1',
           'main',
-        ].join("\n")
+        ].join($/)
       end
 
       subject { fake_social_snippet.api.insert_snippet input }
@@ -881,18 +881,18 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
-        ].join("\n")
+        ].join($/)
 
         # src/1.rb
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
           '# @snip</2.rb>',
           'OK',
-        ].join("\n")
+        ].join($/)
 
         # src/2.rb
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
           '0.0.3',
-        ].join("\n")
+        ].join($/)
 
       end # prepare my-repo#0.0.3
 
@@ -911,7 +911,7 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
-        ].join("\n")
+        ].join($/)
 
         # src/1.rb
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
@@ -919,12 +919,12 @@ describe SocialSnippet::Core do
           'def func_1',
           '  return 2 * func_2()',
           'end',
-        ].join("\n")
+        ].join($/)
 
         # src/2.rb
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
           'ERROR_CASE',
-        ].join("\n")
+        ].join($/)
 
       end # prepare my-repo#0.0.2
 
@@ -943,7 +943,7 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
-        ].join("\n")
+        ].join($/)
 
         # src/1.rb
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
@@ -951,12 +951,12 @@ describe SocialSnippet::Core do
           'def func_1',
           '  return 2 * func_2()',
           'end',
-        ].join("\n")
+        ].join($/)
 
         # src/2.rb
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
           'ERROR_CASE',
-        ].join("\n")
+        ].join($/)
 
       end # prepare my-repo#0.0.1
 
@@ -975,7 +975,7 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
-        ].join("\n")
+        ].join($/)
 
         # src/1.rb
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
@@ -983,12 +983,12 @@ describe SocialSnippet::Core do
           'def func_1',
           '  return 2 * func_2()',
           'end',
-        ].join("\n")
+        ].join($/)
 
         # src/2.rb
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
           'THIS_IS_OK',
-        ].join("\n")
+        ].join($/)
       end # prepare my-repo#1.0.0
 
       before do
@@ -1005,12 +1005,12 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
-        ].join("\n")
+        ].join($/)
 
         # src/1.rb
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
           'OLD VERSION',
-        ].join("\n")
+        ].join($/)
       end # prepare new-my-repo#0.0.1
 
       before do
@@ -1029,7 +1029,7 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
-        ].join("\n")
+        ].join($/)
 
         # src/1.rb
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
@@ -1037,17 +1037,17 @@ describe SocialSnippet::Core do
           '# @snip </2.rb>',
           '# @snip <3.rb>',
           'GOOD VERSION',
-        ].join("\n")
+        ].join($/)
 
         # src/2.rb
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
           'OK: 2.rb',
-        ].join("\n")
+        ].join($/)
 
         # src/3.rb
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/3.rb", [
           'OK: 3.rb',
-        ].join("\n")
+        ].join($/)
       end # prepare new-my-repo#0.0.2
 
       before do
@@ -1059,7 +1059,7 @@ describe SocialSnippet::Core do
         let(:input) do
           [
             '@snip<my-repo:1.rb>',
-          ].join("\n")
+          ].join($/)
         end
 
         let(:output) do
@@ -1070,7 +1070,7 @@ describe SocialSnippet::Core do
             'def func_1',
             '  return 2 * func_2()',
             'end',
-          ].join("\n")
+          ].join($/)
         end
 
         subject { fake_social_snippet.api.insert_snippet input }
@@ -1083,7 +1083,7 @@ describe SocialSnippet::Core do
         let(:input) do
           [
             '@snip<my-repo#1:1.rb>',
-          ].join("\n")
+          ].join($/)
         end
 
         let(:output) do
@@ -1094,7 +1094,7 @@ describe SocialSnippet::Core do
             'def func_1',
             '  return 2 * func_2()',
             'end',
-          ].join("\n")
+          ].join($/)
         end
 
         subject { fake_social_snippet.api.insert_snippet input }
@@ -1108,7 +1108,7 @@ describe SocialSnippet::Core do
           [
             '@snip<my-repo#1:1.rb>',
             '@snip<my-repo#0:1.rb>',
-          ].join("\n")
+          ].join($/)
         end
 
         let(:output) do
@@ -1123,7 +1123,7 @@ describe SocialSnippet::Core do
             '0.0.3',
             '@snippet<my-repo#0.0.3:1.rb>',
             'OK',
-          ].join("\n")
+          ].join($/)
         end
 
         subject { fake_social_snippet.api.insert_snippet input }
@@ -1136,7 +1136,7 @@ describe SocialSnippet::Core do
         let(:input) do
           [
             '# @snip <new-my-repo:1.rb>',
-          ].join("\n")
+          ].join($/)
         end
 
         let(:output) do
@@ -1151,7 +1151,7 @@ describe SocialSnippet::Core do
             'OK: 3.rb',
             '# @snippet <new-my-repo#0.0.2:1.rb>',
             'GOOD VERSION',
-          ].join("\n")
+          ].join($/)
         end
 
         subject { fake_social_snippet.api.insert_snippet input }
@@ -1178,7 +1178,7 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
-        ].join("\n")
+        ].join($/)
 
         # src/1.rb
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
@@ -1186,14 +1186,14 @@ describe SocialSnippet::Core do
           'def func_1',
           '  return 2 * func_2()',
           'end',
-        ].join("\n")
+        ].join($/)
 
         # src/2.rb
         File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
           'def func_2',
           '  return 42',
           'end',
-        ].join("\n")
+        ].join($/)
 
       end # prepare my-repo#0.0.3
 
@@ -1202,7 +1202,7 @@ describe SocialSnippet::Core do
       let(:input) do
         [
           '#@snip <my-repo:1.rb>',
-        ].join("\n")
+        ].join($/)
       end
 
       let(:output) do
@@ -1215,7 +1215,7 @@ describe SocialSnippet::Core do
           'def func_1',
           '  return 2 * func_2()',
           'end',
-        ].join("\n")
+        ].join($/)
       end
 
       subject { fake_social_snippet.api.insert_snippet input }
@@ -1240,7 +1240,7 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
-        ].join("\n")
+        ].join($/)
 
         # src/1.rb
         File.write "#{repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
@@ -1248,14 +1248,14 @@ describe SocialSnippet::Core do
           'def func_1',
           '  return 2 * func_2()',
           'end',
-        ].join("\n")
+        ].join($/)
 
         # src/2.rb
         File.write "#{repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
           'def func_2',
           '  return 42',
           'end',
-        ].join("\n")
+        ].join($/)
 
         allow(fake_social_snippet.repo_manager).to receive(:find_repository).with(repo_name, ref_name) do
           repo = SocialSnippet::Repository::Drivers::BaseRepository.new("#{repo_path}/#{repo_name}/#{ref_name}")
@@ -1286,7 +1286,7 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
-        ].join("\n")
+        ].join($/)
 
         # src/1.rb
         File.write "#{repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
@@ -1294,14 +1294,14 @@ describe SocialSnippet::Core do
           'def func_1',
           '  return 2 * func_2()',
           'end',
-        ].join("\n")
+        ].join($/)
 
         # src/2.rb
         File.write "#{repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
           'def func_2',
           '  return 10000 + 42',
           'end',
-        ].join("\n")
+        ].join($/)
 
         allow(fake_social_snippet.repo_manager).to receive(:find_repository).with(repo_name, ref_name) do
           repo = SocialSnippet::Repository::Drivers::BaseRepository.new("#{repo_path}/#{repo_name}/#{ref_name}")
@@ -1323,7 +1323,7 @@ describe SocialSnippet::Core do
             '# main.rb',
             '# @snip <my-repo#0.0.1:1.rb>',
             'puts func_1',
-          ].join("\n")
+          ].join($/)
         end
 
         let(:output) do
@@ -1338,7 +1338,7 @@ describe SocialSnippet::Core do
             '  return 2 * func_2()',
             'end',
             'puts func_1',
-          ].join("\n")
+          ].join($/)
         end
 
         subject { fake_social_snippet.api.insert_snippet(input) }
@@ -1353,7 +1353,7 @@ describe SocialSnippet::Core do
             '# main.rb',
             '# @snip <my-repo#0.0.2:1.rb>',
             'puts func_1',
-          ].join("\n")
+          ].join($/)
         end
 
         let(:output) do
@@ -1368,7 +1368,7 @@ describe SocialSnippet::Core do
             '  return 2 * func_2()',
             'end',
             'puts func_1',
-          ].join("\n")
+          ].join($/)
         end
 
         subject { fake_social_snippet.api.insert_snippet(input) }
@@ -1383,7 +1383,7 @@ describe SocialSnippet::Core do
             '# main.rb',
             '# @snip <my-repo#0.0.2:1.rb>',
             '# @snip <my-repo#0.0.1:1.rb>',
-          ].join("\n")
+          ].join($/)
         end
 
         let(:output) do
@@ -1405,7 +1405,7 @@ describe SocialSnippet::Core do
             'def func_1',
             '  return 2 * func_2()',
             'end',
-          ].join("\n")
+          ].join($/)
         end
 
         subject { fake_social_snippet.api.insert_snippet(input) }
@@ -1431,7 +1431,7 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{repo_path}/#{repo_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
-        ].join("\n")
+        ].join($/)
 
         # src/1.rb
         File.write "#{repo_path}/#{repo_name}/src/1.rb", [
@@ -1439,14 +1439,14 @@ describe SocialSnippet::Core do
           'def func_1',
           '  return 2 * func_2()',
           'end',
-        ].join("\n")
+        ].join($/)
 
         # src/2.rb
         File.write "#{repo_path}/#{repo_name}/src/2.rb", [
           'def func_2',
           '  return 42',
           'end',
-        ].join("\n")
+        ].join($/)
 
         repo_config = Proc.new do |path|
           repo = SocialSnippet::Repository::Drivers::BaseRepository.new("#{repo_path}/#{repo_name}")
@@ -1467,7 +1467,7 @@ describe SocialSnippet::Core do
           '# main.rb',
           '# @snip <my-repo:1.rb>',
           'puts func_1',
-        ].join("\n")
+        ].join($/)
       end
 
       let(:output) do
@@ -1482,7 +1482,7 @@ describe SocialSnippet::Core do
           '  return 2 * func_2()',
           'end',
           'puts func_1',
-        ].join("\n")
+        ].join($/)
       end
 
       subject { fake_social_snippet.api.insert_snippet(input) }
@@ -1507,23 +1507,23 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{repo_path}/#{repo_name}/snippet.json", [
           '{"name": "' + repo_name + '"}',
-        ].join("\n")
+        ].join($/)
 
         # a.rb
         File.write "#{repo_path}/#{repo_name}/a.rb", [
           '# @snip <./a/1.rb>',
           '# @snip <./a/2.rb>',
-        ].join("\n")
+        ].join($/)
 
         # a/1.rb
         File.write "#{repo_path}/#{repo_name}/a/1.rb", [
           'puts "1"',
-        ].join("\n")
+        ].join($/)
 
         # a/2.rb
         File.write "#{repo_path}/#{repo_name}/a/2.rb", [
           'puts "2"',
-        ].join("\n")
+        ].join($/)
 
         repo_config = Proc.new do |path|
           repo = SocialSnippet::Repository::Drivers::BaseRepository.new("#{repo_path}/#{repo_name}")
@@ -1541,7 +1541,7 @@ describe SocialSnippet::Core do
       let(:input) do
         [
           "# @snip<my-repo:a.rb>"
-        ].join("\n")
+        ].join($/)
       end
 
       let(:output) do
@@ -1551,7 +1551,7 @@ describe SocialSnippet::Core do
           '# @snippet<my-repo#' + short_commit_id + ':a/2.rb>',
           'puts "2"',
           '# @snippet<my-repo#' + short_commit_id + ':a.rb>',
-        ].join("\n")
+        ].join($/)
       end
 
       subject { fake_social_snippet.api.insert_snippet(input) }
@@ -1576,14 +1576,14 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{repo_path}/#{repo_name}/snippet.json", [
           '{"name": "' + repo_name + '"}',
-        ].join("\n")
+        ].join($/)
 
         # parent
         File.write "#{repo_path}/#{repo_name}/parent", [
           '@snip<child_1>',
           '@snip<child_2>',
           '@snip<child_3>',
-        ].join("\n")
+        ].join($/)
 
         repo_config = Proc.new do |path|
           repo = SocialSnippet::Repository::Drivers::BaseRepository.new("#{repo_path}/#{repo_name}")
@@ -1601,7 +1601,7 @@ describe SocialSnippet::Core do
       let(:input) do
         [
           '@snip <repo-a:parent>',
-        ].join("\n")
+        ].join($/)
       end
 
       let(:output) do
@@ -1610,7 +1610,7 @@ describe SocialSnippet::Core do
           '@snippet <repo-a#' + short_commit_id + ':child_2>',
           '@snippet <repo-a#' + short_commit_id + ':child_3>',
           '@snippet <repo-a#' + short_commit_id + ':parent>',
-        ].join("\n")
+        ].join($/)
       end
 
       subject { fake_social_snippet.api.insert_snippet(input) }
@@ -1635,7 +1635,7 @@ describe SocialSnippet::Core do
         # snippet.json
         File.write "#{repo_path}/#{repo_name}/snippet.json", [
           '{"name": "' + repo_name + '"}',
-        ].join("\n")
+        ].join($/)
 
         # parent
         File.write "#{repo_path}/#{repo_name}/parent", [
@@ -1646,7 +1646,7 @@ describe SocialSnippet::Core do
           '@snip<child_1>',
           '@snip<child_2>',
           '@snip<child_3>',
-        ].join("\n")
+        ].join($/)
 
         repo_config = Proc.new do |path|
           repo = SocialSnippet::Repository::Drivers::BaseRepository.new("#{repo_path}/#{repo_name}")
@@ -1667,7 +1667,7 @@ describe SocialSnippet::Core do
           '@snip<my_repo:child_3>',
           '@snip<my_repo:child_2>',
           '@snip<my_repo:child_1>',
-        ].join("\n")
+        ].join($/)
       end
 
       let(:output) do
@@ -1676,7 +1676,7 @@ describe SocialSnippet::Core do
           '@snippet <my_repo#' + short_commit_id + ':child_2>',
           '@snippet <my_repo#' + short_commit_id + ':child_3>',
           '@snippet <my_repo#' + short_commit_id + ':parent>',
-        ].join("\n")
+        ].join($/)
       end
 
       subject { fake_social_snippet.api.insert_snippet(input) }
@@ -1706,23 +1706,23 @@ describe SocialSnippet::Core do
             '  "name": "' + repo_name + '",',
             '  "main": "src"',
             '}',
-          ].join("\n")
+          ].join($/)
 
           # src/1
           File.write "#{tmp_repo_path_no_ver}/#{repo_name}/src/1", [
             '@snip<2>',
             '@snip<3>',
-          ].join("\n")
+          ].join($/)
 
           # src/2
           File.write "#{tmp_repo_path_no_ver}/#{repo_name}/src/2", [
             '2',
-          ].join("\n")
+          ].join($/)
 
           # src/3
           File.write "#{tmp_repo_path_no_ver}/#{repo_name}/src/3", [
             '3',
-          ].join("\n")
+          ].join($/)
         end # prepare for my-repo
 
         before do
@@ -1745,24 +1745,24 @@ describe SocialSnippet::Core do
             '  "name": "' + repo_name + '",',
             '  "main": "src"',
             '}',
-          ].join("\n")
+          ].join($/)
 
           # src/1
           File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/1", [
             '@snip<2>',
             '@snip<3>',
             '0.0.1: 1',
-          ].join("\n")
+          ].join($/)
 
           # src/2
           File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/2", [
             '0.0.1: 2',
-          ].join("\n")
+          ].join($/)
 
           # src/3
           File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/3", [
             '0.0.1: 3',
-          ].join("\n")
+          ].join($/)
         end # prepare has-version#0.0.1
 
         before do
@@ -1785,24 +1785,24 @@ describe SocialSnippet::Core do
             '  "name": "' + repo_name + '",',
             '  "main": "src"',
             '}',
-          ].join("\n")
+          ].join($/)
 
           # src/1
           File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/1", [
             '@snip<2>',
             '@snip<3>',
             '1.2.3: 1',
-          ].join("\n")
+          ].join($/)
 
           # src/2
           File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/2", [
             '1.2.3: 2',
-          ].join("\n")
+          ].join($/)
 
           # src/3
           File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/3", [
             '1.2.3: 3',
-          ].join("\n")
+          ].join($/)
         end # prepare has-version#1.2.3
 
         before do
@@ -1817,7 +1817,7 @@ describe SocialSnippet::Core do
               [
                 '@snip<has-version#0:1>',
                 '@snip<has-version#1:1>',
-              ].join("\n").freeze
+              ].join($/).freeze
             end
 
             let(:output) do
@@ -1834,7 +1834,7 @@ describe SocialSnippet::Core do
                 '1.2.3: 3',
                 '@snippet<has-version#1.2.3:1>',
                 '1.2.3: 1',
-              ].join("\n").freeze
+              ].join($/).freeze
             end
 
             subject { fake_social_snippet.api.insert_snippet(input) }
@@ -1849,7 +1849,7 @@ describe SocialSnippet::Core do
                 '@snippet<has-version#0.0.1:1>',
                 '@snip<has-version#0:1>',
                 '@snip<has-version#1:1>',
-              ].join("\n").freeze
+              ].join($/).freeze
             end
 
             let(:output) do
@@ -1861,7 +1861,7 @@ describe SocialSnippet::Core do
                 '1.2.3: 3',
                 '@snippet<has-version#1.2.3:1>',
                 '1.2.3: 1',
-              ].join("\n").freeze
+              ].join($/).freeze
             end
 
             subject { fake_social_snippet.api.insert_snippet(input) }
@@ -1877,7 +1877,7 @@ describe SocialSnippet::Core do
                 '@snip<has-version#0:1>',
                 '@snip<my-repo:1>',
                 '@snip<has-version:1>',
-              ].join("\n").freeze
+              ].join($/).freeze
             end
 
             let(:output) do
@@ -1894,7 +1894,7 @@ describe SocialSnippet::Core do
                 '1.2.3: 3',
                 '@snippet<has-version#1.2.3:1>',
                 '1.2.3: 1',
-              ].join("\n").freeze
+              ].join($/).freeze
             end
 
             subject { fake_social_snippet.api.insert_snippet(input) }
@@ -1913,7 +1913,7 @@ describe SocialSnippet::Core do
               '',
               '@snip<my-repo:1>',
               '@snip<my-repo:2>',
-            ].join("\n")
+            ].join($/)
           end
 
           let(:output) do
@@ -1924,7 +1924,7 @@ describe SocialSnippet::Core do
               '@snippet<my-repo#' + short_commit_id + ':2>',
               '2',
               '@snippet<my-repo#' + short_commit_id + ':1>',
-            ].join("\n")
+            ].join($/)
           end
 
           subject { fake_social_snippet.api.insert_snippet(input) }
@@ -1939,7 +1939,7 @@ describe SocialSnippet::Core do
               '@snip<my-repo:1>',
               '@snip<my-repo:2>',
               '@snip<my-repo:3>',
-            ].join("\n")
+            ].join($/)
           end
 
           let(:output) do
@@ -1949,7 +1949,7 @@ describe SocialSnippet::Core do
               '@snippet<my-repo#' + short_commit_id + ':3>',
               '3',
               '@snippet<my-repo#' + short_commit_id + ':1>',
-            ].join("\n")
+            ].join($/)
           end
 
           subject { fake_social_snippet.api.insert_snippet(input) }
@@ -1977,14 +1977,14 @@ describe SocialSnippet::Core do
             '  "name": "' + repo_name + '",',
             '  "main": "src"',
             '}',
-          ].join("\n")
+          ].join($/)
 
           # src/add_func.cpp
           File.write "#{tmp_repo_path_no_ver}/#{repo_name}/src/add_func.cpp", [
             'int add_func( int a, int b ) {',
             '  return a + b;',
             '}',
-          ].join("\n")
+          ].join($/)
         end # prepare for my_lib repo
 
         before do
@@ -1999,7 +1999,7 @@ describe SocialSnippet::Core do
           # snippet.json
           File.write "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json", [
             '{"name": "' + repo_name + '"}',
-          ].join("\n")
+          ].join($/)
 
           # use_add_func.cpp
           File.write "#{tmp_repo_path_no_ver}/#{repo_name}/use_add_func.cpp", [
@@ -2007,7 +2007,7 @@ describe SocialSnippet::Core do
             'int my_repo_a_use_add_func( int a, int b ) {',
             '  return add_func(a, b);',
             '}',
-          ].join("\n")
+          ].join($/)
         end # prepare for my_repo_a repo
 
         before do
@@ -2022,7 +2022,7 @@ describe SocialSnippet::Core do
           # snippet.json
           File.write "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json", [
             '{"name": "' + repo_name + '"}',
-          ].join("\n")
+          ].join($/)
 
           # use_add_func.cpp
           File.write "#{tmp_repo_path_no_ver}/#{repo_name}/use_add_func.cpp", [
@@ -2030,7 +2030,7 @@ describe SocialSnippet::Core do
             'int my_repo_b_use_add_func( int a, int b ) {',
             '  return add_func(a, b);',
             '}',
-          ].join("\n")
+          ].join($/)
         end # prepare for my_repo_b repo
 
         before { find_repo_mock }
@@ -2048,7 +2048,7 @@ describe SocialSnippet::Core do
             '  std::cout << my_repo_a_use_add_func(a, b) << " == " << my_repo_a_use_add_func(a, b) << std::endl;',
             '  return 0;',
             '}',
-          ].join("\n")
+          ].join($/)
         end
 
         let(:output) do
@@ -2074,7 +2074,7 @@ describe SocialSnippet::Core do
             '  std::cout << my_repo_a_use_add_func(a, b) << " == " << my_repo_a_use_add_func(a, b) << std::endl;',
             '  return 0;',
             '}',
-          ].join("\n")
+          ].join($/)
         end
 
         context "call insert_snippet" do

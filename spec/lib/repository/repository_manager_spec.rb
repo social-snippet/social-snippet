@@ -88,7 +88,7 @@ module SocialSnippet::Repository
             '  "language": "C++",',
             '  "main": "src"',
             '}',
-          ].join("\n")
+          ].join($/)
 
           allow(repo_manager).to receive(:find_repository).with("repo_a") do |path|
             repo = ::SocialSnippet::Repository::Drivers::BaseRepository.new("#{repo_path}/repo_a")
@@ -137,7 +137,7 @@ module SocialSnippet::Repository
             '  "desc": "this is repo_a",',
             '  "language": "C++"',
             '}',
-          ].join("\n")
+          ].join($/)
         end
 
         before do

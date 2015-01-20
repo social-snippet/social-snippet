@@ -26,7 +26,7 @@ module SocialSnippet
             [
               '#include <iostream>',
               '',
-            ].join("\n").freeze
+            ].join($/).freeze
           end
 
           it { expect(instance.to_s).to eq output }
@@ -44,7 +44,7 @@ module SocialSnippet
                 '#include <iostream>',
                 '',
                 '// @snippet<my-repo:path/to/func.cpp>',
-              ].join("\n").freeze
+              ].join($/).freeze
             end
 
             it { expect(instance.to_s).to eq output }
@@ -67,7 +67,7 @@ module SocialSnippet
                   'code',
                   'code',
                   'code',
-                ].join("\n").freeze
+                ].join($/).freeze
               end
 
               it { expect(instance.to_s).to eq output }
@@ -101,7 +101,7 @@ module SocialSnippet
             '1',
             '2',
             '3',
-          ].join("\n").freeze
+          ].join($/).freeze
         end
 
         it { expect(instance.to_s).to eq output }
@@ -115,7 +115,7 @@ module SocialSnippet
               '1',
               '2',
               '3',
-            ].join("\n").freeze
+            ].join($/).freeze
           end
 
           it { expect(instance.to_s).to eq output }
@@ -134,7 +134,7 @@ module SocialSnippet
                 '2',
                 '3',
                 'a',
-              ].join("\n").freeze
+              ].join($/).freeze
             end
 
             it { expect(instance.to_s).to eq output }
@@ -161,7 +161,7 @@ module SocialSnippet
               'AAA',
               'BBB',
               'CCC',
-            ].join("\n")
+            ].join($/)
           end
 
           it { should eq output }

@@ -7,8 +7,8 @@ class SocialSnippet::Snippet
   # Constructor
   def initialize(snippet_path)
     @path = snippet_path
-    @code = ::File.read(@path)
-    @lines = @code.split("\n")
+    @code = ::File.read(path)
+    @lines = code.split($/)
   end
 
 end

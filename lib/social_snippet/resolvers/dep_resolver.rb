@@ -49,7 +49,7 @@ module SocialSnippet
           :context => new_context,
         })
         # find more deps 
-        found_tags.push *find_func(snippet.lines, new_context, tag)
+        found_tags.push *find_func(snippet.lines.to_a, new_context, tag)
       end
 
       return found_tags
