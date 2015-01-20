@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "bundler"
   spec.add_runtime_dependency "rake"
   spec.add_runtime_dependency "version_sorter"
-  spec.add_runtime_dependency "rugged"
+  spec.add_runtime_dependency "rugged", ["~> 0.21.4", ">= 0.21.4"]
   spec.add_runtime_dependency "rest-client"
 
   spec.add_development_dependency "yard"
