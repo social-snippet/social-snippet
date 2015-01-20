@@ -28,7 +28,22 @@ class SocialSnippet::Api
       answer = ::JSON.parse(::File.read "snippet.json")
     end
 
-    questions = [
+    loop do
+      answer = ask_manifest_questions(manifest_questions(answer), answer)
+      json_str = ::JSON.pretty_generate(answer)
+      social_snippet.logger.say ""
+      social_snippet.logger.say json_str
+      social_snippet.logger.say ""
+      break if ask_confirm("Is this okay? [Y/N]: ")
+    end
+
+    ::File.write "snippet.json", json_str
+
+    answer
+  end
+
+  def manifest_questions(answer)
+    [
       {
         :key => "name",
         :type => :string,
@@ -46,19 +61,6 @@ class SocialSnippet::Api
         :type => :string,
       },
     ]
-
-    loop do
-      answer = ask_manifest_questions(questions, answer)
-      json_str = ::JSON.pretty_generate(answer)
-      social_snippet.logger.say ""
-      social_snippet.logger.say json_str
-      social_snippet.logger.say ""
-      break if ask_confirm("Is this okay? [Y/N]: ")
-    end
-
-    ::File.write "snippet.json", json_str
-
-    answer
   end
 
   def ask_confirm(message)
@@ -71,7 +73,7 @@ class SocialSnippet::Api
 
   def ask_manifest_questions(questions, obj)
     questions.inject(obj) do |obj, q|
-      q[:default] = obj[q[:key]] = ask_manifest_question(q)
+      obj[q[:key]] = ask_manifest_question(q)
       obj
     end
   end
