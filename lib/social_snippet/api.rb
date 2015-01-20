@@ -18,6 +18,11 @@ class SocialSnippet::Api
     social_snippet.logger.say "#{key}=#{value}"
   end
 
+  # Initialize snippet.json
+  def init_manifest(options = {})
+    raise "not implemented"
+  end
+
   # Insert snippets to given text
   #
   # @param src [String] The text of source code
