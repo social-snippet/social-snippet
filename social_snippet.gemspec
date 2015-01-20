@@ -28,8 +28,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pry"
   spec.add_development_dependency "guard"
   spec.add_development_dependency "guard-shell"
-  spec.add_development_dependency "pry-byebug"
-
+  unless ENV["TRAVIS"] == "true"
+    spec.add_development_dependency "pry-byebug"
+  end
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "fakefs"
   spec.add_development_dependency "webmock"
