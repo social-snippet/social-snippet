@@ -23,6 +23,9 @@ deploy:
       secure: "hlC3/Vsqpw3RdA0g8nAuusXEpGiwLtndGQVd8eg8x7yCoubFmsruwJG2Cci4QF2aIVGovFzrrmlxPb204nndsmBCzTLZEnn2dsCqOt8TZDAyFRZf6xeZ53eT7AjOJvFIafS4YLQ975upzsQ/cW4OgWFRaqhHgckTUSapa7Dyeao="
   gem:
     master: social_snippet
+  on:
+    repo: social-snippet/social-snippet
+    ruby: "2.2"
 
 cache:
   bundler: true
