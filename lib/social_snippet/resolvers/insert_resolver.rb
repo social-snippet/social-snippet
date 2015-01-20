@@ -7,7 +7,7 @@ module SocialSnippet
     # Constructor
     #
     # @param social_snippet [::SocialSnippet::Core]
-    def initialize(social_snippet)
+    def initialize(social_snippet, options = {})
       @deps_resolver = Resolvers::DepResolver.new(social_snippet)
       super(social_snippet)
     end
