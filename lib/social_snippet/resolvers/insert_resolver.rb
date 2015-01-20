@@ -60,7 +60,7 @@ module SocialSnippet
 
     # Insert snippet by tag and context
     def insert_by_tag_and_context!(inserter, snippet, context, tag)
-      src = insert_func(snippet.lines, context, tag)
+      src = insert_func(snippet.lines.to_a, context, tag)
       inserter.insert tag.to_snippet_tag # @snip -> @snippet
       inserter.insert src
       visit tag
@@ -68,7 +68,7 @@ module SocialSnippet
 
     # Insert depended snippet
     def insert_depended_snippets!(inserter, snippet, context, tag)
-      dep_tags = deps_resolver.find(snippet.lines, context, tag)
+      dep_tags = deps_resolver.find(snippet.lines.to_a, context, tag)
       dep_tags = sort_dep_tags_by_dep(dep_tags)
 
       dep_tags.each do |tag_info|
