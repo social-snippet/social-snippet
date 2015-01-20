@@ -9,18 +9,47 @@ class SocialSnippet::Api
     @social_snippet = new_social_snippet
   end
 
+  # $ sspm config key=value
   def config_set(key, value)
     social_snippet.config.set! key, value
   end
 
+  # $ sspm config key
   def config_get(key)
     value = social_snippet.config.get(key)
     social_snippet.logger.say "#{key}=#{value}"
   end
 
-  # Insert snippets to given text
+  # Initialize the snippet.json interactively.
+  # $ sspm init
+  def init_manifest(options = {})
+    answer = {}
+    json_str = "{}"
+
+    # load current configuration
+    if ::File.exists?("snippet.json")
+      answer = ::JSON.parse(::File.read "snippet.json")
+    end
+
+    loop do
+      answer = ask_manifest_questions(manifest_questions(answer), answer)
+      json_str = ::JSON.pretty_generate(answer)
+      social_snippet.logger.say ""
+      social_snippet.logger.say json_str
+      social_snippet.logger.say ""
+      break if ask_confirm("Is this okay? [Y/N]: ")
+    end
+
+    ::File.write "snippet.json", json_str
+
+    answer
+  end
+
+  # Insert snippets to given text.
+  # $ ssnip
   #
   # @param src [String] The text of source code
+  #
   def insert_snippet(src)
     resolver = ::SocialSnippet::Resolvers::InsertResolver.new(social_snippet)
     res = resolver.insert(src)
@@ -28,6 +57,7 @@ class SocialSnippet::Api
     res
   end
 
+  # $ sspm install name
   def install_repository_by_name(repo_name, repo_ref, options = {})
     installed_as = repo_name
     installed_as = options[:name] unless options[:name].nil?
@@ -51,12 +81,14 @@ class SocialSnippet::Api
     install_repository installed_as, repo_ref, repo
   end
 
+  # $ sspm install URL
   def install_repository_by_url(repo_url, repo_ref, options = {})
     output "Cloning repository..."
     repo = ::SocialSnippet::Repository::RepositoryFactory.clone(repo_url)
     install_repository_by_repo repo, repo_ref, options
   end
 
+  # $ sspm install ./path/to/repo
   def install_repository_by_path(repo_path, repo_ref, options = {})
     output "Cloning repository..."
     repo = ::SocialSnippet::Repository::RepositoryFactory.clone_local(repo_path)
@@ -76,39 +108,8 @@ class SocialSnippet::Api
     install_repository installed_as, repo_ref, repo
   end
 
-  # Install repository
-  #
-  # @param repo [::SocialSnippet::Repository::Drivers::BaseRepository]
-  def install_repository(repo_name, repo_ref, repo, options = {})
-    display_name = repo_name
-
-    if repo_ref.nil?
-      repo_ref = resolve_reference(repo)
-
-      if repo.has_versions?
-        output "Resolving #{display_name}'s version"
-      else
-        output "No versions, use current reference"
-      end
-    end
-
-    display_name = "#{repo_name}\##{repo_ref}"
-
-    output "Installing: #{display_name}"
-    unless options[:dry_run]
-      social_snippet.repo_manager.install repo_name, repo_ref, repo, options
-    end
-
-    output "Success: #{display_name}"
-
-    # install dependencies
-    if has_dependencies?(repo)
-      output "Finding #{display_name}'s dependencies"
-      install_missing_dependencies repo.dependencies, options
-      output "Finish finding #{display_name}'s dependencies"
-    end
-  end
-
+  # Update a repository
+  # $ sspm update repo-name
   def update_repository(repo_name, options = {})
     unless social_snippet.repo_manager.exists?(repo_name)
       output "ERROR: #{repo_name} is not installed"
@@ -150,6 +151,8 @@ class SocialSnippet::Api
     end
   end
 
+  # Update all installed repositories
+  # $ sspm update
   def update_all_repositories(options = {})
     social_snippet.repo_manager.each_installed_repo do |repo_name|
       update_repository repo_name, options
@@ -171,6 +174,7 @@ class SocialSnippet::Api
     output ::JSON.pretty_generate(repo_info)
   end
 
+  # $ sspm search query
   def search_repositories(query, options = {})
     format_text = search_result_format(options)
     social_snippet.registry_client.repositories.search(query).each do |repo|
@@ -188,6 +192,86 @@ class SocialSnippet::Api
   #
 
   private
+
+  # Install repository
+  #
+  # @param repo [::SocialSnippet::Repository::Drivers::BaseRepository]
+  def install_repository(repo_name, repo_ref, repo, options = {})
+    display_name = repo_name
+
+    if repo_ref.nil?
+      repo_ref = resolve_reference(repo)
+
+      if repo.has_versions?
+        output "Resolving #{display_name}'s version"
+      else
+        output "No versions, use current reference"
+      end
+    end
+
+    display_name = "#{repo_name}\##{repo_ref}"
+
+    output "Installing: #{display_name}"
+    unless options[:dry_run]
+      social_snippet.repo_manager.install repo_name, repo_ref, repo, options
+    end
+
+    output "Success: #{display_name}"
+
+    # install dependencies
+    if has_dependencies?(repo)
+      output "Finding #{display_name}'s dependencies"
+      install_missing_dependencies repo.dependencies, options
+      output "Finish finding #{display_name}'s dependencies"
+    end
+  end
+
+  def ask_confirm(message)
+    ret = social_snippet.prompt.ask(message) do |q|
+      q.limit = 1
+      q.validate = /^[yn]$/i
+    end
+    /y/i === ret
+  end
+
+  def ask_manifest_questions(questions, obj)
+    questions.inject(obj) do |obj, q|
+      obj[q[:key]] = ask_manifest_question(q)
+      obj
+    end
+  end
+
+  def ask_manifest_question(question)
+    if question[:type] === :string
+      social_snippet.prompt.ask("#{question[:key]}: ") do |q|
+        q.default = question[:default]
+        if question[:validate].is_a?(Regexp)
+          q.validate = question[:validate]
+        end
+      end
+    end
+  end
+
+  def manifest_questions(answer)
+    [
+      {
+        :key => "name",
+        :type => :string,
+        :validate => /[a-zA-Z0-9\.\-_]+/,
+        :default => answer["name"],
+      },
+      {
+        :key => "description",
+        :type => :string,
+        :default => answer["description"],
+      },
+      {
+        :key => "license",
+        :default => answer["license"] || "MIT",
+        :type => :string,
+      },
+    ]
+  end
 
   def resolve_reference(repo)
     if repo.has_versions?
