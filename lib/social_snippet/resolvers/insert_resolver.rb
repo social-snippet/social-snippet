@@ -3,13 +3,22 @@ module SocialSnippet
   class Resolvers::InsertResolver < Resolvers::BaseResolver
 
     attr_reader :deps_resolver
+    attr_reader :options
 
     # Constructor
     #
     # @param social_snippet [::SocialSnippet::Core]
-    def initialize(social_snippet, options = {})
+    def initialize(social_snippet, new_options = {})
+      @options = new_options
       @deps_resolver = Resolvers::DepResolver.new(social_snippet)
       super(social_snippet)
+
+      init_options
+    end
+
+    def init_options
+      options.fetch :margin_bottom, 0
+      options.fetch :margin_top, 0
     end
 
     # Insert snippets to given text
