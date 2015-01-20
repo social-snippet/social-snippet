@@ -17,6 +17,8 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
+  spec.required_ruby_version = ">= 1.9.3"
+
   spec.add_runtime_dependency "version_sorter", "~> 1.1.0"
   spec.add_runtime_dependency "rugged", ["~> 0.21.4", ">= 0.21.4"]
   spec.add_runtime_dependency "rest-client", "~> 1.7.0"
