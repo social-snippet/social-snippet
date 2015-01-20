@@ -1,4 +1,5 @@
 require "tsort"
+require "highline"
 
 # Extend Hash tsortable
 class Hash
@@ -18,6 +19,7 @@ class SocialSnippet::Core
   attr_reader :registry_client
   attr_reader :logger
   attr_reader :api
+  attr_reader :prompt
 
   # Constructor
   def initialize(new_input_stream = STDIN, new_output_stream = STDOUT)
@@ -25,6 +27,7 @@ class SocialSnippet::Core
     @output_stream  = new_output_stream
     @config = ::SocialSnippet::Config.new(self)
     @logger = ::SocialSnippet::Logger.new output_stream
+    @prompt = ::HighLine.new(input_stream, output_stream)
     init_logger
 
     @repo_manager = ::SocialSnippet::Repository::RepositoryManager.new(self)
