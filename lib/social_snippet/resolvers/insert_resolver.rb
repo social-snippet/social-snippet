@@ -85,7 +85,7 @@ module SocialSnippet
       end
 
       # generate dependency graph
-      dep_tags_hash = {}
+      dep_tags_hash = TSortableHash.new
       dep_tags.each do |tag_info|
         tag = tag_info[:tag].to_path
         dep_ind = dep_tags_index[tag]
