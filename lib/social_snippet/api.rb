@@ -20,25 +20,43 @@ class SocialSnippet::Api
 
   # Initialize snippet.json
   def init_manifest(options = {})
+    answer = {}
+    json_str = "{}"
+
+    # load current configuration
+    if ::File.exists?("snippet.json")
+      answer = ::JSON.parse(::File.read "snippet.json")
+    end
+
     questions = [
       {
         :key => "name",
+        :type => :string,
+        :validate => /[a-zA-Z0-9\.\-_]+/,
+        :default => answer["name"],
       },
       {
-        :key => "description"
+        :key => "description",
+        :type => :string,
+        :default => answer["description"],
       },
       {
         :key => "license",
-        :default => "MIT",
+        :default => answer["license"] || "MIT",
+        :type => :string,
       },
     ]
-    answer = {}
 
     loop do
       answer = ask_manifest_questions(questions, answer)
-      social_snippet.logger.say ::JSON.pretty_generate(answer)
-      break if ask_confirm("Is this okay? [Y/n]: ")
+      json_str = ::JSON.pretty_generate(answer)
+      social_snippet.logger.say ""
+      social_snippet.logger.say json_str
+      social_snippet.logger.say ""
+      break if ask_confirm("Is this okay? [Y/N]: ")
     end
+
+    ::File.write "snippet.json", json_str
 
     answer
   end
@@ -46,15 +64,26 @@ class SocialSnippet::Api
   def ask_confirm(message)
     ret = social_snippet.prompt.ask(message) do |q|
       q.limit = 1
-      q.validate = /[yn]/i
+      q.validate = /^[yn]$/i
     end
     /y/i === ret
   end
 
   def ask_manifest_questions(questions, obj)
     questions.inject(obj) do |obj, q|
-      obj[q[:key]] = social_snippet.prompt.ask("#{q[:key]}: ")
+      q[:default] = obj[q[:key]] = ask_manifest_question(q)
       obj
+    end
+  end
+
+  def ask_manifest_question(question)
+    if question[:type] === :string
+      social_snippet.prompt.ask("#{question[:key]}: ") do |q|
+        q.default = question[:default]
+        if question[:validate].is_a?(Regexp)
+          q.validate = question[:validate]
+        end
+      end
     end
   end
 
