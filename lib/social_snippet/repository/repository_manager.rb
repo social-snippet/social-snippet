@@ -44,7 +44,7 @@ module SocialSnippet::Repository
     # @param context [::SocialSnippet::Context] The context of snippet
     # @param tag [::SocialSnippet::Tag] The tag of snippet
     def get_snippet(context, tag)
-      return ::SocialSnippet::Snippet.new(resolve_snippet_path(context, tag))
+      ::SocialSnippet::Snippet.new(resolve_snippet_path(context, tag))
     end
 
     # Resolve snippet path from tag
