@@ -40,7 +40,7 @@ EOF
         }
       end.map do |sub_command|
         "    #{to_command_name(sub_command[:sym])}\t#{sub_command[:instance].desc}"
-      end.join("\n")
+      end.join($/)
     end
 
     def find_subcommand(command_name)

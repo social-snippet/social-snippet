@@ -30,14 +30,14 @@ module SocialSnippet
             '  "language": "C++",',
             '  "main": "src/"',
             '}',
-          ].join("\n")
+          ].join($/)
 
           # src/get_42.cpp
           File.write "#{repo_path}/my-repo/src/get_42.cpp", [
             'int get_42() {',
             '  return 42;',
             '}',
-          ].join("\n")
+          ].join($/)
 
           repo_config = Proc.new do |path|
             repo = ::SocialSnippet::Repository::Drivers::BaseRepository.new("#{repo_path}/my-repo")
@@ -62,7 +62,7 @@ module SocialSnippet
               '  std::cout << get_42() << std::endl;',
               '  return 0;',
               '}',
-            ].join("\n")
+            ].join($/)
           end
 
           let(:output) do
@@ -73,7 +73,7 @@ module SocialSnippet
               '  std::cout << get_42() << std::endl;',
               '  return 0;',
               '}',
-            ].join("\n")
+            ].join($/)
           end
 
           subject { fake_social_snippet.api.insert_snippet(input) }
@@ -93,7 +93,7 @@ module SocialSnippet
               '  std::cout << get_42() << std::endl;',
               '  return 0;',
               '}',
-            ].join("\n")
+            ].join($/)
           end
 
           let(:output) do
@@ -109,7 +109,7 @@ module SocialSnippet
               '  std::cout << get_42() << std::endl;',
               '  return 0;',
               '}',
-            ].join("\n")
+            ].join($/)
           end
 
           subject { fake_social_snippet.api.insert_snippet(input) }

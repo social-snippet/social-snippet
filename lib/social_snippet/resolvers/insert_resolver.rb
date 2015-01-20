@@ -17,14 +17,14 @@ module SocialSnippet
     # @param src [Array<String>] The text of source code
     def insert(src)
       context = Context.new("")
-      lines = src.split("\n")
+      lines = src.split($/)
 
       TagParser.find_snippet_tags(lines).each do |tag_info|
         visit tag_info[:tag]
       end
 
       dest = insert_func(lines, context)
-      return dest.join("\n")
+      return dest.join($/)
     end
 
     private

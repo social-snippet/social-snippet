@@ -11,7 +11,7 @@ describe SocialSnippet::TagParser do
           "// @snip <path/to/file1.c>",
           "// @snip <path/to/file2.c>",
           "// @snippet <path/to/file3.c>",
-        ].join("\n")
+        ].join($/)
       end
 
       context "result" do
@@ -32,7 +32,7 @@ describe SocialSnippet::TagParser do
           "// @snip <path/to/file1.c>",
           "// @snip <path/to/file2.c>",
           "// @snippet <path/to/file3.c>",
-        ].join("\n")
+        ].join($/)
       end
 
       context "result" do

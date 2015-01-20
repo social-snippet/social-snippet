@@ -58,7 +58,7 @@ class SocialSnippet::Inserter
   #
   # @return [String]
   def to_s
-    dest.join("\n")
+    dest.join($/)
   end
 
 end
