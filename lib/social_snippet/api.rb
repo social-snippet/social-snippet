@@ -20,7 +20,42 @@ class SocialSnippet::Api
 
   # Initialize snippet.json
   def init_manifest(options = {})
-    raise "not implemented"
+    questions = [
+      {
+        :key => "name",
+      },
+      {
+        :key => "description"
+      },
+      {
+        :key => "license",
+        :default => "MIT",
+      },
+    ]
+    answer = {}
+
+    loop do
+      answer = ask_manifest_questions(questions, answer)
+      social_snippet.logger.say ::JSON.pretty_generate(answer)
+      break if ask_confirm("Is this okay? [Y/n]: ")
+    end
+
+    answer
+  end
+
+  def ask_confirm(message)
+    ret = social_snippet.prompt.ask(message) do |q|
+      q.limit = 1
+      q.validate = /[yn]/i
+    end
+    /y/i === ret
+  end
+
+  def ask_manifest_questions(questions, obj)
+    questions.inject(obj) do |obj, q|
+      obj[q[:key]] = social_snippet.prompt.ask("#{q[:key]}: ")
+      obj
+    end
   end
 
   # Insert snippets to given text
