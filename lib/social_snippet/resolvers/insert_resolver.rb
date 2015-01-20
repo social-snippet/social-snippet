@@ -12,13 +12,12 @@ module SocialSnippet
       @options = new_options
       @deps_resolver = Resolvers::DepResolver.new(social_snippet)
       super(social_snippet)
-
       init_options
     end
 
     def init_options
-      options.fetch :margin_bottom, 0
-      options.fetch :margin_top, 0
+      options[:margin_bottom] = options.fetch(:margin_bottom, 0)
+      options[:margin_top] = options.fetch(:margin_top, 0)
     end
 
     # Insert snippets to given text
@@ -61,6 +60,7 @@ module SocialSnippet
     # Insert snippet by tag and context
     def insert_by_tag_and_context!(inserter, snippet, context, tag)
       src = insert_func(snippet.lines.to_a, context, tag)
+      options[:margin_top].times { inserter.insert "" }
       inserter.insert tag.to_snippet_tag # @snip -> @snippet
       inserter.insert src
       visit tag
