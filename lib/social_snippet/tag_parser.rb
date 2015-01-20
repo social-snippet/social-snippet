@@ -50,9 +50,9 @@ class SocialSnippet::TagParser
 
     def get_lines(s)
       if s.is_a?(String)
-        return s.split($/)
+        s.split($/)
       elsif s.is_a?(Array)
-        return s
+        s
       end
     end
 
