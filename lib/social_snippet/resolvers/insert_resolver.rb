@@ -60,9 +60,12 @@ module SocialSnippet
     # Insert snippet by tag and context
     def insert_by_tag_and_context!(inserter, snippet, context, tag)
       src = insert_func(snippet.lines.to_a, context, tag)
+
       options[:margin_top].times { inserter.insert "" }
       inserter.insert tag.to_snippet_tag # @snip -> @snippet
       inserter.insert src
+      options[:margin_bottom].times { inserter.insert "" }
+
       visit tag
     end
 
