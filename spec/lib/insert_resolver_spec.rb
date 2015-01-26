@@ -13,117 +13,121 @@ describe SocialSnippet::Resolvers::InsertResolver, :current => true do
       end
     end
 
-    context "no options" do
+    describe "styling" do
 
-      let(:resolver) do
-        ::SocialSnippet::Resolvers::InsertResolver.new(fake_social_snippet)
-      end
+      context "no options" do
 
-      let(:input) do
-        [
-          "// @snip <my-repo-1:path/to/file.d>",
-          "// @snip <my-repo-2:path/to/file.d>",
-          "// @snip <my-repo-3:path/to/file.d>",
-        ].join($/)
-      end
+        let(:resolver) do
+          ::SocialSnippet::Resolvers::InsertResolver.new(fake_social_snippet)
+        end
 
-      let(:expected) do
-        [
-          "// @snippet <my-repo-1:path/to/file.d>",
-          "my-repo-1",
-          "// @snippet <my-repo-2:path/to/file.d>",
-          "my-repo-2",
-          "// @snippet <my-repo-3:path/to/file.d>",
-          "my-repo-3",
-        ].join($/)
-      end
+        let(:input) do
+          [
+            "// @snip <my-repo-1:path/to/file.d>",
+            "// @snip <my-repo-2:path/to/file.d>",
+            "// @snip <my-repo-3:path/to/file.d>",
+          ].join($/)
+        end
 
-      subject { resolver.insert input }
-      it { should eq expected }
+        let(:expected) do
+          [
+            "// @snippet <my-repo-1:path/to/file.d>",
+            "my-repo-1",
+            "// @snippet <my-repo-2:path/to/file.d>",
+            "my-repo-2",
+            "// @snippet <my-repo-3:path/to/file.d>",
+            "my-repo-3",
+          ].join($/)
+        end
 
-    end # no options
+        subject { resolver.insert input }
+        it { should eq expected }
 
-    context ":margin_top => 3" do
+      end # no options
 
-      let(:resolver) do
-        ::SocialSnippet::Resolvers::InsertResolver.new(fake_social_snippet, {
-          :margin_top => 3,
-        })
-      end
+      context ":margin_top => 3" do
 
-      let(:input) do
-        [
-          "// @snip <my-repo-1:path/to/file.d>",
-          "// @snip <my-repo-2:path/to/file.d>",
-          "// @snip <my-repo-3:path/to/file.d>",
-        ].join($/)
-      end
+        let(:resolver) do
+          ::SocialSnippet::Resolvers::InsertResolver.new(fake_social_snippet, {
+            :margin_top => 3,
+          })
+        end
 
-      let(:expected) do
-        [
-          "",
-          "",
-          "",
-          "// @snippet <my-repo-1:path/to/file.d>",
-          "my-repo-1",
-          "",
-          "",
-          "",
-          "// @snippet <my-repo-2:path/to/file.d>",
-          "my-repo-2",
-          "",
-          "",
-          "",
-          "// @snippet <my-repo-3:path/to/file.d>",
-          "my-repo-3",
-        ].join($/)
-      end
+        let(:input) do
+          [
+            "// @snip <my-repo-1:path/to/file.d>",
+            "// @snip <my-repo-2:path/to/file.d>",
+            "// @snip <my-repo-3:path/to/file.d>",
+          ].join($/)
+        end
 
-      subject { resolver.insert input }
-      it { should eq expected }
+        let(:expected) do
+          [
+            "",
+            "",
+            "",
+            "// @snippet <my-repo-1:path/to/file.d>",
+            "my-repo-1",
+            "",
+            "",
+            "",
+            "// @snippet <my-repo-2:path/to/file.d>",
+            "my-repo-2",
+            "",
+            "",
+            "",
+            "// @snippet <my-repo-3:path/to/file.d>",
+            "my-repo-3",
+          ].join($/)
+        end
 
-    end # :margin_top
+        subject { resolver.insert input }
+        it { should eq expected }
 
-    context ":margin_bottom => 3" do
+      end # :margin_top
 
-      let(:resolver) do
-        ::SocialSnippet::Resolvers::InsertResolver.new(fake_social_snippet, {
-          :margin_bottom => 3,
-        })
-      end
+      context ":margin_bottom => 3" do
 
-      let(:input) do
-        [
-          "// @snip <my-repo-1:path/to/file.d>",
-          "// @snip <my-repo-2:path/to/file.d>",
-          "// @snip <my-repo-3:path/to/file.d>",
-        ].join($/)
-      end
+        let(:resolver) do
+          ::SocialSnippet::Resolvers::InsertResolver.new(fake_social_snippet, {
+            :margin_bottom => 3,
+          })
+        end
 
-      let(:expected) do
-        [
-          "// @snippet <my-repo-1:path/to/file.d>",
-          "my-repo-1",
-          "",
-          "",
-          "",
-          "// @snippet <my-repo-2:path/to/file.d>",
-          "my-repo-2",
-          "",
-          "",
-          "",
-          "// @snippet <my-repo-3:path/to/file.d>",
-          "my-repo-3",
-          "",
-          "",
-          "",
-        ].join($/)
-      end
+        let(:input) do
+          [
+            "// @snip <my-repo-1:path/to/file.d>",
+            "// @snip <my-repo-2:path/to/file.d>",
+            "// @snip <my-repo-3:path/to/file.d>",
+          ].join($/)
+        end
 
-      subject { resolver.insert input }
-      it { should eq expected }
+        let(:expected) do
+          [
+            "// @snippet <my-repo-1:path/to/file.d>",
+            "my-repo-1",
+            "",
+            "",
+            "",
+            "// @snippet <my-repo-2:path/to/file.d>",
+            "my-repo-2",
+            "",
+            "",
+            "",
+            "// @snippet <my-repo-3:path/to/file.d>",
+            "my-repo-3",
+            "",
+            "",
+            "",
+          ].join($/)
+        end
 
-    end # :margin_bottom
+        subject { resolver.insert input }
+        it { should eq expected }
+
+      end # :margin_bottom
+
+    end # test styling
 
   end # prepare stubs
 
