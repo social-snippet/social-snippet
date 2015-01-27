@@ -25,7 +25,7 @@ module SocialSnippet
     # @param src [Array<String>] The text of source code
     def insert(src)
       context = Context.new("")
-      lines = src.split($/)
+      lines = filter(src.split $/)
 
       TagParser.find_snippet_tags(lines).each do |tag_info|
         visit tag_info[:tag]
@@ -58,8 +58,12 @@ module SocialSnippet
     end
 
     # Insert snippet by tag and context
-    def insert_by_tag_and_context!(inserter, snippet, context, tag)
-      src = insert_func(snippet.lines.to_a, context, tag)
+    def insert_by_tag_and_context!(inserter, snippet_str, context, tag)
+      if snippet_str.is_a?(Snippet)
+        src = insert_func(snippet_str.lines, context, tag)
+      else
+        src = insert_func(snippet_str.split($/), context, tag)
+      end
 
       options[:margin_top].times { inserter.insert "" }
       inserter.insert tag.to_snippet_tag # @snip -> @snippet
@@ -71,7 +75,7 @@ module SocialSnippet
 
     # Insert depended snippet
     def insert_depended_snippets!(inserter, snippet, context, tag)
-      dep_tags = deps_resolver.find(snippet.lines.to_a, context, tag)
+      dep_tags = deps_resolver.find(snippet.lines, context, tag)
       dep_tags = sort_dep_tags_by_dep(dep_tags)
 
       dep_tags.each do |tag_info|

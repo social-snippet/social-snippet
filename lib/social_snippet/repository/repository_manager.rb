@@ -77,6 +77,8 @@ module SocialSnippet::Repository
     #
     # @param name [String] The name of repository
     def find_repository(name, ref = nil)
+      return nil if name.nil? || name.empty?
+
       repo_paths.each do |repo_path|
         path = "#{repo_path}/#{name}"
         if ::Dir.exists?(path)
@@ -86,7 +88,7 @@ module SocialSnippet::Repository
         end
       end
 
-      return nil
+      nil
     end
 
     def find_repositories_start_with(prefix)
