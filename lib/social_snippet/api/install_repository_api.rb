@@ -1,5 +1,38 @@
 module SocialSnippet::Api::InstallRepositoryApi
 
+  # Install repository (Core API)
+  #
+  # @param repo [::SocialSnippet::Repository::Drivers::BaseRepository]
+  def install_repository(repo_name, repo_ref, repo, options = {})
+    display_name = repo_name
+
+    if repo_ref.nil?
+      repo_ref = resolve_reference(repo)
+
+      if repo.has_versions?
+        output "Resolving #{display_name}'s version"
+      else
+        output "No versions, use current reference"
+      end
+    end
+
+    display_name = "#{repo_name}\##{repo_ref}"
+
+    output "Installing: #{display_name}"
+    unless options[:dry_run]
+      social_snippet.repo_manager.install repo_name, repo_ref, repo, options
+    end
+
+    output "Success: #{display_name}"
+
+    # install dependencies
+    if has_dependencies?(repo)
+      output "Finding #{display_name}'s dependencies"
+      install_missing_dependencies repo.dependencies, options
+      output "Finish finding #{display_name}'s dependencies"
+    end
+  end
+
   # $ sspm install name
   def install_repository_by_name(repo_name, repo_ref, options = {})
     installed_as = repo_name
@@ -49,6 +82,28 @@ module SocialSnippet::Api::InstallRepositoryApi
     end
 
     install_repository installed_as, repo_ref, repo
+  end
+
+  def install_missing_dependencies(repo_deps, options = {})
+    repo_deps.each do |dep_repo_name, dep_repo_ref|
+      unless social_snippet.repo_manager.exists?(dep_repo_name, dep_repo_ref)
+        install_repository_by_name dep_repo_name, dep_repo_ref, options
+      end
+    end
+  end
+
+  private
+
+  def resolve_reference(repo)
+    if repo.has_versions?
+      repo.latest_version
+    else
+      repo.current_ref
+    end
+  end
+
+  def has_dependencies?(repo)
+    repo.dependencies && ( not repo.dependencies.empty? )
   end
 
 end
