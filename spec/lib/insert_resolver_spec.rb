@@ -17,6 +17,16 @@ describe SocialSnippet::Resolvers::InsertResolver, :current => true do
 
       describe "ruby's require()" do
 
+        before do
+          allow(fake_social_snippet.repo_manager).to receive(:get_snippet) do |c, t|
+            [
+              "def foo",
+              "  42",
+              "end",
+            ].join($/)
+          end
+        end # prepare snippet
+
         let(:resolver) do
           ::SocialSnippet::Resolvers::InsertResolver.new(fake_social_snippet)
         end
@@ -36,7 +46,7 @@ describe SocialSnippet::Resolvers::InsertResolver, :current => true do
 
         let(:expected) do
           [
-            "# @snippet <./foo.rb>",
+            "# @snippet <foo.rb>",
             "def foo",
             "  42",
             "end",
