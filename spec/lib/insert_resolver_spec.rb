@@ -13,6 +13,47 @@ describe SocialSnippet::Resolvers::InsertResolver, :current => true do
       end
     end
 
+    describe "@begin_cut / @end_cut" do
+
+      describe "ruby's require()" do
+
+        let(:resolver) do
+          ::SocialSnippet::Resolvers::InsertResolver.new(fake_social_snippet)
+        end
+
+        let(:input) do
+          [
+            "# @begin_cut",
+            "require './foo'",
+            "# @end_cut",
+            "# @snip <./foo.rb>",
+            "",
+            "def bar",
+            "  foo",
+            "end",
+          ].join($/)
+        end
+
+        let(:expected) do
+          [
+            "# @snippet <./foo.rb>",
+            "def foo",
+            "  42",
+            "end",
+            "",
+            "def bar",
+            "  foo",
+            "end",
+          ].join($/)
+        end
+
+        subject { resolver.insert input }
+        it { should eq expected }
+
+      end
+
+    end # begin_cut / end_cut
+
     describe "styling" do
 
       context "no options" do
