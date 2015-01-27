@@ -124,9 +124,10 @@ module SocialSnippet::Repository
 
       let(:repo_path) { "#{ENV["SOCIAL_SNIPPET_HOME"]}/repo" }
 
-      context "passed nil as argument", :current => true do
+      context "passed empty name" do
 
         it { expect(repo_manager.find_repository(nil)).to be_nil }
+        it { expect(repo_manager.find_repository("")).to be_nil }
 
       end
 
