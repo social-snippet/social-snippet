@@ -124,6 +124,12 @@ module SocialSnippet::Repository
 
       let(:repo_path) { "#{ENV["SOCIAL_SNIPPET_HOME"]}/repo" }
 
+      context "passed nil as argument", :current => true do
+
+        it { expect(repo_manager.find_repository(nil)).to be_nil }
+
+      end
+
       context "create repo_a as a git repo" do
 
         before do
