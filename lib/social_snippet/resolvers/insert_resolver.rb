@@ -25,7 +25,7 @@ module SocialSnippet
     # @param src [Array<String>] The text of source code
     def insert(src)
       context = Context.new("")
-      lines = src.split($/)
+      lines = filter(src.split $/)
 
       TagParser.find_snippet_tags(lines).each do |tag_info|
         visit tag_info[:tag]
