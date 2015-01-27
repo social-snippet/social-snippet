@@ -59,7 +59,11 @@ module SocialSnippet
 
     # Insert snippet by tag and context
     def insert_by_tag_and_context!(inserter, snippet_str, context, tag)
-      src = insert_func(snippet_str.split($/), context, tag)
+      if snippet_str.is_a?(Snippet)
+        src = insert_func(snippet_str.lines, context, tag)
+      else
+        src = insert_func(snippet_str.split($/), context, tag)
+      end
 
       options[:margin_top].times { inserter.insert "" }
       inserter.insert tag.to_snippet_tag # @snip -> @snippet
