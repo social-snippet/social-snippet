@@ -7,22 +7,7 @@ class SocialSnippet::TagParser
     # @param s [String or Array] parsed text
     # @return [Array] found `@snip` tags with line_no
     def find_snip_tags(s)
-      found_lines = []
-
-      lines = get_lines(s)
-
-      lines.each.with_index do |line, i|
-        if ::SocialSnippet::Tag.is_snip_tag_line(line)
-          found_lines.push(
-            {
-              :line_no => i,
-              :tag => ::SocialSnippet::Tag.new(line),
-            }
-          )
-        end
-      end
-
-      return found_lines
+      find_lines(s) {|line| ::SocialSnippet::Tag.is_snip_tag_line(line) }
     end
 
     # Find `@snippet` tags from text
@@ -30,12 +15,14 @@ class SocialSnippet::TagParser
     # @param s [String or Array] parsed text
     # @return [Array] found `@snippet` tags with line_no
     def find_snippet_tags(s)
-      found_lines = []
+      find_lines(s) {|line| ::SocialSnippet::Tag.is_snippet_tag_line(line) }
+    end
 
-      lines = get_lines(s)
+    private
 
-      lines.each.with_index do |line, i|
-        if ::SocialSnippet::Tag.is_snippet_tag_line(line)
+    def find_lines(s, &comparator)
+      get_lines(s).each.with_index.inject([]) do |found_lines, (line, i)|
+        if comparator.call(line)
           found_lines.push(
             {
               :line_no => i,
@@ -43,9 +30,8 @@ class SocialSnippet::TagParser
             }
           )
         end
+        found_lines
       end
-
-      return found_lines
     end
 
     def get_lines(s)
