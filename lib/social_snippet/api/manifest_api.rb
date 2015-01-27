@@ -13,8 +13,7 @@ module SocialSnippet::Api::ManifestApi
 
   private
 
-  def loop_manifest_questions
-    answer = {}
+  def loop_manifest_questions(answer)
     loop do
       answer = ask_manifest_questions(manifest_questions(answer), answer)
       social_snippet.logger.say ""
