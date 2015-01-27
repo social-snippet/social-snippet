@@ -1,4 +1,5 @@
 class SocialSnippet::Api; end
+
 require_relative "api/config_api"
 require_relative "api/manifest_api"
 require_relative "api/insert_snippet_api"
@@ -8,7 +9,6 @@ require_relative "api/completion_api"
 require_relative "api/show_api"
 require_relative "api/search_api"
 require_relative "api/registry_api"
-require "json"
 
 class SocialSnippet::Api
 

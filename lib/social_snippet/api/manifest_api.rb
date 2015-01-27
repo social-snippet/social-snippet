@@ -1,5 +1,7 @@
 module SocialSnippet::Api::ManifestApi
 
+  require "json"
+
   # Initialize the snippet.json interactively.
   # $ sspm init
   def init_manifest(options = {})
