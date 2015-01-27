@@ -1,3 +1,13 @@
+class SocialSnippet::Api; end
+require_relative "api/config_api"
+require_relative "api/manifest_api"
+require_relative "api/insert_snippet_api"
+require_relative "api/install_repository_api"
+require_relative "api/update_repository_api"
+require_relative "api/completion_api"
+require_relative "api/show_api"
+require_relative "api/search_api"
+require_relative "api/registry_api"
 require "json"
 
 class SocialSnippet::Api
@@ -9,183 +19,15 @@ class SocialSnippet::Api
     @social_snippet = new_social_snippet
   end
 
-  # $ sspm config key=value
-  def config_set(key, value)
-    social_snippet.config.set! key, value
-  end
-
-  # $ sspm config key
-  def config_get(key)
-    value = social_snippet.config.get(key)
-    social_snippet.logger.say "#{key}=#{value}"
-  end
-
-  # Initialize the snippet.json interactively.
-  # $ sspm init
-  def init_manifest(options = {})
-    answer = {}
-    json_str = "{}"
-
-    # load current configuration
-    if ::File.exists?("snippet.json")
-      answer = ::JSON.parse(::File.read "snippet.json")
-    end
-
-    loop do
-      answer = ask_manifest_questions(manifest_questions(answer), answer)
-      json_str = ::JSON.pretty_generate(answer)
-      social_snippet.logger.say ""
-      social_snippet.logger.say json_str
-      social_snippet.logger.say ""
-      break if ask_confirm("Is this okay? [Y/N]: ")
-    end
-
-    ::File.write "snippet.json", json_str
-
-    answer
-  end
-
-  # Insert snippets to given text.
-  # $ ssnip
-  #
-  # @param src [String] The text of source code
-  #
-  def insert_snippet(src, options = {})
-    resolver = ::SocialSnippet::Resolvers::InsertResolver.new(social_snippet, options)
-    res = resolver.insert(src)
-    output res
-    res
-  end
-
-  # $ sspm install name
-  def install_repository_by_name(repo_name, repo_ref, options = {})
-    installed_as = repo_name
-    installed_as = options[:name] unless options[:name].nil?
-
-    unless installed_as === repo_name
-      output "Installing as #{installed_as}"
-    end
-
-    if social_snippet.repo_manager.exists?(installed_as, repo_ref)
-      output "#{installed_as} is already installed"
-      return
-    end
-
-    output "Finding: #{repo_name}"
-    info = social_snippet.registry_client.repositories.find(repo_name)
-    output "Found at: #{info["url"]}"
-
-    output "Cloning repository..."
-    repo = ::SocialSnippet::Repository::RepositoryFactory.clone(info["url"])
-
-    install_repository installed_as, repo_ref, repo
-  end
-
-  # $ sspm install URL
-  def install_repository_by_url(repo_url, repo_ref, options = {})
-    output "Cloning repository..."
-    repo = ::SocialSnippet::Repository::RepositoryFactory.clone(repo_url)
-    install_repository_by_repo repo, repo_ref, options
-  end
-
-  # $ sspm install ./path/to/repo
-  def install_repository_by_path(repo_path, repo_ref, options = {})
-    output "Cloning repository..."
-    repo = ::SocialSnippet::Repository::RepositoryFactory.clone_local(repo_path)
-    install_repository_by_repo repo, repo_ref, options
-  end
-
-  def install_repository_by_repo(repo, repo_ref, options)
-    installed_as = repo.name
-    installed_as = options[:name] unless options[:name].nil?
-    output "Installing as #{installed_as}"
-
-    if social_snippet.repo_manager.exists?(installed_as)
-      output "#{installed_as} is already installed"
-      return
-    end
-
-    install_repository installed_as, repo_ref, repo
-  end
-
-  # Update a repository
-  # $ sspm update repo-name
-  def update_repository(repo_name, options = {})
-    unless social_snippet.repo_manager.exists?(repo_name)
-      output "ERROR: #{repo_name} is not installed"
-      return
-    end
-
-    output "Fetching update for #{repo_name}"
-    ret = social_snippet.repo_manager.fetch(repo_name, options)
-
-    repo = social_snippet.repo_manager.find_repository(repo_name)
-    display_name = repo_name
-
-    # nothing to update
-    if ret == 0 && social_snippet.repo_manager.exists?(repo_name, repo.latest_version)
-      output "Everything up-to-date"
-      return
-    end
-
-    output "Updating #{repo_name}"
-    unless options[:dry_run]
-      version = repo.latest_version
-      if repo.has_versions? && repo.current_ref != version
-        output "Bumping version into #{version}"
-        display_name = "#{repo_name}\##{version}"
-        repo.checkout version
-        social_snippet.repo_manager.update repo_name, version, repo, options
-      end
-      social_snippet.repo_manager.cache_installing_repo repo
-    end
-
-    output "Success #{display_name}"
-
-    # update deps
-    if social_snippet.repo_manager.has_deps?(repo_name)
-      output "Updating #{display_name}'s dependencies"
-      deps = social_snippet.repo_manager.deps(repo_name)
-      install_missing_dependencies deps, options
-      output "Finish updating #{display_name}'s dependencies"
-    end
-  end
-
-  # Update all installed repositories
-  # $ sspm update
-  def update_all_repositories(options = {})
-    social_snippet.repo_manager.each_installed_repo do |repo_name|
-      update_repository repo_name, options
-    end
-  end
-
-  def complete_snippet_path(keyword)
-    social_snippet.repo_manager.complete(keyword)
-  end
-
-  def cli_complete_snippet_path(keyword)
-    complete_snippet_path(keyword).each do |cand_repo|
-      output cand_repo
-    end
-  end
-
-  def show_info(repo_name)
-    repo_info = social_snippet.registry_client.repositories.find(repo_name)
-    output ::JSON.pretty_generate(repo_info)
-  end
-
-  # $ sspm search query
-  def search_repositories(query, options = {})
-    format_text = search_result_format(options)
-    social_snippet.registry_client.repositories.search(query).each do |repo|
-      output format_text % search_result_list(repo, options)
-    end
-  end
-
-  def add_url(url, options = {})
-    ret = social_snippet.registry_client.repositories.add_url(url)
-    output ret
-  end
+  include ::SocialSnippet::Api::ConfigApi
+  include ::SocialSnippet::Api::ManifestApi
+  include ::SocialSnippet::Api::InsertSnippetApi
+  include ::SocialSnippet::Api::InstallRepositoryApi
+  include ::SocialSnippet::Api::UpdateRepositoryApi
+  include ::SocialSnippet::Api::CompletionApi
+  include ::SocialSnippet::Api::ShowApi
+  include ::SocialSnippet::Api::SearchApi
+  include ::SocialSnippet::Api::RegistryApi
 
   #
   # Helpers
