@@ -2,7 +2,7 @@ require "spec_helper"
 
 module SocialSnippet::Resolvers
 
-  describe BaseResolver, :current => true do
+  describe BaseResolver do
 
     let(:resolver) { BaseResolver.new(fake_social_snippet) }
 

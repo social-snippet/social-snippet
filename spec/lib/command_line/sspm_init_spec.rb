@@ -2,7 +2,7 @@ require "spec_helper"
 
 module SocialSnippet::CommandLine
 
-  describe SSpm::SubCommands::InitCommand, :current => true do
+  describe SSpm::SubCommands::InitCommand do
 
     describe "$ sspm init" do
 

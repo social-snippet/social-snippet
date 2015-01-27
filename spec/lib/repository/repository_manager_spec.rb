@@ -2,7 +2,7 @@ require "spec_helper"
 
 module SocialSnippet::Repository
 
-  describe RepositoryManager, :repository_manager_current => true do
+  describe RepositoryManager do
 
     before { stub_const "ENV", "SOCIAL_SNIPPET_HOME" => "/path/to" }
 

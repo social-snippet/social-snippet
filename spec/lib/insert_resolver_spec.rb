@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe SocialSnippet::Resolvers::InsertResolver, :current => true do
+describe SocialSnippet::Resolvers::InsertResolver do
 
   context "prepare stubs" do
 
