@@ -53,6 +53,10 @@ class SocialSnippet::TagParser
         s.split($/)
       elsif s.is_a?(Array)
         s
+      elsif s.is_a?(Enumerator)
+        s
+      else
+        raise "error unknown data"
       end
     end
 
