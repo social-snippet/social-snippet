@@ -93,6 +93,14 @@ class SocialSnippet::Tag
 
   class << self
 
+    def is_begin_cut?(s)
+      /@begin_cut/ === s
+    end
+
+    def is_end_cut?(s)
+      /@end_cut/ === s
+    end
+
     # Check given line to match @snip tag
     def is_snip_tag_line(s)
       return /@snip\s*<.*?>/ === s
