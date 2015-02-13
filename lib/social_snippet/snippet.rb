@@ -33,6 +33,7 @@ class SocialSnippet::Snippet
 
     # Create instance by text
     def new_text(s)
+      raise "must be passed string" unless s.is_a?(String)
       snippet = self.new(nil)
       snippet.read_text s
       snippet
