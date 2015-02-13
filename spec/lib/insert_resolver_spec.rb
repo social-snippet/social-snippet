@@ -9,7 +9,7 @@ describe SocialSnippet::Resolvers::InsertResolver do
         t.repo
       end
       allow(fake_social_snippet.repo_manager).to receive(:get_snippet) do |c, t|
-        t.repo
+        ::SocialSnippet::Snippet.new_text(t.repo)
       end
     end
 
@@ -19,11 +19,11 @@ describe SocialSnippet::Resolvers::InsertResolver do
 
         before do
           allow(fake_social_snippet.repo_manager).to receive(:get_snippet) do |c, t|
-            [
+            ::SocialSnippet::Snippet.new_text([
               "def foo",
               "  42",
               "end",
-            ].join($/)
+            ].join $/)
           end
         end # prepare snippet
 
