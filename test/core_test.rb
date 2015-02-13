@@ -2086,6 +2086,42 @@ describe SocialSnippet::Core do
 
     end # more duplicate cases
 
+    context "filters", :current => true do
+
+      context "range cut (simple)" do
+
+        before do
+          FileUtils.touch "/file1.cpp"
+          File.write "/file1.cpp", [
+            "// @begin_cut",
+            "#include <path/to/lib>",
+            "// @end_cut",
+            "void func() {",
+            "}",
+          ]
+        end
+
+        let(:input) do
+          [
+            "// @snip <./file1.cpp>",
+          ].join($/)
+        end
+
+        let(:output) do
+          [
+            "// @snippet <./file1.cpp>",
+            "void func() {",
+            "}",
+          ].join($/)
+        end
+
+        subject { fake_social_snippet.api.insert_snippet(input) }
+        it { should eq output }
+
+      end
+
+    end # filters
+
   end # insert_snippet
 
 end # SocialSnippet::Core
