@@ -22,21 +22,24 @@ module SocialSnippet
 
     # Insert snippets to given text
     #
-    # @param src [Array<String>] The text of source code
-    def insert(src)
-      context = Context.new("")
-      lines = filter(src.split $/)
+    # @param text [String] The text of source code
+    def insert(text)
+      raise "passed not string" unless text.is_a?(String)
 
-      TagParser.find_snippet_tags(lines).each do |tag_info|
+      context = Context.new("")
+      snippet = Snippet.new_text(text)
+
+      snippet.snippet_tags.each do |tag_info|
         visit tag_info[:tag]
       end
 
-      dest = insert_func(lines, context)
+      dest = insert_func(snippet.lines, context)
       return dest.join($/)
     end
 
     private
 
+    # @param code [Snippet]
     def insert_func(code, context_from, base_tag = nil)
       inserter = Inserter.new(code)
       context = context_from.clone
