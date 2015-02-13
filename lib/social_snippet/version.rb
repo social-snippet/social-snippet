@@ -1,6 +1,6 @@
 module SocialSnippet
 
-  VERSION = "0.0.6"
+  VERSION = "0.0.7"
 
   module Version
 
