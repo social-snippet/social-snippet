@@ -21,6 +21,14 @@ class SocialSnippet::Snippet
     @lines ||= new_lines
   end
 
+  def snippet_tags
+    ::SocialSnippet::TagParser.find_snippet_tags lines
+  end
+
+  def snip_tags
+    ::SocialSnippet::TagParser.find_snip_tags lines
+  end
+
   class << self
 
     # Create instance by text
@@ -37,6 +45,7 @@ class SocialSnippet::Snippet
   # Return filtered and styled lines
   def new_lines
     lines = code.split $/
+    lines = filter(lines)
     lines
   end
 
@@ -49,10 +58,10 @@ class SocialSnippet::Snippet
   def cut_filter(lines)
     cut_level = 0
     lines.select do |line|
-      if Tag.is_begin_cut?(line)
+      if ::SocialSnippet::Tag.is_begin_cut?(line)
         cut_level += 1
         false
-      elsif Tag.is_end_cut?(line)
+      elsif ::SocialSnippet::Tag.is_end_cut?(line)
         cut_level -= 1
         false
       else
