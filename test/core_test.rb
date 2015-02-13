@@ -2165,6 +2165,60 @@ describe SocialSnippet::Core do
 
     end # filters
 
+    context "snippet's context testing", :current => true do
+
+      context "../" do
+
+        before do
+          FileUtils.mkdir "./foo"
+          FileUtils.touch "./foo/foo.go"
+          FileUtils.mkdir "./bar"
+          FileUtils.touch "./bar/bar.go"
+
+          File.write "./foo/foo.go", [
+            "// @begin_cut",
+            "package foo",
+            "// @end_cut",
+            "func Foo() {",
+            "}",
+          ].join($/)
+
+          File.write "./bar/bar.go", [
+            "// @begin_cut",
+            "package bar",
+            "import \"../foo\"",
+            "// @end_cut",
+            "// @snip <../foo/foo.go>",
+            "func Bar() {",
+            "}",
+          ].join($/)
+        end
+
+        let(:input) do
+          [
+            "// @snip <./foo/foo.go>",
+            "// @snip <./bar/bar.go>",
+          ].join($/)
+        end
+
+        let(:output) do
+          [
+            "// @snippet <foo/foo.go>",
+            "func Foo() {",
+            "}",
+            "// @snippet <bar/bar.go>",
+            "func Bar() {",
+            "}",
+          ].join($/)
+        end
+
+        subject { fake_social_snippet.api.insert_snippet input }
+        it { should eq output }
+
+      end
+
+    end
+
   end # insert_snippet
 
 end # SocialSnippet::Core
