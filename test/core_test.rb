@@ -2086,7 +2086,7 @@ describe SocialSnippet::Core do
 
     end # more duplicate cases
 
-    context "filters", :current => true do
+    context "filters" do
 
       context "range cut (simple)" do
 
@@ -2120,7 +2120,7 @@ describe SocialSnippet::Core do
 
       end
 
-      context "range cut (nested snippet)", :current => true do
+      context "range cut (nested snippet)" do
 
         before do
           FileUtils.touch "./file1.cpp"
