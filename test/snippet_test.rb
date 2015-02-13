@@ -1,10 +1,8 @@
 require "spec_helper"
 
-module SocialSnippet::Resolvers
+module SocialSnippet
 
-  describe BaseResolver do
-
-    let(:resolver) { BaseResolver.new(fake_social_snippet) }
+  describe Snippet do
 
     describe "#filter()" do
 
@@ -31,13 +29,16 @@ module SocialSnippet::Resolvers
           ]
         end
 
-        subject { resolver.filter(input) }
+        let(:snippet) { Snippet.new nil }
+        before { snippet.read_text input.join($/) }
+        subject { snippet.lines }
         it { should eq expected }
 
       end
 
     end
 
-  end # BaseResolver
+  end # Snippet
 
-end # SocialSnippet::Resolvers
+end # SocialSnippet
+
