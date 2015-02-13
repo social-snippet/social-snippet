@@ -43,7 +43,7 @@ module SocialSnippet
       found_tags = []
       context = context_from.clone
 
-      each_snip_tags(snippet, context_from, tag_from) do |tag, line_no, next_snippet, new_context|
+      each_child_snippet(snippet, context_from, tag_from) do |tag, line_no, child_snippet, new_context|
         next if is_visited(tag)
         visit tag
 
@@ -52,7 +52,7 @@ module SocialSnippet
           :tag => tag,
           :context => new_context,
         })
-        found_tags.push *find_func(next_snippet, new_context, tag)
+        found_tags.push *find_func(child_snippet, new_context, tag)
       end
 
       return found_tags

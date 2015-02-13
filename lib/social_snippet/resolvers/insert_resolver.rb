@@ -46,15 +46,15 @@ module SocialSnippet
       context = context_from.clone
 
       # replace each @snip tags
-      each_snip_tags(snippet, context, base_tag) do |tag, line_no, next_snippet, new_context|
+      each_child_snippet(snippet, context, base_tag) do |tag, line_no, child_snippet, new_context|
         inserter.set_index line_no
         inserter.ignore
 
         visit(tag) if is_self(tag, context)
         next if is_visited(tag)
 
-        insert_depended_snippets! inserter, next_snippet, new_context, tag
-        insert_by_tag_and_context! inserter, next_snippet, new_context, tag
+        insert_depended_snippets! inserter, child_snippet, new_context, tag
+        insert_by_tag_and_context! inserter, child_snippet, new_context, tag
       end
 
       inserter.set_index_last
