@@ -2098,7 +2098,7 @@ describe SocialSnippet::Core do
             "// @end_cut",
             "void func() {",
             "}",
-          ]
+          ].join($/)
         end
 
         let(:input) do
@@ -2109,7 +2109,7 @@ describe SocialSnippet::Core do
 
         let(:output) do
           [
-            "// @snippet <./file1.cpp>",
+            "// @snippet <file1.cpp>",
             "void func() {",
             "}",
           ].join($/)
