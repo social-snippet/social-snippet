@@ -15,11 +15,13 @@ module SocialSnippet
 
     # Call block each snip tags
     #
-    # @param src [Array<String>] The text of source code
-    # @param context [SocialSnippet::Context] The context of current code
-    # @param base_tag [SocialSnippet::Tag]
-    def each_snip_tags(src, context, base_tag)
-      TagParser.find_snip_tags(src).each do |tag_info|
+    # @param snippet [Snippet]
+    # @param context [Context] The context of current code
+    # @param base_tag [Tag]
+    def each_child_snippet(snippet, context, base_tag)
+      raise "must be passed snippet" unless snippet.is_a?(Snippet)
+
+      snippet.snip_tags.each do |tag_info|
         t = tag_info[:tag].set_by_tag(base_tag)
         new_context = context.clone
 
@@ -28,41 +30,15 @@ module SocialSnippet
         update_tag_path_by_context! new_context, t
         resolve_tag_repo_ref! t
 
-        snippet = social_snippet.repo_manager.get_snippet(context, t)
+        child_snippet = social_snippet.repo_manager.get_snippet(context, t)
 
         if block_given?
-          yield(
-            tag_info[:tag],
-            tag_info[:line_no],
-            snippet,
-            new_context
-          )
+          yield tag_info[:tag], tag_info[:line_no], child_snippet, new_context
         end
       end
-    end
-
-    # @param lines [Array<String>]
-    def filter(lines)
-      lines = cut_filter(lines)
-      lines
     end
 
     private
-
-    def cut_filter(lines)
-      cut_level = 0
-      lines.select do |line|
-        if Tag.is_begin_cut?(line)
-          cut_level += 1
-          false
-        elsif Tag.is_end_cut?(line)
-          cut_level -= 1
-          false
-        else
-          cut_level === 0
-        end
-      end
-    end
 
     def move_context_by_tag!(context, tag)
       if tag.has_repo?

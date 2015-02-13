@@ -39,7 +39,7 @@ module SocialSnippet::Repository
       not deps(repo_name, repo_ref).empty?
     end
 
-    # Get snippet
+    # Get snippet by context and tag
     #
     # @param context [::SocialSnippet::Context] The context of snippet
     # @param tag [::SocialSnippet::Tag] The tag of snippet
