@@ -24,7 +24,7 @@ module SocialSnippet
     #
     # @param text [String] The text of source code
     def insert(text)
-      raise "passed not string" unless text.is_a?(String)
+      raise "must be passed string" unless text.is_a?(String)
 
       context = Context.new("")
       snippet = Snippet.new_text(text)
@@ -33,27 +33,28 @@ module SocialSnippet
         visit tag_info[:tag]
       end
 
-      dest = insert_func(snippet.lines, context)
+      dest = insert_func(snippet, context)
       return dest.join($/)
     end
 
     private
 
-    # @param code [Snippet]
-    def insert_func(code, context_from, base_tag = nil)
-      inserter = Inserter.new(code)
+    def insert_func(snippet, context_from, base_tag = nil)
+      raise "must be passed snippet" unless snippet.is_a?(Snippet)
+
+      inserter = Inserter.new(snippet.lines)
       context = context_from.clone
 
       # replace each @snip tags
-      each_snip_tags(code, context, base_tag) do |tag, line_no, snippet, new_context|
+      each_snip_tags(snippet, context, base_tag) do |tag, line_no, next_snippet, new_context|
         inserter.set_index line_no
         inserter.ignore
 
         visit(tag) if is_self(tag, context)
         next if is_visited(tag)
 
-        insert_depended_snippets! inserter, snippet, new_context, tag
-        insert_by_tag_and_context! inserter, snippet, new_context, tag
+        insert_depended_snippets! inserter, next_snippet, new_context, tag
+        insert_by_tag_and_context! inserter, next_snippet, new_context, tag
       end
 
       inserter.set_index_last
@@ -61,12 +62,10 @@ module SocialSnippet
     end
 
     # Insert snippet by tag and context
-    def insert_by_tag_and_context!(inserter, snippet_str, context, tag)
-      if snippet_str.is_a?(Snippet)
-        src = insert_func(snippet_str.lines, context, tag)
-      else
-        src = insert_func(snippet_str.split($/), context, tag)
-      end
+    def insert_by_tag_and_context!(inserter, snippet, context, tag)
+      raise "must be passed snippet" unless snippet.is_a?(Snippet)
+
+      src = insert_func(snippet, context, tag)
 
       options[:margin_top].times { inserter.insert "" }
       inserter.insert tag.to_snippet_tag # @snip -> @snippet
@@ -78,7 +77,9 @@ module SocialSnippet
 
     # Insert depended snippet
     def insert_depended_snippets!(inserter, snippet, context, tag)
-      dep_tags = deps_resolver.find(snippet.lines, context, tag)
+      raise "must be passed snippet" unless snippet.is_a?(Snippet)
+
+      dep_tags = deps_resolver.find(snippet, context, tag)
       dep_tags = sort_dep_tags_by_dep(dep_tags)
 
       dep_tags.each do |tag_info|
@@ -88,8 +89,8 @@ module SocialSnippet
         visit(tag) if is_self(tag, context)
         next if is_visited(sub_t)
 
-        sub_snippet = social_snippet.repo_manager.get_snippet(sub_c, sub_t)
-        insert_by_tag_and_context! inserter, sub_snippet, sub_c, sub_t
+        next_snippet = social_snippet.repo_manager.get_snippet(sub_c, sub_t)
+        insert_by_tag_and_context! inserter, next_snippet, sub_c, sub_t
       end
     end
 
