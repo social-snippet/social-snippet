@@ -10,11 +10,12 @@ class SocialSnippet::Snippet
   end
 
   def read_file
-    @code = ::File.read(filepath)
+    @code = ::File.read(filepath).split($/)
   end
 
   def read_text(s)
-    @code = s
+    raise "must be passed string" unless s.is_a?(String)
+    @code = s.split($/)
   end
 
   def lines
@@ -45,9 +46,9 @@ class SocialSnippet::Snippet
 
   # Return filtered and styled lines
   def new_lines
-    lines = code.split $/
-    lines = filter(lines)
-    lines
+    tmp = code.clone
+    tmp = filter(tmp)
+    tmp
   end
 
   # @param lines [Array<String>]
