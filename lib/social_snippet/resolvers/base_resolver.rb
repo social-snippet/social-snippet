@@ -15,10 +15,10 @@ module SocialSnippet
 
     # Call block each snip tags
     #
-    # @param snippet [Snippet] The text of source code
+    # @param snippet [Snippet]
     # @param context [Context] The context of current code
     # @param base_tag [Tag]
-    def each_snip_tags(snippet, context, base_tag)
+    def each_child_snippet(snippet, context, base_tag)
       raise "must be passed snippet" unless snippet.is_a?(Snippet)
 
       snippet.snip_tags.each do |tag_info|
@@ -33,12 +33,7 @@ module SocialSnippet
         child_snippet = social_snippet.repo_manager.get_snippet(context, t)
 
         if block_given?
-          yield(
-            tag_info[:tag],
-            tag_info[:line_no],
-            child_snippet,
-            new_context
-          )
+          yield tag_info[:tag], tag_info[:line_no], child_snippet, new_context
         end
       end
     end
