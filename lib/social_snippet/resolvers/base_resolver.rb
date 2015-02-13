@@ -41,28 +41,7 @@ module SocialSnippet
       end
     end
 
-    # @param lines [Array<String>]
-    def filter(lines)
-      lines = cut_filter(lines)
-      lines
-    end
-
     private
-
-    def cut_filter(lines)
-      cut_level = 0
-      lines.select do |line|
-        if Tag.is_begin_cut?(line)
-          cut_level += 1
-          false
-        elsif Tag.is_end_cut?(line)
-          cut_level -= 1
-          false
-        else
-          cut_level === 0
-        end
-      end
-    end
 
     def move_context_by_tag!(context, tag)
       if tag.has_repo?
