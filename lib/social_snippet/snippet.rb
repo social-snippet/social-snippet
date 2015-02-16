@@ -60,9 +60,9 @@ module SocialSnippet
 
     # @param lines [Array<String>]
     def filter(lines)
-      lines = resolve_control_tags(lines)
       lines = filter_range_cut(lines)
       lines = filter_line_cut(lines)
+      lines = resolve_control_tags(lines)
       lines
     end
 
