@@ -102,6 +102,10 @@ class SocialSnippet::Tag
 
   class << self
 
+    def is_no_tag_line?(s)
+      /@no_tag/ === s
+    end
+
     def is_cut?(s)
       /@cut/ === s
     end
