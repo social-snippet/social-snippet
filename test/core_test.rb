@@ -2453,7 +2453,7 @@ describe SocialSnippet::Core do
 
     end
 
-    context "@no_tag", :current => true do
+    context "@no_tag" do
 
       context "no_tag is in cut range" do
 
@@ -2553,8 +2553,8 @@ describe SocialSnippet::Core do
               "def func3",
               "  3",
               "end",
-              "# @snip <foo.rb>",
-              "# @snip <proxy.rb>",
+              "# @snippet <foo.rb>",
+              "# @snippet <proxy.rb>",
             ].join($/)
           end
 
