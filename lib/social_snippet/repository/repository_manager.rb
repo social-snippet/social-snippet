@@ -5,15 +5,15 @@ module SocialSnippet::Repository
     attr_reader :installer
     attr_reader :repo_paths
     attr_reader :repo_cache_path
-    attr_reader :social_snippet
+    attr_reader :core
 
     # Constructor
     #
-    # @param new_social_snippet [::SocialSnippet::Core]
-    def initialize(new_social_snippet)
-      @social_snippet = new_social_snippet
-      @installer = ::SocialSnippet::Repository::RepositoryInstaller.new(social_snippet)
-      @repo_cache_path = social_snippet.config.repository_cache_path
+    # @param new_core [::SocialSnippet::Core]
+    def initialize(new_core)
+      @core = new_core
+      @installer = ::SocialSnippet::Repository::RepositoryInstaller.new(core)
+      @repo_cache_path = core.config.repository_cache_path
       @repo_paths = []
 
       init_repo_paths

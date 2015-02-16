@@ -28,8 +28,8 @@ class SocialSnippet::CommandLine::Command
     @opt_parser = ::OptionParser.new
   end
 
-  def social_snippet
-    @social_snippet ||= ::SocialSnippet::Core.new(input_stream, output_stream)
+  def core
+    @core ||= ::SocialSnippet::Core.new(input_stream, output_stream)
   end
 
   # Define an option

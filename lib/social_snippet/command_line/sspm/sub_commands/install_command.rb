@@ -43,7 +43,7 @@ EOF
     def install_by_snippet_json
       snippet_json = ::JSON.parse(File.read("snippet.json"))
       snippet_json["dependencies"].each do |name, ref|
-        social_snippet.api.install_repository_by_name name, ref, options
+        core.api.install_repository_by_name name, ref, options
       end
     end
 
@@ -52,15 +52,15 @@ EOF
         token_str = next_token
         if is_name?(token_str)
           repo_info = parse_repo_token(token_str)
-          social_snippet.api.install_repository_by_name repo_info[:name], repo_info[:ref], options
+          core.api.install_repository_by_name repo_info[:name], repo_info[:ref], options
         elsif is_url?(token_str)
           repo_info = parse_repo_token(token_str)
           repo_url  = repo_info[:name]
-          social_snippet.api.install_repository_by_url repo_url, repo_info[:ref], options
+          core.api.install_repository_by_url repo_url, repo_info[:ref], options
         elsif is_path?(token_str)
           repo_info = parse_repo_token(token_str)
           repo_path = repo_info[:name]
-          social_snippet.api.install_repository_by_path repo_path, repo_info[:ref], options
+          core.api.install_repository_by_path repo_path, repo_info[:ref], options
         end
       end
     end

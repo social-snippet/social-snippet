@@ -33,11 +33,11 @@ EOF
       if has_next_token?
         repo_url = next_token
         if /^(git|http|https)\:\/\// === repo_url # url
-          social_snippet.api.add_url repo_url
+          core.api.add_url repo_url
         elsif has_next_token? # {repo_owner_id} {repo_id}
           owner_id  = repo_url
           repo_id   = next_token
-          social_snippet.api.add_url "https://github.com/#{owner_id}/#{repo_id}.git"
+          core.api.add_url "https://github.com/#{owner_id}/#{repo_id}.git"
         else
           help
         end

@@ -20,7 +20,7 @@ module SocialSnippet::Api::InstallRepositoryApi
 
     output "Installing: #{display_name}"
     unless options[:dry_run]
-      social_snippet.repo_manager.install repo_name, repo_ref, repo, options
+      core.repo_manager.install repo_name, repo_ref, repo, options
     end
 
     output "Success: #{display_name}"
@@ -42,13 +42,13 @@ module SocialSnippet::Api::InstallRepositoryApi
       output "Installing as #{installed_as}"
     end
 
-    if social_snippet.repo_manager.exists?(installed_as, repo_ref)
+    if core.repo_manager.exists?(installed_as, repo_ref)
       output "#{installed_as} is already installed"
       return
     end
 
     output "Finding: #{repo_name}"
-    info = social_snippet.registry_client.repositories.find(repo_name)
+    info = core.registry_client.repositories.find(repo_name)
     output "Found at: #{info["url"]}"
 
     output "Cloning repository..."
@@ -76,7 +76,7 @@ module SocialSnippet::Api::InstallRepositoryApi
     installed_as = options[:name] unless options[:name].nil?
     output "Installing as #{installed_as}"
 
-    if social_snippet.repo_manager.exists?(installed_as)
+    if core.repo_manager.exists?(installed_as)
       output "#{installed_as} is already installed"
       return
     end
@@ -86,7 +86,7 @@ module SocialSnippet::Api::InstallRepositoryApi
 
   def install_missing_dependencies(repo_deps, options = {})
     repo_deps.each do |dep_repo_name, dep_repo_ref|
-      unless social_snippet.repo_manager.exists?(dep_repo_name, dep_repo_ref)
+      unless core.repo_manager.exists?(dep_repo_name, dep_repo_ref)
         install_repository_by_name dep_repo_name, dep_repo_ref, options
       end
     end

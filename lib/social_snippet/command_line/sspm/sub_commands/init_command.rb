@@ -19,7 +19,7 @@ EOF
     end
 
     def run
-      social_snippet.api.init_manifest options
+      core.api.init_manifest options
     end
 
   end

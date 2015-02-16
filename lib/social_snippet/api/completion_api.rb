@@ -1,7 +1,7 @@
 module SocialSnippet::Api::CompletionApi
 
   def complete_snippet_path(keyword)
-    social_snippet.repo_manager.complete(keyword)
+    core.repo_manager.complete(keyword)
   end
 
   def cli_complete_snippet_path(keyword)

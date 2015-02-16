@@ -7,11 +7,11 @@ module SocialSnippet
 
     # Constructor
     #
-    # @param social_snippet [::SocialSnippet::Core]
-    def initialize(social_snippet, new_options = {})
+    # @param core [::SocialSnippet::Core]
+    def initialize(core, new_options = {})
       @options = new_options
-      @deps_resolver = Resolvers::DepResolver.new(social_snippet)
-      super(social_snippet)
+      @deps_resolver = Resolvers::DepResolver.new(core)
+      super(core)
       init_options
     end
 
@@ -88,7 +88,7 @@ module SocialSnippet
         visit(tag) if is_self(sub_t, sub_c)
         next if is_visited(sub_t)
 
-        next_snippet = social_snippet.repo_manager.get_snippet(sub_c, sub_t)
+        next_snippet = core.repo_manager.get_snippet(sub_c, sub_t)
         insert_by_tag_and_context! inserter, next_snippet, sub_c, sub_t
       end
     end

@@ -2,7 +2,7 @@ class SocialSnippet::Config
 
   require "json"
 
-  attr_reader :social_snippet
+  attr_reader :core
   attr_reader :home
   attr_reader :fields
 
@@ -26,8 +26,8 @@ class SocialSnippet::Config
   ]
 
   # Constructor
-  def initialize(new_social_snippet, options = {})
-    @social_snippet = new_social_snippet
+  def initialize(new_core, options = {})
+    @core = new_core
     @fields = {}
     resolve_home
 

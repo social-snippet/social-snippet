@@ -2,14 +2,14 @@ module SocialSnippet
 
   class Resolvers::BaseResolver
 
-    attr_reader :social_snippet
+    attr_reader :core
     attr_reader :visited
 
     # Constructor
     #
-    # @param new_social_snippet [::SocialSnippet::Core]
-    def initialize(new_social_snippet)
-      @social_snippet = new_social_snippet
+    # @param new_core [::SocialSnippet::Core]
+    def initialize(new_core)
+      @core = new_core
       @visited = Set.new
     end
 
@@ -36,7 +36,7 @@ module SocialSnippet
         end
 
         resolve_tag_repo_ref! t
-        child_snippet = social_snippet.repo_manager.get_snippet(new_context, t)
+        child_snippet = core.repo_manager.get_snippet(new_context, t)
         t.set_path new_context.path
 
         if block_given?
@@ -49,7 +49,7 @@ module SocialSnippet
 
     def resolve_tag_repo_ref!(t)
       if t.has_repo?
-        repo = social_snippet.repo_manager.find_repository_by_tag(t)
+        repo = core.repo_manager.find_repository_by_tag(t)
         t.set_ref repo.latest_version(t.ref)
       end
     end
@@ -83,7 +83,7 @@ module SocialSnippet
 
     # Resolve tag's ref
     def resolve_tag_repo_ref!(tag)
-      repo = social_snippet.repo_manager.find_repository_by_tag(tag)
+      repo = core.repo_manager.find_repository_by_tag(tag)
 
       # not found
       return if repo.nil?

@@ -21,7 +21,7 @@ EOF
 
     def run
       if has_next_token?
-        social_snippet.api.search_repositories next_token, options
+        core.api.search_repositories next_token, options
       else
         help
       end

@@ -3,7 +3,7 @@ module SocialSnippet::Api::SearchApi
   # $ sspm search query
   def search_repositories(query, options = {})
     format_text = search_result_format(options)
-    social_snippet.registry_client.repositories.search(query).each do |repo|
+    core.registry_client.repositories.search(query).each do |repo|
       output format_text % search_result_list(repo, options)
     end
   end
@@ -20,7 +20,7 @@ module SocialSnippet::Api::SearchApi
   end
 
   def search_result_installed(repo)
-    if social_snippet.repo_manager.exists?(repo["name"])
+    if core.repo_manager.exists?(repo["name"])
       "#installed"
     else
       ""

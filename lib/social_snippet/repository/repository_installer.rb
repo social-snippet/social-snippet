@@ -4,20 +4,20 @@ module SocialSnippet::Repository
 
   class RepositoryInstaller
 
-    attr_reader :social_snippet
+    attr_reader :core
     attr_reader :data
 
-    def initialize(new_social_snippet)
-      @social_snippet = new_social_snippet
+    def initialize(new_core)
+      @core = new_core
       init_data
     end
 
     def path
-      social_snippet.config.install_path
+      core.config.install_path
     end
 
     def data_file
-      social_snippet.config.installed_repos_file
+      core.config.installed_repos_file
     end
 
     def init_data
@@ -61,7 +61,7 @@ module SocialSnippet::Repository
     end
 
     def copy_repository(repo, options = {})
-      social_snippet.logger.debug "repository_installer: repo.path = #{repo.path}"
+      core.logger.debug "repository_installer: repo.path = #{repo.path}"
       ::FileUtils.cp_r repo.path, repo_path(repo.name)
     end
 

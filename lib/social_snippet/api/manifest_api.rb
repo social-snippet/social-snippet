@@ -16,9 +16,9 @@ module SocialSnippet::Api::ManifestApi
   def loop_manifest_questions(answer)
     loop do
       answer = ask_manifest_questions(manifest_questions(answer), answer)
-      social_snippet.logger.say ""
-      social_snippet.logger.say ::JSON.pretty_generate(answer)
-      social_snippet.logger.say ""
+      core.logger.say ""
+      core.logger.say ::JSON.pretty_generate(answer)
+      core.logger.say ""
       break if ask_confirm("Is this okay? [Y/N]: ")
     end
     answer
@@ -34,7 +34,7 @@ module SocialSnippet::Api::ManifestApi
   end
 
   def ask_confirm(message)
-    ret = social_snippet.prompt.ask(message) do |q|
+    ret = core.prompt.ask(message) do |q|
       q.limit = 1
       q.validate = /^[yn]$/i
     end
@@ -50,7 +50,7 @@ module SocialSnippet::Api::ManifestApi
 
   def ask_manifest_question(question)
     if question[:type] === :string
-      social_snippet.prompt.ask("#{question[:key]}: ") do |q|
+      core.prompt.ask("#{question[:key]}: ") do |q|
         q.default = question[:default]
         if question[:validate].is_a?(Regexp)
           q.validate = question[:validate]

@@ -18,7 +18,7 @@ EOF
     end
 
     def run
-      social_snippet.api.insert_snippet(input_stream.read)
+      core.api.insert_snippet(input_stream.read)
     end
 
   end

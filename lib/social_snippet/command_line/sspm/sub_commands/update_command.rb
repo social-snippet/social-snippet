@@ -25,10 +25,10 @@ EOF
     def run
       if has_next_token?
         while has_next_token?
-          social_snippet.api.update_repository next_token, options
+          core.api.update_repository next_token, options
         end
       else
-        social_snippet.api.update_all_repositories options
+        core.api.update_all_repositories options
       end
     end
 

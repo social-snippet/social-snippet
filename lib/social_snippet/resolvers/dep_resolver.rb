@@ -6,10 +6,10 @@ module SocialSnippet
 
     # Constructor
     #
-    # @param social_snippet [::SocialSnippet::Core]
-    def initialize(social_snippet)
+    # @param core [::SocialSnippet::Core]
+    def initialize(core)
       @dep_to = {} # dep_to[tag_from] = tag_to
-      super(social_snippet)
+      super(core)
     end
 
     # Find all missing depended snippets

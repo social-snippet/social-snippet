@@ -27,14 +27,14 @@ EOF
         if has_next_token?
           key = s
           value = next_token
-          social_snippet.api.config_set key, value
+          core.api.config_set key, value
         else
           if has_value?(s)
             key, value = s.split("=")
-            social_snippet.api.config_set key, value
+            core.api.config_set key, value
           else
             key = s
-            social_snippet.api.config_get key
+            core.api.config_get key
           end
         end
       else

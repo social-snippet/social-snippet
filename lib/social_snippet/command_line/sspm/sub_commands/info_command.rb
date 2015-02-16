@@ -17,7 +17,7 @@ EOF
 
     def run
       if has_next_token?
-        social_snippet.api.show_info next_token
+        core.api.show_info next_token
       else
         help
       end

@@ -5,27 +5,27 @@ module SocialSnippet::Registry::RegistryResources
 
   class Base
 
-    attr_reader :social_snippet
+    attr_reader :core
     attr_reader :rest_client
     attr_reader :end_point
     attr_reader :cookies
     attr_reader :default_headers
 
-    def initialize(new_social_snippet)
-      @social_snippet = new_social_snippet
-      @end_point      = social_snippet.config.sspm_url
+    def initialize(new_core)
+      @core = new_core
+      @end_point      = core.config.sspm_url
       @rest_client    = ::RestClient::Resource.new(end_point)
       @cookies        = {}
       @default_headers = {
         :accept => :json,
       }
 
-      social_snippet.logger.debug "registry: end-point = #{end_point}"
+      core.logger.debug "registry: end-point = #{end_point}"
     end
 
     def post(req_path, params, headers = {})
-      social_snippet.logger.debug "registry: post: #{req_path}"
-      social_snippet.logger.debug params
+      core.logger.debug "registry: post: #{req_path}"
+      core.logger.debug params
       csrf_token = fetch_csrf_token
 
       # set headers
@@ -34,18 +34,18 @@ module SocialSnippet::Registry::RegistryResources
       headers["X-CSRF-Token"] = csrf_token
 
       # debug output
-      social_snippet.logger.debug "registry: post: csrf_token = #{csrf_token}"
-      social_snippet.logger.debug "registry: post: headers:"
-      social_snippet.logger.debug headers
+      core.logger.debug "registry: post: csrf_token = #{csrf_token}"
+      core.logger.debug "registry: post: headers:"
+      core.logger.debug headers
 
       parse_response rest_client[req_path].post(params.to_json, headers)
     end
 
     def get(req_path, headers = {})
-      social_snippet.logger.debug "registry: get #{req_path}"
+      core.logger.debug "registry: get #{req_path}"
       headers.merge! default_headers
-      social_snippet.logger.debug "registry: headers:"
-      social_snippet.logger.debug headers
+      core.logger.debug "registry: headers:"
+      core.logger.debug headers
       parse_response rest_client[req_path].get(headers)
     end
 

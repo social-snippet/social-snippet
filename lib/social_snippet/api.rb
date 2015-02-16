@@ -12,11 +12,11 @@ require_relative "api/registry_api"
 
 class SocialSnippet::Api
 
-  attr_reader :social_snippet
+  attr_reader :core
 
   # Constructor
-  def initialize(new_social_snippet)
-    @social_snippet = new_social_snippet
+  def initialize(new_core)
+    @core = new_core
   end
 
   include ::SocialSnippet::Api::ConfigApi
@@ -36,7 +36,7 @@ class SocialSnippet::Api
   private
 
   def output(message)
-    social_snippet.logger.say message
+    core.logger.say message
   end
 
 end
