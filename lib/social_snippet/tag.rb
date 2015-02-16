@@ -13,15 +13,15 @@ class SocialSnippet::Tag
   #
   # @param s [String] tag line text
   def initialize(s)
-    @path   = SocialSnippet::Tag.get_path(s)
-    @repo   = SocialSnippet::Tag.get_repo(s)
-    @ref    = SocialSnippet::Tag.get_ref(s)
-    @prefix = SocialSnippet::Tag.get_prefix(s)
-    @suffix = SocialSnippet::Tag.get_suffix(s)
-    @spaces = SocialSnippet::Tag.get_spaces(s)
+    set_path self.class.get_path(s)
+    @repo   = self.class.get_repo(s)
+    @ref    = self.class.get_ref(s)
+    @prefix = self.class.get_prefix(s)
+    @suffix = self.class.get_suffix(s)
+    @spaces = self.class.get_spaces(s)
 
     # to normalize repo's path
-    set_path SocialSnippet::Tag.get_path(s)
+    set_path self.class.get_path(s)
   end
 
   # Set information by another tag
@@ -43,8 +43,12 @@ class SocialSnippet::Tag
   end
 
   def normalize_path(path)
+    # ././foo/bar => foo/bar
+    path.gsub! /^\.\//, "" while /^\.\// === path
+
     # repo:/path/to/file -> repo:path/to/file
     path[0] = "" if has_repo? && path[0] == "/"
+
     path
   end
 
