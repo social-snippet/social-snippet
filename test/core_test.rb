@@ -2118,7 +2118,7 @@ describe SocialSnippet::Core do
         subject { fake_core.api.insert_snippet(input) }
         it { should eq output }
 
-      end
+      end # range cut
 
       context "range cut (nested snippet)" do
 
@@ -2136,6 +2136,75 @@ describe SocialSnippet::Core do
             "// @begin_cut",
             "#include <path/to/lib>",
             "// @end_cut",
+            "void func2() {",
+            "}",
+          ].join($/)
+        end
+
+        let(:input) do
+          [
+            "// @snip <./file1.cpp>",
+          ].join($/)
+        end
+
+        let(:output) do
+          [
+            "// @snippet <file2.cpp>",
+            "void func2() {",
+            "}",
+            "// @snippet <file1.cpp>",
+            "void func1() {",
+            "}",
+          ].join($/)
+        end
+
+        subject { fake_core.api.insert_snippet(input) }
+        it { should eq output }
+
+      end # range cut (nested)
+
+      context "cut line" do
+
+        before do
+          ::FileUtils.touch "./file1.cpp"
+          ::File.write "./file1.cpp", [
+            "#include <path/to/lib> // @cut",
+            "void func() {",
+            "}",
+          ].join($/)
+        end
+
+        let(:input) do
+          [
+            "// @snip <./file1.cpp>",
+          ].join($/)
+        end
+
+        let(:output) do
+          [
+            "// @snippet <file1.cpp>",
+            "void func() {",
+            "}",
+          ].join($/)
+        end
+
+        subject { fake_core.api.insert_snippet(input) }
+        it { should eq output }
+
+      end # cut line
+
+      context "cut line (nested case)" do
+
+        before do
+          ::FileUtils.touch "./file1.cpp"
+          ::File.write "./file1.cpp", [
+            "#include <path/to/lib> // @cut",
+            "// @snip <./file2.cpp>",
+            "void func1() {",
+            "}",
+          ].join($/)
+          ::File.write "./file2.cpp", [
+            "#include <path/to/lib> // @cut",
             "void func2() {",
             "}",
           ].join($/)
