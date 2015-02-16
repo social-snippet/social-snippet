@@ -1,5 +1,7 @@
 class SocialSnippet::Tag
 
+  require "pathname"
+
   attr_reader :path
   attr_reader :repo
   attr_reader :ref
@@ -31,6 +33,10 @@ class SocialSnippet::Tag
     self
   end
 
+  def filename
+    ::Pathname.new(path).basename.to_s
+  end
+
   # Set path
   def set_path(new_path)
     @path = normalize_path(new_path)
@@ -39,7 +45,6 @@ class SocialSnippet::Tag
   def normalize_path(path)
     # repo:/path/to/file -> repo:path/to/file
     path[0] = "" if has_repo? && path[0] == "/"
-
     path
   end
 
