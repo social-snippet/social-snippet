@@ -2233,12 +2233,6 @@ describe SocialSnippet::Core do
           ].join($/)
         end
 
-        let(:input) do
-          [
-            "// @snip <main.go>",
-          ].join($/)
-        end
-
         let(:output) do
           [
             "// @snippet <typedef/typedef.go>",
@@ -2277,8 +2271,26 @@ describe SocialSnippet::Core do
           ].join($/)
         end
 
-        subject { fake_social_snippet.api.insert_snippet input }
-        it { should eq output }
+        context "snip from main.go directly" do
+
+          let(:input) { File.read "main.go" }
+          subject { fake_social_snippet.api.insert_snippet input }
+          it { should eq output }
+
+        end
+
+        context "snip main.go" do
+
+          let(:input) do
+            [
+              "// @snip <main.go>",
+            ].join($/)
+          end
+
+          subject { fake_social_snippet.api.insert_snippet input }
+          it { should eq output }
+
+        end
 
       end
 
