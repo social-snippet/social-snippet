@@ -26,15 +26,13 @@ module SocialSnippet
     def insert(text)
       raise "must be passed string" unless text.is_a?(String)
 
-      context = Context.new("")
       snippet = Snippet.new_text(text)
-
       snippet.snippet_tags.each do |tag_info|
         visit tag_info[:tag]
       end
 
-      dest = insert_func(snippet, context)
-      return dest.join($/)
+      context = Context.new(nil)
+      insert_func(snippet, context).join($/)
     end
 
     private
@@ -85,11 +83,12 @@ module SocialSnippet
       dep_tags.each do |tag_info|
         sub_t = tag_info[:tag]
         sub_c = tag_info[:context]
+        resolve_tag_repo_ref! sub_t
 
-        visit(tag) if is_self(tag, context)
+        visit(tag) if is_self(sub_t, sub_c)
         next if is_visited(sub_t)
 
-        next_snippet = social_snippet.repo_manager.get_snippet(context, sub_t)
+        next_snippet = social_snippet.repo_manager.get_snippet(sub_c, sub_t)
         insert_by_tag_and_context! inserter, next_snippet, sub_c, sub_t
       end
     end
