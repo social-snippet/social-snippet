@@ -2233,51 +2233,51 @@ describe SocialSnippet::Core do
           ].join($/)
         end
 
-        let(:output) do
-          [
-            "// @snippet <typedef/typedef.go>",
-            "type Int int64",
-            "// @snippet <solver/input.go>",
-            "type Input struct {",
-            "  eof bool",
-            "}",
-            "// @snippet <solver/output.go>",
-            "type Output struct {",
-            "}",
-            "// @snippet <solver/solver.go>",
-            "",
-            "type Solver struct {",
-              "in *Input",
-              "out *Output",
-            "}",
-            "",
-            "func (s *Solver) input() *Input {",
-              "return s.in",
-            "}",
-            "",
-            "func CreateSolver() *Solver {",
-              "s := new(Solver)",
-              "s.in = new(Input)",
-              "s.out = new(Output)",
-              "return s",
-            "}",
-            "// @snippet <runner/runner.go>",
-            "// @snippet <main.go>",
-            "package main",
-            "",
-            "",
-            "func main() {",
-            "}",
-          ].join($/)
-        end
-
         context "snip from main.go directly" do
 
           let(:input) { File.read "main.go" }
+
+          let(:output) do
+            [
+              "package main",
+              "",
+              "// @snippet <typedef/typedef.go>",
+              "type Int int64",
+              "// @snippet <solver/input.go>",
+              "type Input struct {",
+              "  eof bool",
+              "}",
+              "// @snippet <solver/output.go>",
+              "type Output struct {",
+              "}",
+              "// @snippet <solver/solver.go>",
+              "",
+              "type Solver struct {",
+                "in *Input",
+                "out *Output",
+              "}",
+              "",
+              "func (s *Solver) input() *Input {",
+                "return s.in",
+              "}",
+              "",
+              "func CreateSolver() *Solver {",
+                "s := new(Solver)",
+                "s.in = new(Input)",
+                "s.out = new(Output)",
+                "return s",
+              "}",
+              "// @snippet <runner/runner.go>",
+              "",
+              "func main() {",
+              "}",
+            ].join($/)
+          end
+
           subject { fake_social_snippet.api.insert_snippet input }
           it { should eq output }
 
-        end
+        end # snip from main.go directly
 
         context "snip main.go" do
 
@@ -2287,12 +2287,50 @@ describe SocialSnippet::Core do
             ].join($/)
           end
 
+          let(:output) do
+            [
+              "// @snippet <typedef/typedef.go>",
+              "type Int int64",
+              "// @snippet <solver/input.go>",
+              "type Input struct {",
+              "  eof bool",
+              "}",
+              "// @snippet <solver/output.go>",
+              "type Output struct {",
+              "}",
+              "// @snippet <solver/solver.go>",
+              "",
+              "type Solver struct {",
+                "in *Input",
+                "out *Output",
+              "}",
+              "",
+              "func (s *Solver) input() *Input {",
+                "return s.in",
+              "}",
+              "",
+              "func CreateSolver() *Solver {",
+                "s := new(Solver)",
+                "s.in = new(Input)",
+                "s.out = new(Output)",
+                "return s",
+              "}",
+              "// @snippet <runner/runner.go>",
+              "// @snippet <main.go>",
+              "package main",
+              "",
+              "",
+              "func main() {",
+              "}",
+            ].join($/)
+          end
+
           subject { fake_social_snippet.api.insert_snippet input }
           it { should eq output }
 
-        end
+        end # snip main.go
 
-      end
+      end # Golang Project 1
 
       context "../" do
 
