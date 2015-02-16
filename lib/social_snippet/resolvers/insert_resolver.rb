@@ -108,10 +108,10 @@ module SocialSnippet
       dep_tags.each do |tag_info|
         tag = tag_info[:tag].to_path
         dep_ind = dep_tags_index[tag]
-        dep_tags_hash[dep_ind] = deps_resolver.dep_to[tag].to_a.map {|tag| dep_tags_index[tag] }
+        dep_tags_hash[dep_ind] = deps_resolver.dep_to[tag].to_a.map {|tag| dep_tags_index[tag] }.reject(&:nil?)
       end
 
-      dep_tags_hash.tsort.map {|k| dep_tags[k]}
+      dep_tags_hash.tsort.map {|k| dep_tags[k] }
     end
 
   end # BaseResolver
