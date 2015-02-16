@@ -2165,7 +2165,7 @@ describe SocialSnippet::Core do
 
     end # filters
 
-    context "snippet's context testing", :current => true do
+    context "snippet's context testing" do
 
       context "../" do
 
