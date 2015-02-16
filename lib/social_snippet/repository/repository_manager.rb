@@ -47,7 +47,7 @@ module SocialSnippet::Repository
       ::SocialSnippet::Snippet.new(resolve_snippet_path(context, tag))
     end
 
-    # Resolve snippet path from tag
+    # Resolve snippet path by context and tag
     #
     # @param context [::SocialSnippet::Context] The context of snippet
     # @param tag [::SocialSnippet::Tag] The tag of snippet
@@ -59,7 +59,7 @@ module SocialSnippet::Repository
 
       new_context = context.clone
       new_context.move tag.path
-      return new_context.path
+      "#{new_context.dirname}/#{tag.filename}"
     end
 
     # Find repository by tag
