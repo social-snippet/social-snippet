@@ -57,7 +57,6 @@ module SocialSnippet::Repository
         repo.real_path tag.path
       else
         new_context = context.clone
-        new_context.move tag.path
         new_context.dirname + "/" + tag.filename
       end
     end
