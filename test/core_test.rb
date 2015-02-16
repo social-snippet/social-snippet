@@ -2167,6 +2167,89 @@ describe SocialSnippet::Core do
 
     context "snippet's context testing" do
 
+      context "Golang Project 1", :current => true do
+
+        before do
+          FileUtils.mkdir "./runner"
+          FileUtils.touch "./runner/runner.go"
+          FileUtils.mkdir "./solver"
+          FileUtils.touch "./solver/input.go"
+          FileUtils.touch "./solver/output.go"
+          FileUtils.touch "./solver/solver.go"
+          FileUtils.mkdir "./typedef"
+          FileUtils.touch "./typedef/typedef.go"
+          FileUtils.touch "./main.go"
+
+          File.write "./runner/runner", [
+            "// @snip <../solver/solver.go>",
+          ].join($/)
+
+          File.write "./solver/input.go", [
+            "type Input struct {",
+            "  eof bool",
+            "}",
+          ].join($/)
+
+          File.write "./solver/output.go", [
+            "type Output struct {",
+            "}",
+          ].join($/)
+
+          File.write "./solver/solver.go", [
+            "// @snip <./input.go>",
+            "// @snip <./output.go>",
+            "",
+            "type Solver struct {",
+              "in *Input",
+              "out *Output",
+            "}",
+            "",
+            "func (s *Solver) input() *Input {",
+              "return s.in",
+            "}",
+            "",
+            "func CreateSolver() *Solver {",
+              "s := new(Solver)",
+              "s.in = new(Input)",
+              "s.out = new(Output)",
+              "return s",
+            "}",
+          ].join($/)
+
+          File.write "./typedef/typedef.go", [
+            "type Int int64",
+          ].join($/)
+
+          File.write "main.go", [
+            "package main",
+            "",
+            "// @snip <./typedef/typedef.go>",
+            "// @snip <./solver/solver.go>",
+            "// @snip <./runner/runner.go>",
+            "",
+            "func main() {",
+            "}",
+            "",
+          ].join($/)
+        end
+
+        let(:input) do
+          [
+            "// @snip <main.go>",
+          ].join($/)
+        end
+
+        let(:output) do
+          [
+            "// @snippet <main.go>"
+          ].join($/)
+        end
+
+        subject { fake_social_snippet.api.insert_snippet input }
+        it { should eq output }
+
+      end
+
       context "../" do
 
         before do
