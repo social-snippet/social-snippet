@@ -2599,43 +2599,89 @@ describe SocialSnippet::Core do
             ].join($/)
           end
 
-          let(:input) do
-            [
-              "# @snip <foo.rb>",
-            ].join($/)
+          context "snip foo.rb" do
+
+            let(:input) do
+              [
+                "# @snip <foo.rb>",
+              ].join($/)
+            end
+
+            let(:output) do
+              [
+                "# @snippet <foo/func1.rb>",
+                "def func1",
+                "  1",
+                "end",
+                "# @snippet <foo/func2.rb>",
+                "def func2",
+                "  2",
+                "end",
+                "# @snippet <foo/func3.rb>",
+                "def func3",
+                "  3",
+                "end",
+                "# @snippet <foo/bar/func1.rb>",
+                "def bfunc1",
+                "  1",
+                "end",
+                "# @snippet <foo/bar/func2.rb>",
+                "def bfunc2",
+                "  2",
+                "end",
+                "# @snippet <foo/bar/func3.rb>",
+                "def bfunc3",
+                "  3",
+                "end",
+              ].join($/)
+            end
+
+            subject { fake_core.api.insert_snippet input }
+            it { should eq output }
+
           end
 
-          let(:output) do
-            [
-              "# @snippet <foo/func1.rb>",
-              "def func1",
-              "  1",
-              "end",
-              "# @snippet <foo/func2.rb>",
-              "def func2",
-              "  2",
-              "end",
-              "# @snippet <foo/func3.rb>",
-              "def func3",
-              "  3",
-              "end",
-              "# @snippet <foo/bar/func1.rb>",
-              "def bfunc1",
-              "  1",
-              "end",
-              "# @snippet <foo/bar/func2.rb>",
-              "def bfunc2",
-              "  2",
-              "end",
-              "# @snippet <foo/bar/func3.rb>",
-              "def bfunc3",
-              "  3",
-              "end",
-            ].join($/)
-          end
+          context "snip proxy.rb" do
 
-          subject { fake_core.api.insert_snippet input }
-          it { should eq output }
+            let(:input) do
+              [
+                "# @snip <proxy.rb>",
+              ].join($/)
+            end
+
+            let(:output) do
+              [
+                "# @snippet <foo/func1.rb>",
+                "def func1",
+                "  1",
+                "end",
+                "# @snippet <foo/func2.rb>",
+                "def func2",
+                "  2",
+                "end",
+                "# @snippet <foo/func3.rb>",
+                "def func3",
+                "  3",
+                "end",
+                "# @snippet <foo/bar/func1.rb>",
+                "def bfunc1",
+                "  1",
+                "end",
+                "# @snippet <foo/bar/func2.rb>",
+                "def bfunc2",
+                "  2",
+                "end",
+                "# @snippet <foo/bar/func3.rb>",
+                "def bfunc3",
+                "  3",
+                "end",
+              ].join($/)
+            end
+
+            subject { fake_core.api.insert_snippet input }
+            it { should eq output }
+
+          end
 
         end # add module
 
