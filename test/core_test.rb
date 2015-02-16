@@ -2455,7 +2455,7 @@ describe SocialSnippet::Core do
 
     context "@no_tag" do
 
-      context "for ruby module", :current => true do
+      context "for ruby module" do
 
         before do
           ::FileUtils.touch "proxy.rb"
