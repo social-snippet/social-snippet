@@ -4,6 +4,7 @@ module SocialSnippet
 
     attr_reader :filepath
     attr_reader :code
+    attr_reader :flag_no_tag
 
     # Constructor
     def initialize(snippet_path)
@@ -33,7 +34,7 @@ module SocialSnippet
     end
 
     def no_tag?
-      not TagParser.find_no_tags(lines).empty?
+      flag_no_tag
     end
 
     class << self
@@ -59,9 +60,15 @@ module SocialSnippet
 
     # @param lines [Array<String>]
     def filter(lines)
+      lines = resolve_control_tags(lines)
       lines = filter_range_cut(lines)
       lines = filter_line_cut(lines)
       lines
+    end
+
+    def resolve_control_tags(lines)
+      @flag_no_tag = (false === TagParser.find_no_tags(lines).empty?)
+      lines.reject {|s| Tag.is_control_tag? s }
     end
 
     def filter_line_cut(lines)
