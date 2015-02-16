@@ -62,17 +62,17 @@ describe SocialSnippet::Core do
         repo_name = "my-repo"
         ref_name = "thisisdu"
 
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/file.c"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/file.c"
 
         # snippet.json
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '"}'
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/file.c", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/file.c", [
           '/* file.c */'
         ].join($/)
 
@@ -138,17 +138,17 @@ describe SocialSnippet::Core do
             repo_name = "my-repo"
             ref_name = "1.0.0"
 
-            FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-              FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-              FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-              FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c"
+            ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+              ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+              ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+              ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c"
 
               # snippet.json
-              File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+              ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
                 '{"name": "' + repo_name + '"}'
               ].join($/)
 
-              File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c", [
+              ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c", [
                 'func: 1.0.0',
               ].join($/)
           end # prepare my-repo#1.0.0
@@ -169,17 +169,17 @@ describe SocialSnippet::Core do
               repo_name = "my-repo"
               ref_name = "1.0.1"
 
-              FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-              FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-              FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-              FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c"
+              ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+              ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+              ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+              ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c"
 
               # snippet.json
-              File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+              ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
                 '{"name": "' + repo_name + '"}'
               ].join($/)
 
-              File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c", [
+              ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c", [
                 'func: 1.0.1',
               ].join($/)
             end # prepare my-repo#1.0.1
@@ -200,17 +200,17 @@ describe SocialSnippet::Core do
                 repo_name = "my-repo"
                 ref_name = "1.1.0"
 
-                FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-                FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-                FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-                FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c"
+                ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+                ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+                ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+                ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c"
 
                 # snippet.json
-                File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+                ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
                   '{"name": "' + repo_name + '"}'
                 ].join($/)
 
-                File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c", [
+                ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c", [
                   'func: 1.1.0',
                 ].join($/)
               end # prepare my-repo#1.1.0
@@ -231,17 +231,17 @@ describe SocialSnippet::Core do
                   repo_name = "my-repo"
                   ref_name = "9.9.9"
 
-                  FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-                  FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-                  FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-                  FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c"
+                  ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+                  ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+                  ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+                  ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c"
 
                   # snippet.json
-                  File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+                  ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
                     '{"name": "' + repo_name + '"}'
                   ].join($/)
 
-                  File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c", [
+                  ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c", [
                     'func: 9.9.9',
                   ].join($/)
                 end # prepare my-repo#9.9.9
@@ -274,39 +274,39 @@ describe SocialSnippet::Core do
         repo_name = "my-repo"
         ref_name = "1.2.3"
 
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/file_1"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_a"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_a/file_2"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_b"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_b/file_3"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_c"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_c/file_4"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/file_1"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_a"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_a/file_2"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_b"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_b/file_3"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_c"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_c/file_4"
 
         # snippet.json
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}'
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/file_1", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/file_1", [
           '@snip<subdir_a/file_2>',
           'file_1',
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_a/file_2", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_a/file_2", [
           '@snip<../subdir_b/file_3>',
           'file_2',
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_b/file_3", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_b/file_3", [
           '@snip<../subdir_c/file_4>',
           'file_3',
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_c/file_4", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/subdir_c/file_4", [
           'file_4',
         ].join($/)
       end # prepare my-repo#1.2.3
@@ -349,18 +349,18 @@ describe SocialSnippet::Core do
         repo_name = "directly"
         ref_name = "3.2.1"
 
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/1"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/1"
 
         # snippet.json
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '"}'
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/1", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/1", [
           '@snip<1>',
           '1',
         ].join($/)
@@ -370,18 +370,18 @@ describe SocialSnippet::Core do
         repo_name = "loop-1"
         ref_name = "1.1.1"
 
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/loop"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/loop"
 
         # snippet.json
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '"}'
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/loop", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/loop", [
           '@snip<loop-2:loop>',
           'loop-1',
         ].join($/)
@@ -391,18 +391,18 @@ describe SocialSnippet::Core do
         repo_name = "loop-2"
         ref_name = "1.1.1"
 
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/loop"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/loop"
 
         # snippet.json
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '"}'
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/loop", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/loop", [
           '@snip<loop-3:loop>',
           'loop-2',
         ].join($/)
@@ -412,18 +412,18 @@ describe SocialSnippet::Core do
         repo_name = "loop-3"
         ref_name = "1.1.1"
 
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/loop"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/loop"
 
         # snippet.json
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '"}'
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/loop", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/loop", [
           '@snip<loop-1:loop>',
           '@snip<non-loop-4:non-loop>',
           'loop-3',
@@ -434,18 +434,18 @@ describe SocialSnippet::Core do
         repo_name = "non-loop-4"
         ref_name = "1.1.1"
 
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/non-loop"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/non-loop"
 
         # snippet.json
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '"}'
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/non-loop", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/non-loop", [
           'non-loop-4',
         ].join($/)
       end # prepare non-loop-4#1.1.1
@@ -516,18 +516,18 @@ describe SocialSnippet::Core do
         repo_name = "my-repo-1"
         ref_name = "0.0.1"
 
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/1"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/1"
 
         # snippet.json
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '"}'
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/1", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/1", [
           '@snip<my-repo-2#0:2>',
           'my-repo-1:1',
         ].join($/)
@@ -537,18 +537,18 @@ describe SocialSnippet::Core do
         repo_name = "my-repo-2"
         ref_name = "0.0.1"
 
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.touch "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.touch "#{tmp_repo_path}/#{repo_name}/#{ref_name}/2"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.touch "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        ::FileUtils.touch "#{tmp_repo_path}/#{repo_name}/#{ref_name}/2"
 
         # snippet.json
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '"}'
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/2", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/2", [
           '@snip<my-repo-3:path/to/3>',
           'my-repo-2:2',
         ].join($/)
@@ -558,18 +558,18 @@ describe SocialSnippet::Core do
         repo_name = "my-repo-2"
         ref_name = "1.2.3"
 
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/2"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/2"
 
         # snippet.json
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '"}'
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/2", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/2", [
           'miss!!',
         ].join($/)
       end # prepare my-repo-2#1.2.3
@@ -578,20 +578,20 @@ describe SocialSnippet::Core do
         repo_name = "my-repo-3"
         ref_name = "1.2.3"
 
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/path"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/path/to"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/path/to/3"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/path"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/path/to"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/path/to/3"
 
         # snippet.json
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '"}'
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/path/to/3", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/path/to/3", [
           '@snip<my-repo-4:path/to/4>',
           'my-repo-3:path/to/3',
         ].join($/)
@@ -601,22 +601,22 @@ describe SocialSnippet::Core do
         repo_name = "my-repo-4"
         ref_name = "1.2.3"
 
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to/4"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to/4"
 
         # snippet.json
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "sources"}'
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to/4", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to/4", [
           '@snip<my-repo-5:path/to/5>',
           'my-repo-4:sources/path/to/4',
         ].join($/)
@@ -626,22 +626,22 @@ describe SocialSnippet::Core do
         repo_name = "my-repo-5"
         ref_name = "100.200.300"
 
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to/5"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to/5"
 
         # snippet.json
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "sources"}'
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to/5", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to/5", [
           '@snip<my-repo-6:path/to/6>',
           'my-repo-5:sources/path/to/5',
         ].join($/)
@@ -651,22 +651,22 @@ describe SocialSnippet::Core do
         repo_name = "my-repo-5"
         ref_name = "99.999.999"
 
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to/5"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to/5"
 
         # snippet.json
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "sources"}'
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to/5", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to/5", [
           'miss!!',
           'my-repo-5:5',
         ].join($/)
@@ -675,20 +675,20 @@ describe SocialSnippet::Core do
       before do
         repo_name = "my-repo-6"
 
-        FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/.git"
-        FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json"
-        FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/sources"
-        FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/sources/path"
-        FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/sources/path/to"
-        FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/sources/path/to/6"
+        ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/.git"
+        ::FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json"
+        ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/sources"
+        ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/sources/path"
+        ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/sources/path/to"
+        ::FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/sources/path/to/6"
 
         # snippet.json
-        File.write "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json", [
+        ::File.write "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "sources"}'
         ].join($/)
 
-        File.write "#{tmp_repo_path_no_ver}/#{repo_name}/sources/path/to/6", [
+        ::File.write "#{tmp_repo_path_no_ver}/#{repo_name}/sources/path/to/6", [
           '@snip<my-repo-7:path/to/7>',
           'my-repo-6:sources/path/to/6',
         ].join($/)
@@ -698,22 +698,22 @@ describe SocialSnippet::Core do
         repo_name = "my-repo-7"
         ref_name = "1.2.3"
 
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to/7"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to/7"
 
         # snippet.json
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "sources"}'
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to/7", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/sources/path/to/7", [
           'end',
           'my-repo-7:sources/path/to/7',
         ].join($/)
@@ -762,26 +762,26 @@ describe SocialSnippet::Core do
         repo_name = "my-repo"
         ref_name = "0.0.1"
 
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/1"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/2"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/3"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/4"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/5"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/6"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/7"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/8"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/9"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/1"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/2"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/3"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/4"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/5"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/6"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/7"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/8"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/9"
 
         # snippet.json
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '"}'
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/1", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/1", [
           '@snip<5>',
           '@snip<4>',
           '@snip<3>',
@@ -789,7 +789,7 @@ describe SocialSnippet::Core do
           '1',
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/2", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/2", [
           '@snip<9>',
           '@snip<8>',
           '@snip<7>',
@@ -797,31 +797,31 @@ describe SocialSnippet::Core do
           '2',
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/3", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/3", [
           '3',
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/4", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/4", [
           '4',
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/5", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/5", [
           '5',
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/6", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/6", [
           '6',
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/7", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/7", [
           '7',
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/8", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/8", [
           '8',
         ].join($/)
 
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/9", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/9", [
           '9',
         ].join($/)
       end
@@ -870,27 +870,27 @@ describe SocialSnippet::Core do
         repo_name = "my-repo"
         ref_name = "0.0.3"
 
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb"
 
         # snippet.json
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
         ].join($/)
 
         # src/1.rb
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
           '# @snip</2.rb>',
           'OK',
         ].join($/)
 
         # src/2.rb
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
           '0.0.3',
         ].join($/)
 
@@ -900,21 +900,21 @@ describe SocialSnippet::Core do
         repo_name = "my-repo"
         ref_name = "0.0.2"
 
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb"
 
         # snippet.json
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
         ].join($/)
 
         # src/1.rb
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
           '# @snip</2.rb>',
           'def func_1',
           '  return 2 * func_2()',
@@ -922,7 +922,7 @@ describe SocialSnippet::Core do
         ].join($/)
 
         # src/2.rb
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
           'ERROR_CASE',
         ].join($/)
 
@@ -932,21 +932,21 @@ describe SocialSnippet::Core do
         repo_name = "my-repo"
         ref_name = "0.0.1"
 
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb"
 
         # snippet.json
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
         ].join($/)
 
         # src/1.rb
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
           '# @snip</2.rb>',
           'def func_1',
           '  return 2 * func_2()',
@@ -954,7 +954,7 @@ describe SocialSnippet::Core do
         ].join($/)
 
         # src/2.rb
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
           'ERROR_CASE',
         ].join($/)
 
@@ -964,21 +964,21 @@ describe SocialSnippet::Core do
         repo_name = "my-repo"
         ref_name = "1.0.0"
 
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb"
 
         # snippet.json
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
         ].join($/)
 
         # src/1.rb
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
           '# @snip</2.rb>',
           'def func_1',
           '  return 2 * func_2()',
@@ -986,7 +986,7 @@ describe SocialSnippet::Core do
         ].join($/)
 
         # src/2.rb
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
           'THIS_IS_OK',
         ].join($/)
       end # prepare my-repo#1.0.0
@@ -995,20 +995,20 @@ describe SocialSnippet::Core do
         repo_name = "new-my-repo"
         ref_name = "0.0.1"
 
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb"
 
         # snippet.json
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
         ].join($/)
 
         # src/1.rb
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
           'OLD VERSION',
         ].join($/)
       end # prepare new-my-repo#0.0.1
@@ -1017,22 +1017,22 @@ describe SocialSnippet::Core do
         repo_name = "new-my-repo"
         ref_name = "0.0.2"
 
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/3.rb"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/3.rb"
 
         # snippet.json
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
         ].join($/)
 
         # src/1.rb
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
           '# @snip <my-repo#0:1.rb>',
           '# @snip </2.rb>',
           '# @snip <3.rb>',
@@ -1040,12 +1040,12 @@ describe SocialSnippet::Core do
         ].join($/)
 
         # src/2.rb
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
           'OK: 2.rb',
         ].join($/)
 
         # src/3.rb
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/3.rb", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/3.rb", [
           'OK: 3.rb',
         ].join($/)
       end # prepare new-my-repo#0.0.2
@@ -1167,21 +1167,21 @@ describe SocialSnippet::Core do
         repo_name = "my-repo"
         ref_name = "0.0.3"
 
-        FileUtils.mkdir_p "#{tmp_repo_path}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb"
-        FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb"
 
         # snippet.json
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
         ].join($/)
 
         # src/1.rb
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
           '# @snip</2.rb>',
           'def func_1',
           '  return 2 * func_2()',
@@ -1189,7 +1189,7 @@ describe SocialSnippet::Core do
         ].join($/)
 
         # src/2.rb
-        File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
           'def func_2',
           '  return 42',
           'end',
@@ -1229,21 +1229,21 @@ describe SocialSnippet::Core do
         repo_name = "my-repo"
         ref_name = "0.0.1"
 
-        FileUtils.mkdir_p "#{repo_path}"
-        FileUtils.mkdir_p "#{repo_path}/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "#{repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.mkdir_p "#{repo_path}/#{repo_name}/#{ref_name}/src"
-        FileUtils.touch   "#{repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.touch   "#{repo_path}/#{repo_name}/#{ref_name}/src/1.rb"
-        FileUtils.touch   "#{repo_path}/#{repo_name}/#{ref_name}/src/2.rb"
+        ::FileUtils.mkdir_p "#{repo_path}"
+        ::FileUtils.mkdir_p "#{repo_path}/#{repo_name}/#{ref_name}"
+        ::FileUtils.mkdir_p "#{repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.mkdir_p "#{repo_path}/#{repo_name}/#{ref_name}/src"
+        ::FileUtils.touch   "#{repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        ::FileUtils.touch   "#{repo_path}/#{repo_name}/#{ref_name}/src/1.rb"
+        ::FileUtils.touch   "#{repo_path}/#{repo_name}/#{ref_name}/src/2.rb"
 
         # snippet.json
-        File.write "#{repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+        ::File.write "#{repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
         ].join($/)
 
         # src/1.rb
-        File.write "#{repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
+        ::File.write "#{repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
           '# @snip</2.rb>',
           'def func_1',
           '  return 2 * func_2()',
@@ -1251,7 +1251,7 @@ describe SocialSnippet::Core do
         ].join($/)
 
         # src/2.rb
-        File.write "#{repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
+        ::File.write "#{repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
           'def func_2',
           '  return 42',
           'end',
@@ -1275,21 +1275,21 @@ describe SocialSnippet::Core do
         repo_name = "my-repo"
         ref_name = "0.0.2"
 
-        FileUtils.mkdir_p "#{repo_path}"
-        FileUtils.mkdir_p "#{repo_path}/#{repo_name}/#{ref_name}"
-        FileUtils.mkdir_p "#{repo_path}/#{repo_name}/#{ref_name}/.git"
-        FileUtils.mkdir_p "#{repo_path}/#{repo_name}/#{ref_name}/src"
-        FileUtils.touch   "#{repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-        FileUtils.touch   "#{repo_path}/#{repo_name}/#{ref_name}/src/1.rb"
-        FileUtils.touch   "#{repo_path}/#{repo_name}/#{ref_name}/src/2.rb"
+        ::FileUtils.mkdir_p "#{repo_path}"
+        ::FileUtils.mkdir_p "#{repo_path}/#{repo_name}/#{ref_name}"
+        ::FileUtils.mkdir_p "#{repo_path}/#{repo_name}/#{ref_name}/.git"
+        ::FileUtils.mkdir_p "#{repo_path}/#{repo_name}/#{ref_name}/src"
+        ::FileUtils.touch   "#{repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+        ::FileUtils.touch   "#{repo_path}/#{repo_name}/#{ref_name}/src/1.rb"
+        ::FileUtils.touch   "#{repo_path}/#{repo_name}/#{ref_name}/src/2.rb"
 
         # snippet.json
-        File.write "#{repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+        ::File.write "#{repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
         ].join($/)
 
         # src/1.rb
-        File.write "#{repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
+        ::File.write "#{repo_path}/#{repo_name}/#{ref_name}/src/1.rb", [
           '# @snip</2.rb>',
           'def func_1',
           '  return 2 * func_2()',
@@ -1297,7 +1297,7 @@ describe SocialSnippet::Core do
         ].join($/)
 
         # src/2.rb
-        File.write "#{repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
+        ::File.write "#{repo_path}/#{repo_name}/#{ref_name}/src/2.rb", [
           'def func_2',
           '  return 10000 + 42',
           'end',
@@ -1420,21 +1420,21 @@ describe SocialSnippet::Core do
       before do
         repo_name = "my-repo"
 
-        FileUtils.mkdir_p "#{repo_path}"
-        FileUtils.mkdir_p "#{repo_path}/#{repo_name}"
-        FileUtils.mkdir_p "#{repo_path}/#{repo_name}/.git"
-        FileUtils.mkdir_p "#{repo_path}/#{repo_name}/src"
-        FileUtils.touch   "#{repo_path}/#{repo_name}/snippet.json"
-        FileUtils.touch   "#{repo_path}/#{repo_name}/src/1.rb"
-        FileUtils.touch   "#{repo_path}/#{repo_name}/src/2.rb"
+        ::FileUtils.mkdir_p "#{repo_path}"
+        ::FileUtils.mkdir_p "#{repo_path}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{repo_path}/#{repo_name}/.git"
+        ::FileUtils.mkdir_p "#{repo_path}/#{repo_name}/src"
+        ::FileUtils.touch   "#{repo_path}/#{repo_name}/snippet.json"
+        ::FileUtils.touch   "#{repo_path}/#{repo_name}/src/1.rb"
+        ::FileUtils.touch   "#{repo_path}/#{repo_name}/src/2.rb"
 
         # snippet.json
-        File.write "#{repo_path}/#{repo_name}/snippet.json", [
+        ::File.write "#{repo_path}/#{repo_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "src"}',
         ].join($/)
 
         # src/1.rb
-        File.write "#{repo_path}/#{repo_name}/src/1.rb", [
+        ::File.write "#{repo_path}/#{repo_name}/src/1.rb", [
           '# @snip</2.rb>',
           'def func_1',
           '  return 2 * func_2()',
@@ -1442,7 +1442,7 @@ describe SocialSnippet::Core do
         ].join($/)
 
         # src/2.rb
-        File.write "#{repo_path}/#{repo_name}/src/2.rb", [
+        ::File.write "#{repo_path}/#{repo_name}/src/2.rb", [
           'def func_2',
           '  return 42',
           'end',
@@ -1495,33 +1495,33 @@ describe SocialSnippet::Core do
       before do
         repo_name = "my-repo"
 
-        FileUtils.mkdir_p "#{repo_path}"
-        FileUtils.mkdir_p "#{repo_path}/#{repo_name}"
-        FileUtils.mkdir_p "#{repo_path}/#{repo_name}/.git"
-        FileUtils.mkdir_p "#{repo_path}/#{repo_name}/a"
-        FileUtils.touch   "#{repo_path}/#{repo_name}/snippet.json"
-        FileUtils.touch   "#{repo_path}/#{repo_name}/a.rb"
-        FileUtils.touch   "#{repo_path}/#{repo_name}/a/1.rb"
-        FileUtils.touch   "#{repo_path}/#{repo_name}/a/2.rb"
+        ::FileUtils.mkdir_p "#{repo_path}"
+        ::FileUtils.mkdir_p "#{repo_path}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{repo_path}/#{repo_name}/.git"
+        ::FileUtils.mkdir_p "#{repo_path}/#{repo_name}/a"
+        ::FileUtils.touch   "#{repo_path}/#{repo_name}/snippet.json"
+        ::FileUtils.touch   "#{repo_path}/#{repo_name}/a.rb"
+        ::FileUtils.touch   "#{repo_path}/#{repo_name}/a/1.rb"
+        ::FileUtils.touch   "#{repo_path}/#{repo_name}/a/2.rb"
 
         # snippet.json
-        File.write "#{repo_path}/#{repo_name}/snippet.json", [
+        ::File.write "#{repo_path}/#{repo_name}/snippet.json", [
           '{"name": "' + repo_name + '"}',
         ].join($/)
 
         # a.rb
-        File.write "#{repo_path}/#{repo_name}/a.rb", [
+        ::File.write "#{repo_path}/#{repo_name}/a.rb", [
           '# @snip <./a/1.rb>',
           '# @snip <./a/2.rb>',
         ].join($/)
 
         # a/1.rb
-        File.write "#{repo_path}/#{repo_name}/a/1.rb", [
+        ::File.write "#{repo_path}/#{repo_name}/a/1.rb", [
           'puts "1"',
         ].join($/)
 
         # a/2.rb
-        File.write "#{repo_path}/#{repo_name}/a/2.rb", [
+        ::File.write "#{repo_path}/#{repo_name}/a/2.rb", [
           'puts "2"',
         ].join($/)
 
@@ -1564,22 +1564,22 @@ describe SocialSnippet::Core do
       before do
         repo_name = "repo-a"
 
-        FileUtils.mkdir_p "#{repo_path}"
-        FileUtils.mkdir_p "#{repo_path}/#{repo_name}"
-        FileUtils.mkdir_p "#{repo_path}/#{repo_name}/.git"
-        FileUtils.touch   "#{repo_path}/#{repo_name}/snippet.json"
-        FileUtils.touch   "#{repo_path}/#{repo_name}/parent"
-        FileUtils.touch   "#{repo_path}/#{repo_name}/child_1"
-        FileUtils.touch   "#{repo_path}/#{repo_name}/child_2"
-        FileUtils.touch   "#{repo_path}/#{repo_name}/child_3"
+        ::FileUtils.mkdir_p "#{repo_path}"
+        ::FileUtils.mkdir_p "#{repo_path}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{repo_path}/#{repo_name}/.git"
+        ::FileUtils.touch   "#{repo_path}/#{repo_name}/snippet.json"
+        ::FileUtils.touch   "#{repo_path}/#{repo_name}/parent"
+        ::FileUtils.touch   "#{repo_path}/#{repo_name}/child_1"
+        ::FileUtils.touch   "#{repo_path}/#{repo_name}/child_2"
+        ::FileUtils.touch   "#{repo_path}/#{repo_name}/child_3"
 
         # snippet.json
-        File.write "#{repo_path}/#{repo_name}/snippet.json", [
+        ::File.write "#{repo_path}/#{repo_name}/snippet.json", [
           '{"name": "' + repo_name + '"}',
         ].join($/)
 
         # parent
-        File.write "#{repo_path}/#{repo_name}/parent", [
+        ::File.write "#{repo_path}/#{repo_name}/parent", [
           '@snip<child_1>',
           '@snip<child_2>',
           '@snip<child_3>',
@@ -1623,22 +1623,22 @@ describe SocialSnippet::Core do
       before do
         repo_name = "my_repo"
 
-        FileUtils.mkdir_p "#{repo_path}"
-        FileUtils.mkdir_p "#{repo_path}/#{repo_name}"
-        FileUtils.mkdir_p "#{repo_path}/#{repo_name}/.git"
-        FileUtils.touch   "#{repo_path}/#{repo_name}/snippet.json"
-        FileUtils.touch   "#{repo_path}/#{repo_name}/parent"
-        FileUtils.touch   "#{repo_path}/#{repo_name}/child_1"
-        FileUtils.touch   "#{repo_path}/#{repo_name}/child_2"
-        FileUtils.touch   "#{repo_path}/#{repo_name}/child_3"
+        ::FileUtils.mkdir_p "#{repo_path}"
+        ::FileUtils.mkdir_p "#{repo_path}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{repo_path}/#{repo_name}/.git"
+        ::FileUtils.touch   "#{repo_path}/#{repo_name}/snippet.json"
+        ::FileUtils.touch   "#{repo_path}/#{repo_name}/parent"
+        ::FileUtils.touch   "#{repo_path}/#{repo_name}/child_1"
+        ::FileUtils.touch   "#{repo_path}/#{repo_name}/child_2"
+        ::FileUtils.touch   "#{repo_path}/#{repo_name}/child_3"
 
         # snippet.json
-        File.write "#{repo_path}/#{repo_name}/snippet.json", [
+        ::File.write "#{repo_path}/#{repo_name}/snippet.json", [
           '{"name": "' + repo_name + '"}',
         ].join($/)
 
         # parent
-        File.write "#{repo_path}/#{repo_name}/parent", [
+        ::File.write "#{repo_path}/#{repo_name}/parent", [
           '@snip<child_1>',
           '@snip<child_2>',
           '@snip<child_2>',
@@ -1691,17 +1691,17 @@ describe SocialSnippet::Core do
         before do
           repo_name = "my-repo"
 
-          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}"
-          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}"
-          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/.git"
-          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/src"
-          FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json"
-          FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/src/1"
-          FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/src/2"
-          FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/src/3"
+          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}"
+          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}"
+          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/.git"
+          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/src"
+          ::FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json"
+          ::FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/src/1"
+          ::FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/src/2"
+          ::FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/src/3"
 
           # snippet.json
-          File.write "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json", [
+          ::File.write "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json", [
             '{',
             '  "name": "' + repo_name + '",',
             '  "main": "src"',
@@ -1709,18 +1709,18 @@ describe SocialSnippet::Core do
           ].join($/)
 
           # src/1
-          File.write "#{tmp_repo_path_no_ver}/#{repo_name}/src/1", [
+          ::File.write "#{tmp_repo_path_no_ver}/#{repo_name}/src/1", [
             '@snip<2>',
             '@snip<3>',
           ].join($/)
 
           # src/2
-          File.write "#{tmp_repo_path_no_ver}/#{repo_name}/src/2", [
+          ::File.write "#{tmp_repo_path_no_ver}/#{repo_name}/src/2", [
             '2',
           ].join($/)
 
           # src/3
-          File.write "#{tmp_repo_path_no_ver}/#{repo_name}/src/3", [
+          ::File.write "#{tmp_repo_path_no_ver}/#{repo_name}/src/3", [
             '3',
           ].join($/)
         end # prepare for my-repo
@@ -1729,18 +1729,18 @@ describe SocialSnippet::Core do
           repo_name = "has-version"
           repo_version = "0.0.1"
 
-          FileUtils.mkdir_p "#{tmp_repo_path}"
-          FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
-          FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{repo_version}"
-          FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{repo_version}/.git"
-          FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src"
-          FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{repo_version}/snippet.json"
-          FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/1"
-          FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/2"
-          FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/3"
+          ::FileUtils.mkdir_p "#{tmp_repo_path}"
+          ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+          ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{repo_version}"
+          ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{repo_version}/.git"
+          ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src"
+          ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{repo_version}/snippet.json"
+          ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/1"
+          ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/2"
+          ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/3"
 
           # snippet.json
-          File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/snippet.json", [
+          ::File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/snippet.json", [
             '{',
             '  "name": "' + repo_name + '",',
             '  "main": "src"',
@@ -1748,19 +1748,19 @@ describe SocialSnippet::Core do
           ].join($/)
 
           # src/1
-          File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/1", [
+          ::File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/1", [
             '@snip<2>',
             '@snip<3>',
             '0.0.1: 1',
           ].join($/)
 
           # src/2
-          File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/2", [
+          ::File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/2", [
             '0.0.1: 2',
           ].join($/)
 
           # src/3
-          File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/3", [
+          ::File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/3", [
             '0.0.1: 3',
           ].join($/)
         end # prepare has-version#0.0.1
@@ -1769,18 +1769,18 @@ describe SocialSnippet::Core do
           repo_name = "has-version"
           repo_version = "1.2.3"
 
-          FileUtils.mkdir_p "#{tmp_repo_path}"
-          FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
-          FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{repo_version}"
-          FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{repo_version}/.git"
-          FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src"
-          FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{repo_version}/snippet.json"
-          FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/1"
-          FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/2"
-          FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/3"
+          ::FileUtils.mkdir_p "#{tmp_repo_path}"
+          ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+          ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{repo_version}"
+          ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{repo_version}/.git"
+          ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src"
+          ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{repo_version}/snippet.json"
+          ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/1"
+          ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/2"
+          ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/3"
 
           # snippet.json
-          File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/snippet.json", [
+          ::File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/snippet.json", [
             '{',
             '  "name": "' + repo_name + '",',
             '  "main": "src"',
@@ -1788,19 +1788,19 @@ describe SocialSnippet::Core do
           ].join($/)
 
           # src/1
-          File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/1", [
+          ::File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/1", [
             '@snip<2>',
             '@snip<3>',
             '1.2.3: 1',
           ].join($/)
 
           # src/2
-          File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/2", [
+          ::File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/2", [
             '1.2.3: 2',
           ].join($/)
 
           # src/3
-          File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/3", [
+          ::File.write "#{tmp_repo_path}/#{repo_name}/#{repo_version}/src/3", [
             '1.2.3: 3',
           ].join($/)
         end # prepare has-version#1.2.3
@@ -1964,15 +1964,15 @@ describe SocialSnippet::Core do
         before do
           repo_name = "my_lib"
 
-          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}"
-          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}"
-          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/.git"
-          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/src/lib"
-          FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json"
-          FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/src/lib/add_func.cpp"
+          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}"
+          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}"
+          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/.git"
+          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/src/lib"
+          ::FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json"
+          ::FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/src/lib/add_func.cpp"
 
           # snippet.json
-          File.write "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json", [
+          ::File.write "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json", [
             '{',
             '  "name": "' + repo_name + '",',
             '  "main": "src"',
@@ -1980,7 +1980,7 @@ describe SocialSnippet::Core do
           ].join($/)
 
           # src/add_func.cpp
-          File.write "#{tmp_repo_path_no_ver}/#{repo_name}/src/add_func.cpp", [
+          ::File.write "#{tmp_repo_path_no_ver}/#{repo_name}/src/add_func.cpp", [
             'int add_func( int a, int b ) {',
             '  return a + b;',
             '}',
@@ -1990,19 +1990,19 @@ describe SocialSnippet::Core do
         before do
           repo_name = "my_repo_a"
 
-          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}"
-          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}"
-          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/.git"
-          FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json"
-          FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/use_add_func.cpp"
+          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}"
+          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}"
+          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/.git"
+          ::FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json"
+          ::FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/use_add_func.cpp"
 
           # snippet.json
-          File.write "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json", [
+          ::File.write "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json", [
             '{"name": "' + repo_name + '"}',
           ].join($/)
 
           # use_add_func.cpp
-          File.write "#{tmp_repo_path_no_ver}/#{repo_name}/use_add_func.cpp", [
+          ::File.write "#{tmp_repo_path_no_ver}/#{repo_name}/use_add_func.cpp", [
             '// @snip <my_lib:add_func.cpp>',
             'int my_repo_a_use_add_func( int a, int b ) {',
             '  return add_func(a, b);',
@@ -2013,19 +2013,19 @@ describe SocialSnippet::Core do
         before do
           repo_name = "my_repo_b"
 
-          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}"
-          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}"
-          FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/.git"
-          FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json"
-          FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/use_add_func.cpp"
+          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}"
+          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}"
+          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/.git"
+          ::FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json"
+          ::FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/use_add_func.cpp"
 
           # snippet.json
-          File.write "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json", [
+          ::File.write "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json", [
             '{"name": "' + repo_name + '"}',
           ].join($/)
 
           # use_add_func.cpp
-          File.write "#{tmp_repo_path_no_ver}/#{repo_name}/use_add_func.cpp", [
+          ::File.write "#{tmp_repo_path_no_ver}/#{repo_name}/use_add_func.cpp", [
             '// @snip <my_lib:add_func.cpp>',
             'int my_repo_b_use_add_func( int a, int b ) {',
             '  return add_func(a, b);',
@@ -2091,8 +2091,8 @@ describe SocialSnippet::Core do
       context "range cut (simple)" do
 
         before do
-          FileUtils.touch "./file1.cpp"
-          File.write "./file1.cpp", [
+          ::FileUtils.touch "./file1.cpp"
+          ::File.write "./file1.cpp", [
             "// @begin_cut",
             "#include <path/to/lib>",
             "// @end_cut",
@@ -2123,8 +2123,8 @@ describe SocialSnippet::Core do
       context "range cut (nested snippet)" do
 
         before do
-          FileUtils.touch "./file1.cpp"
-          File.write "./file1.cpp", [
+          ::FileUtils.touch "./file1.cpp"
+          ::File.write "./file1.cpp", [
             "// @begin_cut",
             "#include <path/to/lib>",
             "// @end_cut",
@@ -2132,7 +2132,7 @@ describe SocialSnippet::Core do
             "void func1() {",
             "}",
           ].join($/)
-          File.write "./file2.cpp", [
+          ::File.write "./file2.cpp", [
             "// @begin_cut",
             "#include <path/to/lib>",
             "// @end_cut",
@@ -2170,32 +2170,32 @@ describe SocialSnippet::Core do
       context "Golang Project 1" do
 
         before do
-          FileUtils.mkdir "./runner"
-          FileUtils.touch "./runner/runner.go"
-          FileUtils.mkdir "./solver"
-          FileUtils.touch "./solver/input.go"
-          FileUtils.touch "./solver/output.go"
-          FileUtils.touch "./solver/solver.go"
-          FileUtils.mkdir "./typedef"
-          FileUtils.touch "./typedef/typedef.go"
-          FileUtils.touch "./main.go"
+          ::FileUtils.mkdir "./runner"
+          ::FileUtils.touch "./runner/runner.go"
+          ::FileUtils.mkdir "./solver"
+          ::FileUtils.touch "./solver/input.go"
+          ::FileUtils.touch "./solver/output.go"
+          ::FileUtils.touch "./solver/solver.go"
+          ::FileUtils.mkdir "./typedef"
+          ::FileUtils.touch "./typedef/typedef.go"
+          ::FileUtils.touch "./main.go"
 
-          File.write "./runner/runner", [
+          ::File.write "./runner/runner", [
             "// @snip <../solver/solver.go>",
           ].join($/)
 
-          File.write "./solver/input.go", [
+          ::File.write "./solver/input.go", [
             "type Input struct {",
             "  eof bool",
             "}",
           ].join($/)
 
-          File.write "./solver/output.go", [
+          ::File.write "./solver/output.go", [
             "type Output struct {",
             "}",
           ].join($/)
 
-          File.write "./solver/solver.go", [
+          ::File.write "./solver/solver.go", [
             "// @snip <./input.go>",
             "// @snip <./output.go>",
             "",
@@ -2216,11 +2216,11 @@ describe SocialSnippet::Core do
             "}",
           ].join($/)
 
-          File.write "./typedef/typedef.go", [
+          ::File.write "./typedef/typedef.go", [
             "type Int int64",
           ].join($/)
 
-          File.write "main.go", [
+          ::File.write "main.go", [
             "package main",
             "",
             "// @snip <./typedef/typedef.go>",
@@ -2235,7 +2235,7 @@ describe SocialSnippet::Core do
 
         context "snip from main.go directly" do
 
-          let(:input) { File.read "main.go" }
+          let(:input) { ::File.read "main.go" }
 
           let(:output) do
             [
@@ -2335,12 +2335,12 @@ describe SocialSnippet::Core do
       context "../" do
 
         before do
-          FileUtils.mkdir "./foo"
-          FileUtils.touch "./foo/foo.go"
-          FileUtils.mkdir "./bar"
-          FileUtils.touch "./bar/bar.go"
+          ::FileUtils.mkdir "./foo"
+          ::FileUtils.touch "./foo/foo.go"
+          ::FileUtils.mkdir "./bar"
+          ::FileUtils.touch "./bar/bar.go"
 
-          File.write "./foo/foo.go", [
+          ::File.write "./foo/foo.go", [
             "// @begin_cut",
             "package foo",
             "// @end_cut",
@@ -2348,7 +2348,7 @@ describe SocialSnippet::Core do
             "}",
           ].join($/)
 
-          File.write "./bar/bar.go", [
+          ::File.write "./bar/bar.go", [
             "// @begin_cut",
             "package bar",
             "import \"../foo\"",

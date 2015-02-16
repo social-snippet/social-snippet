@@ -16,15 +16,15 @@ module SocialSnippet
         before do
           repo_name = "my-repo"
 
-          FileUtils.mkdir_p "#{repo_path}"
-          FileUtils.mkdir_p "#{repo_path}/my-repo"
-          FileUtils.mkdir_p "#{repo_path}/my-repo/.git"
-          FileUtils.mkdir_p "#{repo_path}/my-repo/src"
-          FileUtils.touch   "#{repo_path}/my-repo/snippet.json"
-          FileUtils.touch   "#{repo_path}/my-repo/src/get_42.cpp"
+          ::FileUtils.mkdir_p "#{repo_path}"
+          ::FileUtils.mkdir_p "#{repo_path}/my-repo"
+          ::FileUtils.mkdir_p "#{repo_path}/my-repo/.git"
+          ::FileUtils.mkdir_p "#{repo_path}/my-repo/src"
+          ::FileUtils.touch   "#{repo_path}/my-repo/snippet.json"
+          ::FileUtils.touch   "#{repo_path}/my-repo/src/get_42.cpp"
 
           # snippet.json
-          File.write "#{repo_path}/my-repo/snippet.json", [
+          ::File.write "#{repo_path}/my-repo/snippet.json", [
             '{',
             '  "name": "my-repo",',
             '  "language": "C++",',
@@ -33,7 +33,7 @@ module SocialSnippet
           ].join($/)
 
           # src/get_42.cpp
-          File.write "#{repo_path}/my-repo/src/get_42.cpp", [
+          ::File.write "#{repo_path}/my-repo/src/get_42.cpp", [
             'int get_42() {',
             '  return 42;',
             '}',
