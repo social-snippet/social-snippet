@@ -56,7 +56,12 @@ module SocialSnippet
     # @param lines [Array<String>]
     def filter(lines)
       lines = filter_range_cut(lines)
+      lines = filter_line_cut(lines)
       lines
+    end
+
+    def filter_line_cut(lines)
+      lines.select {|s| not Tag.is_cut? s }
     end
 
     def filter_range_cut(lines)
