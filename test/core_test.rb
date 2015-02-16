@@ -2167,7 +2167,7 @@ describe SocialSnippet::Core do
 
     context "snippet's context testing" do
 
-      context "Golang Project 1", :current => true do
+      context "Golang Project 1" do
 
         before do
           FileUtils.mkdir "./runner"
