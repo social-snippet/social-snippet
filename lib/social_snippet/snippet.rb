@@ -32,6 +32,10 @@ module SocialSnippet
       TagParser.find_snip_tags lines
     end
 
+    def no_tag?
+      not TagParser.find_no_tags(lines).empty?
+    end
+
     class << self
 
       # Create instance by text
