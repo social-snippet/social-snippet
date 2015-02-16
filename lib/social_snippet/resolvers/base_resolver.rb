@@ -31,6 +31,7 @@ module SocialSnippet
         resolve_tag_repo_ref! t
 
         child_snippet = social_snippet.repo_manager.get_snippet(context, t)
+        t.set_path new_context.path
 
         if block_given?
           yield tag_info[:tag], tag_info[:line_no], child_snippet, new_context
