@@ -48,8 +48,8 @@ module SocialSnippet
             repo
           end
 
-          allow(fake_social_snippet.repo_manager).to receive(:find_repository).with("my-repo") { repo_config.call }
-          allow(fake_social_snippet.repo_manager).to receive(:find_repository).with("my-repo", short_commit_id) { repo_config.call }
+          allow(fake_core.repo_manager).to receive(:find_repository).with("my-repo") { repo_config.call }
+          allow(fake_core.repo_manager).to receive(:find_repository).with("my-repo", short_commit_id) { repo_config.call }
         end # prepare for my-repo
 
         context "there are no @snip tags" do
@@ -76,7 +76,7 @@ module SocialSnippet
             ].join($/)
           end
 
-          subject { fake_social_snippet.api.insert_snippet(input) }
+          subject { fake_core.api.insert_snippet(input) }
           it { should eq output }
 
         end # there is no @snip tags
@@ -112,7 +112,7 @@ module SocialSnippet
             ].join($/)
           end
 
-          subject { fake_social_snippet.api.insert_snippet(input) }
+          subject { fake_core.api.insert_snippet(input) }
           it { should eq output }
 
         end # there is a @snip tag

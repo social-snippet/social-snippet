@@ -5,10 +5,10 @@ describe SocialSnippet::Resolvers::InsertResolver do
   context "prepare stubs" do
 
     before do
-      allow(fake_social_snippet.repo_manager).to receive(:resolve_snippet_path) do |c, t|
+      allow(fake_core.repo_manager).to receive(:resolve_snippet_path) do |c, t|
         t.repo
       end
-      allow(fake_social_snippet.repo_manager).to receive(:get_snippet) do |c, t|
+      allow(fake_core.repo_manager).to receive(:get_snippet) do |c, t|
         ::SocialSnippet::Snippet.new_text(t.repo)
       end
     end
@@ -18,7 +18,7 @@ describe SocialSnippet::Resolvers::InsertResolver do
       describe "ruby's require()" do
 
         before do
-          allow(fake_social_snippet.repo_manager).to receive(:get_snippet) do |c, t|
+          allow(fake_core.repo_manager).to receive(:get_snippet) do |c, t|
             ::SocialSnippet::Snippet.new_text([
               "def foo",
               "  42",
@@ -28,7 +28,7 @@ describe SocialSnippet::Resolvers::InsertResolver do
         end # prepare snippet
 
         let(:resolver) do
-          ::SocialSnippet::Resolvers::InsertResolver.new(fake_social_snippet)
+          ::SocialSnippet::Resolvers::InsertResolver.new(fake_core)
         end
 
         let(:input) do
@@ -69,7 +69,7 @@ describe SocialSnippet::Resolvers::InsertResolver do
       context "no options" do
 
         let(:resolver) do
-          ::SocialSnippet::Resolvers::InsertResolver.new(fake_social_snippet)
+          ::SocialSnippet::Resolvers::InsertResolver.new(fake_core)
         end
 
         let(:input) do
@@ -99,7 +99,7 @@ describe SocialSnippet::Resolvers::InsertResolver do
       context ":margin_top => 3" do
 
         let(:resolver) do
-          ::SocialSnippet::Resolvers::InsertResolver.new(fake_social_snippet, {
+          ::SocialSnippet::Resolvers::InsertResolver.new(fake_core, {
             :margin_top => 3,
           })
         end
@@ -140,7 +140,7 @@ describe SocialSnippet::Resolvers::InsertResolver do
       context ":margin_bottom => 3" do
 
         let(:resolver) do
-          ::SocialSnippet::Resolvers::InsertResolver.new(fake_social_snippet, {
+          ::SocialSnippet::Resolvers::InsertResolver.new(fake_core, {
             :margin_bottom => 3,
           })
         end

@@ -3,7 +3,7 @@ require "spec_helper"
 describe SocialSnippet::Core do
 
   before do
-    allow_any_instance_of(::SocialSnippet::CommandLine::Command).to receive(:social_snippet).and_return fake_social_snippet
+    allow_any_instance_of(::SocialSnippet::CommandLine::Command).to receive(:social_snippet).and_return fake_core
   end
 
   let(:repo_path) { fake_config.install_path }
@@ -22,7 +22,7 @@ describe SocialSnippet::Core do
 
     repos_no_ver = Dir.glob("#{tmp_repo_path_no_ver}/*").map {|path| Pathname.new(path).basename.to_s }
 
-    allow(fake_social_snippet.repo_manager).to receive(:find_repository).with(any_args) do |repo_name, ref|
+    allow(fake_core.repo_manager).to receive(:find_repository).with(any_args) do |repo_name, ref|
       repo_refs[repo_name] ||= []
       versions = repo_refs[repo_name].select {|ver| SocialSnippet::Version.is_matched_version_pattern(ref, ver) }
       latest_version = VersionSorter.rsort(versions).first
@@ -97,7 +97,7 @@ describe SocialSnippet::Core do
           ].join($/)
         end
 
-        subject { fake_social_snippet.api.insert_snippet input }
+        subject { fake_core.api.insert_snippet input }
         it { should eq output }
 
       end # snip my-repo#thisisdu
@@ -112,7 +112,7 @@ describe SocialSnippet::Core do
         end
 
         it do
-          expect { fake_social_snippet.api.insert_snippet input }.to(
+          expect { fake_core.api.insert_snippet input }.to(
             raise_error(SocialSnippet::Repository::Errors::NotExistRef)
           )
         end
@@ -156,7 +156,7 @@ describe SocialSnippet::Core do
           before { find_repo_mock }
 
           it do
-            expect(fake_social_snippet.api.insert_snippet(input)).to eq [
+            expect(fake_core.api.insert_snippet(input)).to eq [
               '/* @snippet<my-repo#1.0.0:func.c> */',
               'func: 1.0.0',
               'main',
@@ -187,7 +187,7 @@ describe SocialSnippet::Core do
             before { find_repo_mock }
 
             it do
-              expect(fake_social_snippet.api.insert_snippet(input)).to eq [
+              expect(fake_core.api.insert_snippet(input)).to eq [
                 '/* @snippet<my-repo#1.0.1:func.c> */',
                 'func: 1.0.1',
                 'main',
@@ -218,7 +218,7 @@ describe SocialSnippet::Core do
               before { find_repo_mock }
 
               it do
-                expect(fake_social_snippet.api.insert_snippet(input)).to eq [
+                expect(fake_core.api.insert_snippet(input)).to eq [
                   '/* @snippet<my-repo#1.1.0:func.c> */',
                   'func: 1.1.0',
                   'main',
@@ -249,7 +249,7 @@ describe SocialSnippet::Core do
                 before { find_repo_mock }
 
                 it do
-                  expect(fake_social_snippet.api.insert_snippet(input)).to eq [
+                  expect(fake_core.api.insert_snippet(input)).to eq [
                     '/* @snippet<my-repo#1.1.0:func.c> */',
                     'func: 1.1.0',
                     'main',
@@ -336,7 +336,7 @@ describe SocialSnippet::Core do
           ].join($/).freeze
         end
 
-        subject { fake_social_snippet.api.insert_snippet input }
+        subject { fake_core.api.insert_snippet input }
         it { should eq output }
 
       end
@@ -477,7 +477,7 @@ describe SocialSnippet::Core do
             ].join($/)
           end
 
-          subject { fake_social_snippet.api.insert_snippet input }
+          subject { fake_core.api.insert_snippet input }
           it { should eq output }
 
         end # has loop
@@ -501,7 +501,7 @@ describe SocialSnippet::Core do
             ].join($/)
           end
 
-          subject { fake_social_snippet.api.insert_snippet input }
+          subject { fake_core.api.insert_snippet input }
           it { should eq output }
 
         end
@@ -749,7 +749,7 @@ describe SocialSnippet::Core do
           ].join($/).freeze
         end
 
-        subject { fake_social_snippet.api.insert_snippet input }
+        subject { fake_core.api.insert_snippet input }
         it { should eq output }
 
       end # snip my-repo-1:1
@@ -859,7 +859,7 @@ describe SocialSnippet::Core do
         ].join($/)
       end
 
-      subject { fake_social_snippet.api.insert_snippet input }
+      subject { fake_core.api.insert_snippet input }
       it { should eq output }
 
     end # snippet snippets
@@ -1073,7 +1073,7 @@ describe SocialSnippet::Core do
           ].join($/)
         end
 
-        subject { fake_social_snippet.api.insert_snippet input }
+        subject { fake_core.api.insert_snippet input }
         it { should eq output }
 
       end # use my-repo
@@ -1097,7 +1097,7 @@ describe SocialSnippet::Core do
           ].join($/)
         end
 
-        subject { fake_social_snippet.api.insert_snippet input }
+        subject { fake_core.api.insert_snippet input }
         it { should eq output }
 
       end # use my-repo#1
@@ -1126,7 +1126,7 @@ describe SocialSnippet::Core do
           ].join($/)
         end
 
-        subject { fake_social_snippet.api.insert_snippet input }
+        subject { fake_core.api.insert_snippet input }
         it { should eq output }
 
       end # use my-repo#1 and my-repo#0
@@ -1154,7 +1154,7 @@ describe SocialSnippet::Core do
           ].join($/)
         end
 
-        subject { fake_social_snippet.api.insert_snippet input }
+        subject { fake_core.api.insert_snippet input }
         it { should eq output }
 
       end # use new-my-repo
@@ -1218,7 +1218,7 @@ describe SocialSnippet::Core do
         ].join($/)
       end
 
-      subject { fake_social_snippet.api.insert_snippet input }
+      subject { fake_core.api.insert_snippet input }
       it { should eq output }
 
     end # use latest version without ref
@@ -1257,7 +1257,7 @@ describe SocialSnippet::Core do
           'end',
         ].join($/)
 
-        allow(fake_social_snippet.repo_manager).to receive(:find_repository).with(repo_name, ref_name) do
+        allow(fake_core.repo_manager).to receive(:find_repository).with(repo_name, ref_name) do
           repo = SocialSnippet::Repository::Drivers::BaseRepository.new("#{repo_path}/#{repo_name}/#{ref_name}")
           allow(repo).to receive(:refs).and_return([
             '0.0.1',
@@ -1303,7 +1303,7 @@ describe SocialSnippet::Core do
           'end',
         ].join($/)
 
-        allow(fake_social_snippet.repo_manager).to receive(:find_repository).with(repo_name, ref_name) do
+        allow(fake_core.repo_manager).to receive(:find_repository).with(repo_name, ref_name) do
           repo = SocialSnippet::Repository::Drivers::BaseRepository.new("#{repo_path}/#{repo_name}/#{ref_name}")
           allow(repo).to receive(:refs).and_return([
             '0.0.1',
@@ -1341,7 +1341,7 @@ describe SocialSnippet::Core do
           ].join($/)
         end
 
-        subject { fake_social_snippet.api.insert_snippet(input) }
+        subject { fake_core.api.insert_snippet(input) }
         it { should eq output }
 
       end # use 0.0.1
@@ -1371,7 +1371,7 @@ describe SocialSnippet::Core do
           ].join($/)
         end
 
-        subject { fake_social_snippet.api.insert_snippet(input) }
+        subject { fake_core.api.insert_snippet(input) }
         it { should eq output }
 
       end # use 0.0.2
@@ -1408,7 +1408,7 @@ describe SocialSnippet::Core do
           ].join($/)
         end
 
-        subject { fake_social_snippet.api.insert_snippet(input) }
+        subject { fake_core.api.insert_snippet(input) }
         it { should eq output }
 
       end # use 0.0.1 and 0.0.2
@@ -1457,8 +1457,8 @@ describe SocialSnippet::Core do
           repo
         end
 
-        allow(fake_social_snippet.repo_manager).to receive(:find_repository).with(repo_name) { repo_config.call }
-        allow(fake_social_snippet.repo_manager).to receive(:find_repository).with(repo_name, short_commit_id) { repo_config.call }
+        allow(fake_core.repo_manager).to receive(:find_repository).with(repo_name) { repo_config.call }
+        allow(fake_core.repo_manager).to receive(:find_repository).with(repo_name, short_commit_id) { repo_config.call }
 
       end # prepare my-repo
 
@@ -1485,7 +1485,7 @@ describe SocialSnippet::Core do
         ].join($/)
       end
 
-      subject { fake_social_snippet.api.insert_snippet(input) }
+      subject { fake_core.api.insert_snippet(input) }
       it { should eq output }
 
     end
@@ -1534,8 +1534,8 @@ describe SocialSnippet::Core do
           repo
         end
 
-        allow(fake_social_snippet.repo_manager).to receive(:find_repository).with("my-repo") { repo_config.call }
-        allow(fake_social_snippet.repo_manager).to receive(:find_repository).with("my-repo", short_commit_id) { repo_config.call }
+        allow(fake_core.repo_manager).to receive(:find_repository).with("my-repo") { repo_config.call }
+        allow(fake_core.repo_manager).to receive(:find_repository).with("my-repo", short_commit_id) { repo_config.call }
       end # my-repo
 
       let(:input) do
@@ -1554,7 +1554,7 @@ describe SocialSnippet::Core do
         ].join($/)
       end
 
-      subject { fake_social_snippet.api.insert_snippet(input) }
+      subject { fake_core.api.insert_snippet(input) }
       it { should eq output }
 
     end # snip with repo
@@ -1594,8 +1594,8 @@ describe SocialSnippet::Core do
           repo
         end
 
-        allow(fake_social_snippet.repo_manager).to receive(:find_repository).with(repo_name) { repo_config.call }
-        allow(fake_social_snippet.repo_manager).to receive(:find_repository).with(repo_name, short_commit_id) { repo_config.call }
+        allow(fake_core.repo_manager).to receive(:find_repository).with(repo_name) { repo_config.call }
+        allow(fake_core.repo_manager).to receive(:find_repository).with(repo_name, short_commit_id) { repo_config.call }
       end # repo-a
 
       let(:input) do
@@ -1613,7 +1613,7 @@ describe SocialSnippet::Core do
         ].join($/)
       end
 
-      subject { fake_social_snippet.api.insert_snippet(input) }
+      subject { fake_core.api.insert_snippet(input) }
       it { should eq output }
 
     end # multiple snippets without duplicates
@@ -1657,8 +1657,8 @@ describe SocialSnippet::Core do
           repo
         end
 
-        allow(fake_social_snippet.repo_manager).to receive(:find_repository).with(repo_name) { repo_config.call }
-        allow(fake_social_snippet.repo_manager).to receive(:find_repository).with(repo_name, short_commit_id) { repo_config.call }
+        allow(fake_core.repo_manager).to receive(:find_repository).with(repo_name) { repo_config.call }
+        allow(fake_core.repo_manager).to receive(:find_repository).with(repo_name, short_commit_id) { repo_config.call }
       end
 
       let(:input) do
@@ -1679,7 +1679,7 @@ describe SocialSnippet::Core do
         ].join($/)
       end
 
-      subject { fake_social_snippet.api.insert_snippet(input) }
+      subject { fake_core.api.insert_snippet(input) }
       it { should eq output }
 
     end
@@ -1837,7 +1837,7 @@ describe SocialSnippet::Core do
               ].join($/).freeze
             end
 
-            subject { fake_social_snippet.api.insert_snippet(input) }
+            subject { fake_core.api.insert_snippet(input) }
             it { should eq output }
 
           end
@@ -1864,7 +1864,7 @@ describe SocialSnippet::Core do
               ].join($/).freeze
             end
 
-            subject { fake_social_snippet.api.insert_snippet(input) }
+            subject { fake_core.api.insert_snippet(input) }
             it { should eq output }
 
           end # snipped
@@ -1897,7 +1897,7 @@ describe SocialSnippet::Core do
               ].join($/).freeze
             end
 
-            subject { fake_social_snippet.api.insert_snippet(input) }
+            subject { fake_core.api.insert_snippet(input) }
             it { should eq output }
 
           end
@@ -1927,7 +1927,7 @@ describe SocialSnippet::Core do
             ].join($/)
           end
 
-          subject { fake_social_snippet.api.insert_snippet(input) }
+          subject { fake_core.api.insert_snippet(input) }
           it { should eq output }
 
         end # already snipped case
@@ -1952,7 +1952,7 @@ describe SocialSnippet::Core do
             ].join($/)
           end
 
-          subject { fake_social_snippet.api.insert_snippet(input) }
+          subject { fake_core.api.insert_snippet(input) }
           it { should eq output }
 
         end # not already snipped case
@@ -2078,7 +2078,7 @@ describe SocialSnippet::Core do
         end
 
         context "call insert_snippet" do
-          subject { fake_social_snippet.api.insert_snippet(input) }
+          subject { fake_core.api.insert_snippet(input) }
           it { should eq output }
         end
 
@@ -2115,7 +2115,7 @@ describe SocialSnippet::Core do
           ].join($/)
         end
 
-        subject { fake_social_snippet.api.insert_snippet(input) }
+        subject { fake_core.api.insert_snippet(input) }
         it { should eq output }
 
       end
@@ -2158,7 +2158,7 @@ describe SocialSnippet::Core do
           ].join($/)
         end
 
-        subject { fake_social_snippet.api.insert_snippet(input) }
+        subject { fake_core.api.insert_snippet(input) }
         it { should eq output }
 
       end
@@ -2274,7 +2274,7 @@ describe SocialSnippet::Core do
             ].join($/)
           end
 
-          subject { fake_social_snippet.api.insert_snippet input }
+          subject { fake_core.api.insert_snippet input }
           it { should eq output }
 
         end # snip from main.go directly
@@ -2325,7 +2325,7 @@ describe SocialSnippet::Core do
             ].join($/)
           end
 
-          subject { fake_social_snippet.api.insert_snippet input }
+          subject { fake_core.api.insert_snippet input }
           it { should eq output }
 
         end # snip main.go
@@ -2377,7 +2377,7 @@ describe SocialSnippet::Core do
           ].join($/)
         end
 
-        subject { fake_social_snippet.api.insert_snippet input }
+        subject { fake_core.api.insert_snippet input }
         it { should eq output }
 
       end

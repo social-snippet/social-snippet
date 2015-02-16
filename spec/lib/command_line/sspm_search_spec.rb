@@ -29,7 +29,7 @@ module SocialSnippet::CommandLine
 
       let(:search_command_output) { ::StringIO.new }
       let(:search_command_logger) { ::SocialSnippet::Logger.new search_command_output }
-      before { allow(fake_social_snippet).to receive(:logger).and_return search_command_logger }
+      before { allow(fake_core).to receive(:logger).and_return search_command_logger }
 
       describe "$ search repo" do
 

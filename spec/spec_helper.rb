@@ -44,7 +44,7 @@ module SocialSnippet::SpecHelpers
 
   def global_config
     $social_snippet_config ||= ::SocialSnippet::Config.new(
-      fake_social_snippet,
+      fake_core,
       {
         :home => fake_home,
         :sspm_host => "api.server",
@@ -58,7 +58,7 @@ module SocialSnippet::SpecHelpers
 
   def fake_config
     @config ||= ::SocialSnippet::Config.new(
-      fake_social_snippet,
+      fake_core,
       {
         :home => fake_home,
         :sspm_host => "api.server",
@@ -67,22 +67,22 @@ module SocialSnippet::SpecHelpers
   end
 
   def fake_api
-    @fake_api ||= ::SocialSnippet::Api.new(fake_social_snippet)
+    @fake_api ||= ::SocialSnippet::Api.new(fake_core)
   end
 
-  def fake_social_snippet
-    reset_fake_social_snippet unless @fake_social_snippet
-    @fake_social_snippet
+  def fake_core
+    reset_fake_core unless @fake_core
+    @fake_core
   end
 
-  def reset_fake_social_snippet
-    @fake_social_snippet = Fake.new
-    allow(fake_social_snippet).to receive(:logger).and_return fake_logger
-    allow(fake_social_snippet).to receive(:config).and_return fake_config
-    allow(fake_social_snippet).to receive(:api).and_return fake_api
-    allow(fake_social_snippet).to receive(:repo_manager).and_return ::SocialSnippet::Repository::RepositoryManager.new(fake_social_snippet)
-    allow(fake_social_snippet).to receive(:registry_client).and_return ::SocialSnippet::Registry::RegistryClient.new(fake_social_snippet)
-    allow_any_instance_of(::SocialSnippet::CommandLine::Command).to receive(:social_snippet).and_return fake_social_snippet
+  def reset_fake_core
+    @fake_core = Fake.new
+    allow(fake_core).to receive(:logger).and_return fake_logger
+    allow(fake_core).to receive(:config).and_return fake_config
+    allow(fake_core).to receive(:api).and_return fake_api
+    allow(fake_core).to receive(:repo_manager).and_return ::SocialSnippet::Repository::RepositoryManager.new(fake_core)
+    allow(fake_core).to receive(:registry_client).and_return ::SocialSnippet::Registry::RegistryClient.new(fake_core)
+    allow_any_instance_of(::SocialSnippet::CommandLine::Command).to receive(:core).and_return fake_core
   end
 
 end
@@ -94,7 +94,7 @@ module SocialSnippet
     config.after { disable_fakefs }
 
     config.include SpecHelpers
-    config.before { reset_fake_social_snippet }
+    config.before { reset_fake_core }
 
     config.before(:example, :without_fakefs => true) do
       disable_fakefs

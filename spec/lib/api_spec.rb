@@ -38,7 +38,7 @@ module SocialSnippet
         let(:install_command_logger) { ::SocialSnippet::Logger.new install_command_output }
 
         before do
-          allow(fake_social_snippet).to receive(:logger).and_return install_command_logger
+          allow(fake_core).to receive(:logger).and_return install_command_logger
           install_command.init
           install_command.run
           expect(install_command_output.string).to match /Success/
@@ -48,7 +48,7 @@ module SocialSnippet
 
           let(:string_io) { ::StringIO.new }
           let(:string_logger) { ::SocialSnippet::Logger.new(string_io) }
-          before { allow(fake_social_snippet).to receive(:logger).and_return string_logger }
+          before { allow(fake_core).to receive(:logger).and_return string_logger }
 
           #
           # tests from here
@@ -70,7 +70,7 @@ module SocialSnippet
               ].join($/) + $/
             end
 
-            before { fake_social_snippet.api.insert_snippet input }
+            before { fake_core.api.insert_snippet input }
             it { expect(string_io.string).to eq expected }
 
           end # $ ssnip / without snip
@@ -83,7 +83,7 @@ module SocialSnippet
               ].join($/)
             end
 
-            before { fake_social_snippet.api.insert_snippet input }
+            before { fake_core.api.insert_snippet input }
             
             # last update: 2014-10-28
             it { expect(string_io.string).to match(/@snippet/) }

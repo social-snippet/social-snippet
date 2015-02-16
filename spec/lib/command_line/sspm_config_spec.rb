@@ -8,7 +8,7 @@ module SocialSnippet::CommandLine
 
       let(:sspm_config_command) { SSpm::SubCommands::ConfigCommand.new ["key"] }
 
-      it { expect(fake_social_snippet.api).to receive(:config_get).with("key").once }
+      it { expect(fake_core.api).to receive(:config_get).with("key").once }
 
       after do
         sspm_config_command.init
@@ -21,7 +21,7 @@ module SocialSnippet::CommandLine
 
       let(:sspm_config_command) { SSpm::SubCommands::ConfigCommand.new ["key", "value"] }
 
-      it { expect(fake_social_snippet.api).to receive(:config_set).with("key", "value").once }
+      it { expect(fake_core.api).to receive(:config_set).with("key", "value").once }
 
       after do
         sspm_config_command.init
@@ -34,7 +34,7 @@ module SocialSnippet::CommandLine
 
       let(:sspm_config_command) { SSpm::SubCommands::ConfigCommand.new ["key=value"] }
 
-      it { expect(fake_social_snippet.api).to receive(:config_set).with("key", "value").once }
+      it { expect(fake_core.api).to receive(:config_set).with("key", "value").once }
 
       after do
         sspm_config_command.init

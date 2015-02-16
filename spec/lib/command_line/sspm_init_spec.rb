@@ -9,7 +9,7 @@ module SocialSnippet::CommandLine
       let(:sspm_init_command) { SSpm::SubCommands::InitCommand .new [] }
 
       example do
-        expect(fake_social_snippet.api).to receive(:init_manifest).with({}).once
+        expect(fake_core.api).to receive(:init_manifest).with({}).once
         sspm_init_command.init
         sspm_init_command.run
       end

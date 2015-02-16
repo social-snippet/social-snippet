@@ -108,7 +108,7 @@ module SocialSnippet::CommandLine
     #
     let(:install_command_output) { ::StringIO.new }
     let(:install_command_logger) { ::SocialSnippet::Logger.new install_command_output }
-    before { allow(fake_social_snippet).to receive(:logger).and_return install_command_logger }
+    before { allow(fake_core).to receive(:logger).and_return install_command_logger }
 
     describe "$ sspm install" do
 
@@ -126,8 +126,8 @@ module SocialSnippet::CommandLine
 
         example do
           install_command = SSpm::SubCommands::InstallCommand.new([])
-          expect(fake_social_snippet.api).to receive(:install_repository_by_name).with("foo", "1.2.3", kind_of(Hash)).once
-          expect(fake_social_snippet.api).to receive(:install_repository_by_name).with("bar", "0.0.1", kind_of(Hash)).once
+          expect(fake_core.api).to receive(:install_repository_by_name).with("foo", "1.2.3", kind_of(Hash)).once
+          expect(fake_core.api).to receive(:install_repository_by_name).with("bar", "0.0.1", kind_of(Hash)).once
           install_command.run
         end
 
@@ -142,7 +142,7 @@ module SocialSnippet::CommandLine
 
       before do
         install_command_logger.level = ::SocialSnippet::Logger::Severity::INFO
-        allow(fake_social_snippet).to receive(:logger).and_return install_command_logger
+        allow(fake_core).to receive(:logger).and_return install_command_logger
         install_command = SSpm::SubCommands::InstallCommand.new ["my-repo"]
         install_command.init
         install_command.run
@@ -162,7 +162,7 @@ module SocialSnippet::CommandLine
 
         subject do
           install_command_logger.level = ::SocialSnippet::Logger::Severity::INFO
-          allow(fake_social_snippet).to receive(:logger).and_return second_install_command_logger
+          allow(fake_core).to receive(:logger).and_return second_install_command_logger
           install_command = SSpm::SubCommands::InstallCommand.new ["my-repo"]
           install_command.init
           install_command.run
