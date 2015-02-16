@@ -89,7 +89,7 @@ module SocialSnippet
         visit(tag) if is_self(tag, context)
         next if is_visited(sub_t)
 
-        next_snippet = social_snippet.repo_manager.get_snippet(sub_c, sub_t)
+        next_snippet = social_snippet.repo_manager.get_snippet(context, sub_t)
         insert_by_tag_and_context! inserter, next_snippet, sub_c, sub_t
       end
     end
