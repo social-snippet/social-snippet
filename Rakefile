@@ -10,6 +10,18 @@ task :default => [:spec]
 
 require "rspec/core/rake_task"
 
+RSpec::Core::RakeTask.new(:spec_all) do |t|
+  ENV["RSPEC_WITHOUT_FAKEFS"] = "false"
+  t.pattern = [
+    'spec/**/*_spec.rb',
+    'test/**/*_test.rb',
+  ]
+  t.rspec_opts = [
+    "--color",
+    "--tag ~without_fakefs",
+  ]
+end
+
 RSpec::Core::RakeTask.new(:spec) do |t|
   ENV["RSPEC_WITHOUT_FAKEFS"] = "false"
   t.rspec_opts = [
