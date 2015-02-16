@@ -55,11 +55,11 @@ module SocialSnippet
 
     # @param lines [Array<String>]
     def filter(lines)
-      lines = cut_filter(lines)
+      lines = filter_range_cut(lines)
       lines
     end
 
-    def cut_filter(lines)
+    def filter_range_cut(lines)
       cut_level = 0
       lines.select do |line|
         if Tag.is_begin_cut?(line)
