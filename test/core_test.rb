@@ -2524,7 +2524,7 @@ describe SocialSnippet::Core do
           subject { fake_core.api.insert_snippet input }
           it { should eq output }
 
-        end
+        end # snip foo.rb
 
         context "snip proxy.rb" do
 
@@ -2554,7 +2554,90 @@ describe SocialSnippet::Core do
           subject { fake_core.api.insert_snippet input }
           it { should eq output }
 
-        end
+        end # snip proxy.rb
+
+        context "add nested module" do
+
+          before do
+            ::FileUtils.touch "foo/bar.rb"
+            ::FileUtils.mkdir "foo/bar"
+            ::FileUtils.touch "foo/bar/func1.rb"
+            ::FileUtils.touch "foo/bar/func2.rb"
+            ::FileUtils.touch "foo/bar/func3.rb"
+
+            ::File.write "foo.rb", [
+              "# @no_tag",
+              "# @snip <foo/func1.rb>",
+              "# @snip <foo/func2.rb>",
+              "# @snip <foo/func3.rb>",
+              "# @snip <foo/bar.rb>",
+            ].join($/)
+
+            ::File.write "foo/bar.rb", [
+              "# @no_tag",
+              "# @snip <bar/func1.rb>",
+              "# @snip <bar/func2.rb>",
+              "# @snip <bar/func3.rb>",
+            ].join($/)
+
+            ::File.write "foo/bar/func1.rb", [
+              "def bfunc1",
+              "  1",
+              "end",
+            ].join($/)
+
+            ::File.write "foo/bar/func2.rb", [
+              "def bfunc2",
+              "  2",
+              "end",
+            ].join($/)
+
+            ::File.write "foo/bar/func3.rb", [
+              "def bfunc3",
+              "  3",
+              "end",
+            ].join($/)
+          end
+
+          let(:input) do
+            [
+              "# @snip <foo.rb>",
+            ].join($/)
+          end
+
+          let(:output) do
+            [
+              "# @snippet <foo/func1.rb>",
+              "def func1",
+              "  1",
+              "end",
+              "# @snippet <foo/func2.rb>",
+              "def func2",
+              "  2",
+              "end",
+              "# @snippet <foo/func3.rb>",
+              "def func3",
+              "  3",
+              "end",
+              "# @snippet <foo/bar/func1.rb>",
+              "def bfunc1",
+              "  1",
+              "end",
+              "# @snippet <foo/bar/func2.rb>",
+              "def bfunc2",
+              "  2",
+              "end",
+              "# @snippet <foo/bar/func3.rb>",
+              "def bfunc3",
+              "  3",
+              "end",
+            ].join($/)
+          end
+
+          subject { fake_core.api.insert_snippet input }
+          it { should eq output }
+
+        end # add module
 
       end # for ruby module
 
