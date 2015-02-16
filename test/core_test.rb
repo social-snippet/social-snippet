@@ -2241,7 +2241,39 @@ describe SocialSnippet::Core do
 
         let(:output) do
           [
-            "// @snippet <main.go>"
+            "// @snippet <typedef/typedef.go>",
+            "type Int int64",
+            "// @snippet <solver/input.go>",
+            "type Input struct {",
+            "  eof bool",
+            "}",
+            "// @snippet <solver/output.go>",
+            "type Output struct {",
+            "}",
+            "// @snippet <solver/solver.go>",
+            "",
+            "type Solver struct {",
+              "in *Input",
+              "out *Output",
+            "}",
+            "",
+            "func (s *Solver) input() *Input {",
+              "return s.in",
+            "}",
+            "",
+            "func CreateSolver() *Solver {",
+              "s := new(Solver)",
+              "s.in = new(Input)",
+              "s.out = new(Output)",
+              "return s",
+            "}",
+            "// @snippet <runner/runner.go>",
+            "// @snippet <main.go>",
+            "package main",
+            "",
+            "",
+            "func main() {",
+            "}",
           ].join($/)
         end
 
