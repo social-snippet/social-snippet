@@ -24,6 +24,7 @@ module SocialSnippet
       found_tags.each do |tag_info|
         # remove self from deps graph
         tag = tag_info[:tag]
+        resolve_tag_repo_ref! tag
         dep_to[tag.to_path] ||= ::Set.new
         dep_to[tag.to_path].delete tag_from.to_path
       end
