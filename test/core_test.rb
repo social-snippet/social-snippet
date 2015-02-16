@@ -2466,7 +2466,8 @@ describe SocialSnippet::Core do
           ::FileUtils.touch "foo/func3.rb"
 
           ::File.write "proxy.rb", [
-            "# @snip <foo.rb>"
+            "# @snip <foo.rb>",
+            "# @no_tag",
           ].join($/)
 
           ::File.write "foo.rb", [
@@ -2500,6 +2501,36 @@ describe SocialSnippet::Core do
           let(:input) do
             [
               "# @snip <foo.rb>",
+            ].join($/)
+          end
+
+          let(:output) do
+            [
+              "# @snippet <foo/func1.rb>",
+              "def func1",
+              "  1",
+              "end",
+              "# @snippet <foo/func2.rb>",
+              "def func2",
+              "  2",
+              "end",
+              "# @snippet <foo/func3.rb>",
+              "def func3",
+              "  3",
+              "end",
+            ].join($/)
+          end
+
+          subject { fake_core.api.insert_snippet input }
+          it { should eq output }
+
+        end
+
+        context "snip proxy.rb" do
+
+          let(:input) do
+            [
+              "# @snip <proxy.rb>",
             ].join($/)
           end
 
