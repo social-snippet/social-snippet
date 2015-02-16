@@ -66,7 +66,9 @@ module SocialSnippet
       src = insert_func(snippet, context, tag)
 
       options[:margin_top].times { inserter.insert "" }
-      inserter.insert tag.to_snippet_tag # @snip -> @snippet
+      # @snip -> @snippet
+      inserter.insert tag.to_snippet_tag unless snippet.no_tag?
+      # insert snippet text
       inserter.insert src
       options[:margin_bottom].times { inserter.insert "" }
 

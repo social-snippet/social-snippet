@@ -102,6 +102,18 @@ class SocialSnippet::Tag
 
   class << self
 
+    def is_control_tag?(s)
+      is_no_tag_line?(s)
+    end
+
+    def is_no_tag_line?(s)
+      /@no_tag/ === s
+    end
+
+    def is_cut?(s)
+      /@cut/ === s
+    end
+
     def is_begin_cut?(s)
       /@begin_cut/ === s
     end

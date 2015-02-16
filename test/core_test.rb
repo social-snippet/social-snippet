@@ -2118,7 +2118,7 @@ describe SocialSnippet::Core do
         subject { fake_core.api.insert_snippet(input) }
         it { should eq output }
 
-      end
+      end # range cut
 
       context "range cut (nested snippet)" do
 
@@ -2136,6 +2136,75 @@ describe SocialSnippet::Core do
             "// @begin_cut",
             "#include <path/to/lib>",
             "// @end_cut",
+            "void func2() {",
+            "}",
+          ].join($/)
+        end
+
+        let(:input) do
+          [
+            "// @snip <./file1.cpp>",
+          ].join($/)
+        end
+
+        let(:output) do
+          [
+            "// @snippet <file2.cpp>",
+            "void func2() {",
+            "}",
+            "// @snippet <file1.cpp>",
+            "void func1() {",
+            "}",
+          ].join($/)
+        end
+
+        subject { fake_core.api.insert_snippet(input) }
+        it { should eq output }
+
+      end # range cut (nested)
+
+      context "cut line" do
+
+        before do
+          ::FileUtils.touch "./file1.cpp"
+          ::File.write "./file1.cpp", [
+            "#include <path/to/lib> // @cut",
+            "void func() {",
+            "}",
+          ].join($/)
+        end
+
+        let(:input) do
+          [
+            "// @snip <./file1.cpp>",
+          ].join($/)
+        end
+
+        let(:output) do
+          [
+            "// @snippet <file1.cpp>",
+            "void func() {",
+            "}",
+          ].join($/)
+        end
+
+        subject { fake_core.api.insert_snippet(input) }
+        it { should eq output }
+
+      end # cut line
+
+      context "cut line (nested case)" do
+
+        before do
+          ::FileUtils.touch "./file1.cpp"
+          ::File.write "./file1.cpp", [
+            "#include <path/to/lib> // @cut",
+            "// @snip <./file2.cpp>",
+            "void func1() {",
+            "}",
+          ].join($/)
+          ::File.write "./file2.cpp", [
+            "#include <path/to/lib> // @cut",
             "void func2() {",
             "}",
           ].join($/)
@@ -2381,6 +2450,352 @@ describe SocialSnippet::Core do
         it { should eq output }
 
       end
+
+    end
+
+    context "@no_tag" do
+
+      context "no_tag is in cut range" do
+
+        before do
+          ::FileUtils.touch "proxy.rb"
+          ::FileUtils.touch "foo.rb"
+          ::FileUtils.mkdir "foo"
+          ::FileUtils.touch "foo/func1.rb"
+          ::FileUtils.touch "foo/func2.rb"
+          ::FileUtils.touch "foo/func3.rb"
+
+          ::File.write "proxy.rb", [
+            "# @snip <foo.rb>",
+            "# @begin_cut",
+            "# @no_tag",
+            "# @end_cut",
+          ].join($/)
+
+          ::File.write "foo.rb", [
+            "# @begin_cut",
+            "# @no_tag",
+            "# @end_cut",
+            "# @snip <foo/func1.rb>",
+            "# @snip <foo/func2.rb>",
+            "# @snip <foo/func3.rb>",
+          ].join($/)
+
+          ::File.write "foo/func1.rb", [
+            "def func1",
+            "  1",
+            "end",
+          ].join($/)
+
+          ::File.write "foo/func2.rb", [
+            "def func2",
+            "  2",
+            "end",
+          ].join($/)
+
+          ::File.write "foo/func3.rb", [
+            "def func3",
+            "  3",
+            "end",
+          ].join($/)
+        end
+
+        context "snip foo.rb" do
+
+          let(:input) do
+            [
+              "# @snip <foo.rb>",
+            ].join($/)
+          end
+
+          let(:output) do
+            [
+              "# @snippet <foo/func1.rb>",
+              "def func1",
+              "  1",
+              "end",
+              "# @snippet <foo/func2.rb>",
+              "def func2",
+              "  2",
+              "end",
+              "# @snippet <foo/func3.rb>",
+              "def func3",
+              "  3",
+              "end",
+              "# @snippet <foo.rb>",
+            ].join($/)
+          end
+
+          subject { fake_core.api.insert_snippet input }
+          it { should eq output }
+
+        end # snip foo.rb
+
+        context "snip proxy.rb" do
+
+          let(:input) do
+            [
+              "# @snip <proxy.rb>",
+            ].join($/)
+          end
+
+          let(:output) do
+            [
+              "# @snippet <foo/func1.rb>",
+              "def func1",
+              "  1",
+              "end",
+              "# @snippet <foo/func2.rb>",
+              "def func2",
+              "  2",
+              "end",
+              "# @snippet <foo/func3.rb>",
+              "def func3",
+              "  3",
+              "end",
+              "# @snippet <foo.rb>",
+              "# @snippet <proxy.rb>",
+            ].join($/)
+          end
+
+          subject { fake_core.api.insert_snippet input }
+          it { should eq output }
+
+        end # snip proxy.rb
+
+      end
+
+      context "for ruby module" do
+
+        before do
+          ::FileUtils.touch "proxy.rb"
+          ::FileUtils.touch "foo.rb"
+          ::FileUtils.mkdir "foo"
+          ::FileUtils.touch "foo/func1.rb"
+          ::FileUtils.touch "foo/func2.rb"
+          ::FileUtils.touch "foo/func3.rb"
+
+          ::File.write "proxy.rb", [
+            "# @snip <foo.rb>",
+            "# @no_tag",
+          ].join($/)
+
+          ::File.write "foo.rb", [
+            "# @no_tag",
+            "# @snip <foo/func1.rb>",
+            "# @snip <foo/func2.rb>",
+            "# @snip <foo/func3.rb>",
+          ].join($/)
+
+          ::File.write "foo/func1.rb", [
+            "def func1",
+            "  1",
+            "end",
+          ].join($/)
+
+          ::File.write "foo/func2.rb", [
+            "def func2",
+            "  2",
+            "end",
+          ].join($/)
+
+          ::File.write "foo/func3.rb", [
+            "def func3",
+            "  3",
+            "end",
+          ].join($/)
+        end
+
+        context "snip foo.rb" do
+
+          let(:input) do
+            [
+              "# @snip <foo.rb>",
+            ].join($/)
+          end
+
+          let(:output) do
+            [
+              "# @snippet <foo/func1.rb>",
+              "def func1",
+              "  1",
+              "end",
+              "# @snippet <foo/func2.rb>",
+              "def func2",
+              "  2",
+              "end",
+              "# @snippet <foo/func3.rb>",
+              "def func3",
+              "  3",
+              "end",
+            ].join($/)
+          end
+
+          subject { fake_core.api.insert_snippet input }
+          it { should eq output }
+
+        end # snip foo.rb
+
+        context "snip proxy.rb" do
+
+          let(:input) do
+            [
+              "# @snip <proxy.rb>",
+            ].join($/)
+          end
+
+          let(:output) do
+            [
+              "# @snippet <foo/func1.rb>",
+              "def func1",
+              "  1",
+              "end",
+              "# @snippet <foo/func2.rb>",
+              "def func2",
+              "  2",
+              "end",
+              "# @snippet <foo/func3.rb>",
+              "def func3",
+              "  3",
+              "end",
+            ].join($/)
+          end
+
+          subject { fake_core.api.insert_snippet input }
+          it { should eq output }
+
+        end # snip proxy.rb
+
+        context "add nested module" do
+
+          before do
+            ::FileUtils.touch "foo/bar.rb"
+            ::FileUtils.mkdir "foo/bar"
+            ::FileUtils.touch "foo/bar/func1.rb"
+            ::FileUtils.touch "foo/bar/func2.rb"
+            ::FileUtils.touch "foo/bar/func3.rb"
+
+            ::File.write "foo.rb", [
+              "# @no_tag",
+              "# @snip <foo/func1.rb>",
+              "# @snip <foo/func2.rb>",
+              "# @snip <foo/func3.rb>",
+              "# @snip <foo/bar.rb>",
+            ].join($/)
+
+            ::File.write "foo/bar.rb", [
+              "# @no_tag",
+              "# @snip <bar/func1.rb>",
+              "# @snip <bar/func2.rb>",
+              "# @snip <bar/func3.rb>",
+            ].join($/)
+
+            ::File.write "foo/bar/func1.rb", [
+              "def bfunc1",
+              "  1",
+              "end",
+            ].join($/)
+
+            ::File.write "foo/bar/func2.rb", [
+              "def bfunc2",
+              "  2",
+              "end",
+            ].join($/)
+
+            ::File.write "foo/bar/func3.rb", [
+              "def bfunc3",
+              "  3",
+              "end",
+            ].join($/)
+          end
+
+          context "snip foo.rb" do
+
+            let(:input) do
+              [
+                "# @snip <foo.rb>",
+              ].join($/)
+            end
+
+            let(:output) do
+              [
+                "# @snippet <foo/func1.rb>",
+                "def func1",
+                "  1",
+                "end",
+                "# @snippet <foo/func2.rb>",
+                "def func2",
+                "  2",
+                "end",
+                "# @snippet <foo/func3.rb>",
+                "def func3",
+                "  3",
+                "end",
+                "# @snippet <foo/bar/func1.rb>",
+                "def bfunc1",
+                "  1",
+                "end",
+                "# @snippet <foo/bar/func2.rb>",
+                "def bfunc2",
+                "  2",
+                "end",
+                "# @snippet <foo/bar/func3.rb>",
+                "def bfunc3",
+                "  3",
+                "end",
+              ].join($/)
+            end
+
+            subject { fake_core.api.insert_snippet input }
+            it { should eq output }
+
+          end
+
+          context "snip proxy.rb" do
+
+            let(:input) do
+              [
+                "# @snip <proxy.rb>",
+              ].join($/)
+            end
+
+            let(:output) do
+              [
+                "# @snippet <foo/func1.rb>",
+                "def func1",
+                "  1",
+                "end",
+                "# @snippet <foo/func2.rb>",
+                "def func2",
+                "  2",
+                "end",
+                "# @snippet <foo/func3.rb>",
+                "def func3",
+                "  3",
+                "end",
+                "# @snippet <foo/bar/func1.rb>",
+                "def bfunc1",
+                "  1",
+                "end",
+                "# @snippet <foo/bar/func2.rb>",
+                "def bfunc2",
+                "  2",
+                "end",
+                "# @snippet <foo/bar/func3.rb>",
+                "def bfunc3",
+                "  3",
+                "end",
+              ].join($/)
+            end
+
+            subject { fake_core.api.insert_snippet input }
+            it { should eq output }
+
+          end
+
+        end # add module
+
+      end # for ruby module
 
     end
 
