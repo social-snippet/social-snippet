@@ -60,6 +60,7 @@ module SocialSnippet::Repository
           context "@snip <./subdir/file3.cpp>" do
 
             let(:tag) { ::SocialSnippet::Tag.new("// @snip <./subdir/file3.cpp>") }
+            before { context.move tag.path }
 
             context "result" do
               subject { repo_manager.resolve_snippet_path(context, tag) }

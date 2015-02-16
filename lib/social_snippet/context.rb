@@ -1,7 +1,10 @@
 class SocialSnippet::Context
 
+  require "pathname"
+
   attr_reader :flag_absolute
   attr_reader :path
+  attr_reader :pathname
   attr_reader :repo
   attr_reader :ref
 
@@ -9,10 +12,16 @@ class SocialSnippet::Context
   #
   # @param new_path [String] The path of context
   def initialize(new_path, new_repo = nil, new_ref = nil)
-    @flag_absolute = is_absolute_path(new_path)
-    @path = new_path
+    set_path new_path
     @repo = new_repo
     @ref  = new_ref
+  end
+
+  def set_path(new_path)
+    return if new_path.nil?
+    @path = new_path
+    @pathname = ::Pathname.new(path)
+    @flag_absolute = is_absolute_path(path)
   end
 
   # Check context in repo
@@ -31,25 +40,36 @@ class SocialSnippet::Context
     if new_repo.nil?
       if is_absolute_path(new_path)
         @flag_absolute = true
-        @path = new_path
+        set_path new_path
       else
-        @path = move_func(new_path)
+        set_path move_path(new_path)
       end
     else
       @flag_absolute = false
-      @path = new_path
+      set_path new_path
       @repo = new_repo
       @ref  = new_ref
     end
   end
 
+  def basename
+    pathname.basename.to_s unless path.nil?
+  end
+
+  def dirname
+    pathname.dirname.to_s unless path.nil?
+  end
+
+  def root_text?
+    path.nil?
+  end
+
   private
 
-  def move_func(new_path)
-    source = path.split("/")
-    source_file = source.pop
+  def move_path(new_path)
+    source = dirname.split("/")
     dest = new_path.split("/")
-    dest_file = dest.pop
+    destname = dest.pop
 
     if is_absolute_path(path)
       source.shift
@@ -64,13 +84,14 @@ class SocialSnippet::Context
     end
 
     if flag_absolute
-      "/" + source.join("/") + "/" + dest_file
+      "/" + source.join("/") + "/" + destname
     else
-      source.join("/") + "/" + dest_file
+      source.join("/") + "/" + destname
     end
   end
 
   private
+
   # Check given text is absolute path
   def is_absolute_path(s)
     s[0] === "/"

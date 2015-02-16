@@ -20,7 +20,7 @@ module SocialSnippet
     def find(snippet, context_from, tag_from)
       raise "must be passed snippet" unless snippet.is_a?(Snippet)
 
-      found_tags = find_func snippet, context_from, tag_from
+      found_tags = find_func(snippet, context_from, tag_from)
       found_tags.each do |tag_info|
         # remove self from deps graph
         tag = tag_info[:tag]

@@ -2165,6 +2165,225 @@ describe SocialSnippet::Core do
 
     end # filters
 
+    context "snippet's context testing" do
+
+      context "Golang Project 1" do
+
+        before do
+          FileUtils.mkdir "./runner"
+          FileUtils.touch "./runner/runner.go"
+          FileUtils.mkdir "./solver"
+          FileUtils.touch "./solver/input.go"
+          FileUtils.touch "./solver/output.go"
+          FileUtils.touch "./solver/solver.go"
+          FileUtils.mkdir "./typedef"
+          FileUtils.touch "./typedef/typedef.go"
+          FileUtils.touch "./main.go"
+
+          File.write "./runner/runner", [
+            "// @snip <../solver/solver.go>",
+          ].join($/)
+
+          File.write "./solver/input.go", [
+            "type Input struct {",
+            "  eof bool",
+            "}",
+          ].join($/)
+
+          File.write "./solver/output.go", [
+            "type Output struct {",
+            "}",
+          ].join($/)
+
+          File.write "./solver/solver.go", [
+            "// @snip <./input.go>",
+            "// @snip <./output.go>",
+            "",
+            "type Solver struct {",
+              "in *Input",
+              "out *Output",
+            "}",
+            "",
+            "func (s *Solver) input() *Input {",
+              "return s.in",
+            "}",
+            "",
+            "func CreateSolver() *Solver {",
+              "s := new(Solver)",
+              "s.in = new(Input)",
+              "s.out = new(Output)",
+              "return s",
+            "}",
+          ].join($/)
+
+          File.write "./typedef/typedef.go", [
+            "type Int int64",
+          ].join($/)
+
+          File.write "main.go", [
+            "package main",
+            "",
+            "// @snip <./typedef/typedef.go>",
+            "// @snip <./solver/solver.go>",
+            "// @snip <./runner/runner.go>",
+            "",
+            "func main() {",
+            "}",
+            "",
+          ].join($/)
+        end
+
+        context "snip from main.go directly" do
+
+          let(:input) { File.read "main.go" }
+
+          let(:output) do
+            [
+              "package main",
+              "",
+              "// @snippet <typedef/typedef.go>",
+              "type Int int64",
+              "// @snippet <solver/input.go>",
+              "type Input struct {",
+              "  eof bool",
+              "}",
+              "// @snippet <solver/output.go>",
+              "type Output struct {",
+              "}",
+              "// @snippet <solver/solver.go>",
+              "",
+              "type Solver struct {",
+                "in *Input",
+                "out *Output",
+              "}",
+              "",
+              "func (s *Solver) input() *Input {",
+                "return s.in",
+              "}",
+              "",
+              "func CreateSolver() *Solver {",
+                "s := new(Solver)",
+                "s.in = new(Input)",
+                "s.out = new(Output)",
+                "return s",
+              "}",
+              "// @snippet <runner/runner.go>",
+              "",
+              "func main() {",
+              "}",
+            ].join($/)
+          end
+
+          subject { fake_social_snippet.api.insert_snippet input }
+          it { should eq output }
+
+        end # snip from main.go directly
+
+        context "snip main.go" do
+
+          let(:input) do
+            [
+              "// @snip <main.go>",
+            ].join($/)
+          end
+
+          let(:output) do
+            [
+              "// @snippet <typedef/typedef.go>",
+              "type Int int64",
+              "// @snippet <solver/input.go>",
+              "type Input struct {",
+              "  eof bool",
+              "}",
+              "// @snippet <solver/output.go>",
+              "type Output struct {",
+              "}",
+              "// @snippet <solver/solver.go>",
+              "",
+              "type Solver struct {",
+                "in *Input",
+                "out *Output",
+              "}",
+              "",
+              "func (s *Solver) input() *Input {",
+                "return s.in",
+              "}",
+              "",
+              "func CreateSolver() *Solver {",
+                "s := new(Solver)",
+                "s.in = new(Input)",
+                "s.out = new(Output)",
+                "return s",
+              "}",
+              "// @snippet <runner/runner.go>",
+              "// @snippet <main.go>",
+              "package main",
+              "",
+              "",
+              "func main() {",
+              "}",
+            ].join($/)
+          end
+
+          subject { fake_social_snippet.api.insert_snippet input }
+          it { should eq output }
+
+        end # snip main.go
+
+      end # Golang Project 1
+
+      context "../" do
+
+        before do
+          FileUtils.mkdir "./foo"
+          FileUtils.touch "./foo/foo.go"
+          FileUtils.mkdir "./bar"
+          FileUtils.touch "./bar/bar.go"
+
+          File.write "./foo/foo.go", [
+            "// @begin_cut",
+            "package foo",
+            "// @end_cut",
+            "func Foo() {",
+            "}",
+          ].join($/)
+
+          File.write "./bar/bar.go", [
+            "// @begin_cut",
+            "package bar",
+            "import \"../foo\"",
+            "// @end_cut",
+            "// @snip <../foo/foo.go>",
+            "func Bar() {",
+            "}",
+          ].join($/)
+        end
+
+        let(:input) do
+          [
+            "// @snip <./foo/foo.go>",
+            "// @snip <./bar/bar.go>",
+          ].join($/)
+        end
+
+        let(:output) do
+          [
+            "// @snippet <foo/foo.go>",
+            "func Foo() {",
+            "}",
+            "// @snippet <bar/bar.go>",
+            "func Bar() {",
+            "}",
+          ].join($/)
+        end
+
+        subject { fake_social_snippet.api.insert_snippet input }
+        it { should eq output }
+
+      end
+
+    end
+
   end # insert_snippet
 
 end # SocialSnippet::Core

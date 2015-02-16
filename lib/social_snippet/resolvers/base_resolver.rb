@@ -25,20 +25,34 @@ module SocialSnippet
         t = tag_info[:tag].set_by_tag(base_tag)
         new_context = context.clone
 
-        move_context_by_tag! new_context, t
-        overwrite_tag_in_same_repository! context, t
-        update_tag_path_by_context! new_context, t
-        resolve_tag_repo_ref! t
+        if new_context.root_text?
+          new_context.set_path ""
+          move_context_by_tag! new_context, t
+        else
+          move_context_by_tag! new_context, t
+          overwrite_tag_in_same_repository! new_context, t
+          update_tag_path_by_context! new_context, t
+          resolve_tag_repo_ref! t
+        end
 
-        child_snippet = social_snippet.repo_manager.get_snippet(context, t)
+        resolve_tag_repo_ref! t
+        child_snippet = social_snippet.repo_manager.get_snippet(new_context, t)
+        t.set_path new_context.path
 
         if block_given?
-          yield tag_info[:tag], tag_info[:line_no], child_snippet, new_context
+          yield t, tag_info[:line_no], child_snippet, new_context
         end
       end
     end
 
     private
+
+    def resolve_tag_repo_ref!(t)
+      if t.has_repo?
+        repo = social_snippet.repo_manager.find_repository_by_tag(t)
+        t.set_ref repo.latest_version(t.ref)
+      end
+    end
 
     def move_context_by_tag!(context, tag)
       if tag.has_repo?
