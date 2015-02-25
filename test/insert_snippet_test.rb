@@ -2799,7 +2799,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
     end # @no_tag
 
-    describe "not found case", :current => true do
+    describe "not found case" do
 
       context "create project on current directory" do
 
