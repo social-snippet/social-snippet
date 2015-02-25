@@ -8,8 +8,6 @@
 #
 class SocialSnippet::CommandLine::Command
 
-  require "optparse"
-
   attr_reader :args
   attr_reader :tokens
   attr_reader :options
@@ -65,10 +63,19 @@ class SocialSnippet::CommandLine::Command
     define_options
     parse_line_options
     @tokens = args
+    core.api.on :message do |message|
+      core.logger.say message
+    end
   end
 
   def run
     raise "not implement"
+  end
+
+  protected
+
+  def output(message)
+    core.logger.say message
   end
 
   private

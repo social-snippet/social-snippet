@@ -1,9 +1,5 @@
 module SocialSnippet::CommandLine
 
-  require "uri"
-  require "pathname"
-  require "json"
-    
   class SSpm::SubCommands::InstallCommand < Command
 
     def usage

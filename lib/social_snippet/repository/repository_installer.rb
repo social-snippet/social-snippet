@@ -1,7 +1,5 @@
 module SocialSnippet::Repository
 
-  require "yaml"
-
   class RepositoryInstaller
 
     attr_reader :core
@@ -84,3 +82,4 @@ module SocialSnippet::Repository
   end # RepositoryInstaller
 
 end # SocialSnippet
+

@@ -1,5 +1,3 @@
-require "highline"
-
 class SocialSnippet::Core
 
   attr_reader :input_stream
@@ -31,3 +29,4 @@ class SocialSnippet::Core
   end
 
 end # SocialSnippet
+

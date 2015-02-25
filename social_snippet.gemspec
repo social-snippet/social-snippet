@@ -23,6 +23,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "rugged", ["~> 0.21.4", ">= 0.21.4"]
   spec.add_runtime_dependency "rest-client", "~> 1.7.0"
   spec.add_runtime_dependency "highline", "~> 1.7.0"
+  spec.add_runtime_dependency "wisper", "~> 1.6.0"
 
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"

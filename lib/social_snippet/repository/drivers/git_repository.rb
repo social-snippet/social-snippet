@@ -1,7 +1,5 @@
 module SocialSnippet::Repository::Drivers
 
-  require "rugged"
-
   class GitRepository < BaseRepository
 
     attr_reader :rugged_repo

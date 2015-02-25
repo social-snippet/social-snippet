@@ -1,7 +1,5 @@
 class SocialSnippet::Context
 
-  require "pathname"
-
   attr_reader :flag_absolute
   attr_reader :path
   attr_reader :pathname

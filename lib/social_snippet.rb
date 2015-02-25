@@ -1,5 +1,17 @@
-module SocialSnippet; end
+require "tsort"
+require "logger"
+require "highline"
+require "pathname"
+require "json"
+require "yaml"
+require "version_sorter"
+require "rest_client"
+require "optparse"
+require "uri"
+require "rugged"
+require "wisper"
 
+module SocialSnippet; end
 require_relative "social_snippet/core"
 require_relative "social_snippet/version"
 require_relative "social_snippet/tag"

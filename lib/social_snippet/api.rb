@@ -12,6 +12,8 @@ require_relative "api/registry_api"
 
 class SocialSnippet::Api
 
+  include ::Wisper::Publisher
+
   attr_reader :core
 
   # Constructor
@@ -36,7 +38,7 @@ class SocialSnippet::Api
   private
 
   def output(message)
-    core.logger.say message
+    broadcast :message, message
   end
 
 end

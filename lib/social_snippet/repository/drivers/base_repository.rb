@@ -1,8 +1,5 @@
 module SocialSnippet::Repository::Drivers
 
-  require "version_sorter"
-  require "json"
-
   # Repository base class
   # usage: class GitRepository < BaseRepository
   class BaseRepository

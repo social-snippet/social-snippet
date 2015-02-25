@@ -1,5 +1,3 @@
-require "logger"
-
 class SocialSnippet::Logger < ::Logger
 
   def say(s)
@@ -7,3 +5,4 @@ class SocialSnippet::Logger < ::Logger
   end
 
 end
+
