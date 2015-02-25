@@ -2826,7 +2826,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
             [
               "/* @snippet<path/to/found.c> */",
               "/* @snippet<path/to/not_found.c> */",
-              "ERROR: File is not found",
+              "ERROR: No such file or directory - ./path/to/not_found.c",
               "/* @snippet<snippet.c> */",
             ].join($/)
           end
