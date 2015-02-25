@@ -8,8 +8,6 @@
 #
 class SocialSnippet::CommandLine::Command
 
-  require "optparse"
-
   attr_reader :args
   attr_reader :tokens
   attr_reader :options

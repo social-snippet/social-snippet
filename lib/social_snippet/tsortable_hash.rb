@@ -1,7 +1,5 @@
 module SocialSnippet
 
-  require "tsort"
-
   class TSortableHash < ::Hash
 
     include ::TSort

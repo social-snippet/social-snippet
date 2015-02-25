@@ -1,7 +1,5 @@
 class SocialSnippet::Tag
 
-  require "pathname"
-
   attr_reader :path
   attr_reader :repo
   attr_reader :ref

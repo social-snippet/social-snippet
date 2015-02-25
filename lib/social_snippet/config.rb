@@ -1,7 +1,5 @@
 class SocialSnippet::Config
 
-  require "json"
-
   attr_reader :core
   attr_reader :home
   attr_reader :fields

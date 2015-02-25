@@ -1,8 +1,5 @@
 module SocialSnippet::Registry::RegistryResources
 
-  require "rest_client"
-  require "json"
-
   class Base
 
     attr_reader :core
