@@ -14,9 +14,9 @@ module SocialSnippet::Api::ManifestApi
   def loop_manifest_questions(answer)
     loop do
       answer = ask_manifest_questions(manifest_questions(answer), answer)
-      core.logger.say ""
-      core.logger.say ::JSON.pretty_generate(answer)
-      core.logger.say ""
+      output ""
+      output ::JSON.pretty_generate(answer)
+      output ""
       break if ask_confirm("Is this okay? [Y/N]: ")
     end
     answer
