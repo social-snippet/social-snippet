@@ -2791,13 +2791,54 @@ describe SocialSnippet::Api::InsertSnippetApi do
             subject { fake_core.api.insert_snippet input }
             it { should eq output }
 
-          end
+          end # snip proxy
 
-        end # add module
+        end # add nested module
 
       end # for ruby module
 
-    end
+    end # @no_tag
+
+    describe "not found case", :current => true do
+
+      context "create project on current directory" do
+
+        before do
+          ::FileUtils.touch "snippet.c"
+          ::FileUtils.mkdir_p "path/to"
+          ::FileUtils.touch "path/to/found.c"
+
+          ::File.write "snippet.c", [
+            "/* @snip <path/to/found.c> */",
+            "/* @snip <path/to/not_found.c> */",
+          ].join($/)
+        end
+
+        context "snip snippet.c" do
+
+          let(:input) do
+            [
+              "/* @snip<snippet.c> */",
+            ].join($/)
+          end
+
+          let(:output) do
+            [
+              "/* @snippet<path/to/found.c> */",
+              "/* @snippet<path/to/not_found.c> */",
+              "ERROR: File is not found",
+              "/* @snippet<snippet.c> */",
+            ].join($/)
+          end
+
+          subject { fake_core.api.insert_snippet input }
+          it { should eq output }
+
+        end # snip snippet.c
+
+      end # create project on current directory
+
+    end # not found case
 
   end # insert_snippet
 
