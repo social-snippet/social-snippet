@@ -13,7 +13,11 @@ module SocialSnippet
     end
 
     def read_file
-      @code = ::File.read(filepath).split($/)
+      begin
+        @code = ::File.read(filepath).split($/)
+      rescue ::Errno::ENOENT => e
+        @code = ["ERROR: #{e.to_s}"]
+      end
     end
 
     def read_text(s)
