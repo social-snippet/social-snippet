@@ -38,7 +38,7 @@ class SocialSnippet::Api
   private
 
   def output(message)
-    core.logger.say message
+    broadcast :message, message
   end
 
 end
