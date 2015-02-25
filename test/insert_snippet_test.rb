@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe SocialSnippet::Core do
+describe SocialSnippet::Api::InsertSnippetApi do
 
   before do
     allow_any_instance_of(::SocialSnippet::CommandLine::Command).to receive(:social_snippet).and_return fake_core
