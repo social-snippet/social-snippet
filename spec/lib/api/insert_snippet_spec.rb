@@ -2,7 +2,7 @@ require "spec_helper"
 
 module SocialSnippet
 
-  describe Api do
+  describe Api::InsertSnippetApi do
 
     describe "#insert_snippet()", :without_fakefs => true do
 
@@ -54,7 +54,7 @@ module SocialSnippet
           # tests from here
           #
 
-          context "$ ssnip / without snip" do
+          context "insert a plain text" do
 
             let(:input) do
               [
