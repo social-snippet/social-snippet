@@ -12,6 +12,8 @@ require_relative "api/registry_api"
 
 class SocialSnippet::Api
 
+  include ::Wisper::Publisher
+
   attr_reader :core
 
   # Constructor

@@ -9,6 +9,7 @@ require "rest_client"
 require "optparse"
 require "uri"
 require "rugged"
+require "wisper"
 
 module SocialSnippet; end
 require_relative "social_snippet/core"
