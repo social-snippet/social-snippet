@@ -72,12 +72,6 @@ class SocialSnippet::CommandLine::Command
     raise "not implement"
   end
 
-  protected
-
-  def output(message)
-    core.logger.say message
-  end
-
   private
 
   def help
