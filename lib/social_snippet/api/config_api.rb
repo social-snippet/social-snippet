@@ -8,7 +8,7 @@ module SocialSnippet::Api::ConfigApi
   # $ sspm config key
   def config_get(key)
     value = core.config.get(key)
-    core.logger.say "#{key}=#{value}"
+    output "#{key}=#{value}"
   end
 
 end
