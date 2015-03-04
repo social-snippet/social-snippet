@@ -2,12 +2,6 @@ require "spec_helper"
 
 describe SocialSnippet::Config, :without_fakefs => $WITHOUT_FAKEFS do
 
-  let(:logger) do
-    logger = ::SocialSnippet::Logger.new(STDOUT)
-    logger.level = ::SocialSnippet::Logger::Severity::UNKNOWN
-    logger
-  end
-
   let(:social_snippet) do
     class Fake; end
     Fake.new
@@ -15,6 +9,10 @@ describe SocialSnippet::Config, :without_fakefs => $WITHOUT_FAKEFS do
 
   let(:config) do
     ::SocialSnippet::Config.new(social_snippet)
+  end
+
+  before do
+    allow(social_snippet).to receive(:storage).and_return fake_storage
   end
 
   before { stub_const "ENV", "HOME" => Dir.mktmpdir }
