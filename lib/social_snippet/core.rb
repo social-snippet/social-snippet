@@ -26,7 +26,7 @@ class SocialSnippet::Core
   end
 
   def init_storage
-    @storage = ::SocialSnippet::Storage::FileSystemStorage.new
+    @storage = ::SocialSnippet::StorageBackend::FileSystemStorage.new
   end
 
   def init_logger

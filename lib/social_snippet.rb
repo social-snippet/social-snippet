@@ -27,5 +27,5 @@ require_relative "social_snippet/command_line"
 require_relative "social_snippet/logger"
 require_relative "social_snippet/api"
 require_relative "social_snippet/tsortable_hash"
-require_relative "social_snippet/storage"
+require_relative "social_snippet/storage_backend"
 

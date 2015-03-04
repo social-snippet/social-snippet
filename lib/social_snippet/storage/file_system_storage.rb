@@ -1,4 +1,4 @@
-module SocialSnippet::Storage
+module SocialSnippet::StorageBackend
 
   class FileSystemStorage < StorageBase
 
