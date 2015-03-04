@@ -1,0 +1,2 @@
+class SocialSnippet::Document; end
+
