@@ -10,6 +10,7 @@ describe ::SocialSnippet::Repository::RepositoryInstaller do
   end
 
   before do
+    allow(social_snippet).to receive(:storage).and_return fake_storage
     allow(social_snippet).to receive(:config).and_return config
   end
 

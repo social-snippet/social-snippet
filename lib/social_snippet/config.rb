@@ -30,7 +30,7 @@ class SocialSnippet::Config
     resolve_home
 
     # env vars > args > config.json
-    init_directories
+    init_filesystem
     load_file
     load_options options
     load_environment_variables
@@ -72,12 +72,12 @@ class SocialSnippet::Config
 
   def save_file
     @fields ||= {}
-    ::File.write file_path, fields.to_json
+    core.storage.write file_path, fields.to_json
   end
 
   def load_file
     begin
-      @fields = ::JSON.parse(::File.read file_path)
+      @fields = ::JSON.parse(core.storage.read file_path)
     rescue ::JSON::ParserError
       raise "error on parsing #{file_path}"
     end
@@ -112,11 +112,11 @@ class SocialSnippet::Config
     get :debug
   end
 
-  def init_directories
-    ::FileUtils.mkdir_p home
-    ::FileUtils.mkdir_p install_path
-    ::FileUtils.mkdir_p repository_cache_path
-    ::File.write file_path, {}.to_json unless ::File.exists?(file_path)
+  def init_filesystem
+    core.storage.mkdir_p home
+    core.storage.mkdir_p install_path
+    core.storage.mkdir_p repository_cache_path
+    core.storage.write file_path, {}.to_json unless core.storage.exists?(file_path)
   end
 
   private

@@ -21,20 +21,17 @@ module SocialSnippet
       Config.new social_snippet
     end
 
-    before { allow(config).to receive(:sspm_url).and_return "http://api.server/api/v0" }
-
-    def logger
-      ::Logger.new(::StringIO.new)
+    before do
+      allow(social_snippet).to receive(:storage).and_return fake_storage
+      allow(social_snippet).to receive(:logger).and_return fake_logger
+      allow(social_snippet).to receive(:config).and_return config
     end
+
+    before { allow(config).to receive(:sspm_url).and_return "http://api.server/api/v0" }
 
     let(:social_snippet) do
       class Fake; end
       Fake.new
-    end
-
-    before do
-      allow(social_snippet).to receive(:config).and_return config
-      allow(social_snippet).to receive(:logger).and_return logger
     end
 
     before do

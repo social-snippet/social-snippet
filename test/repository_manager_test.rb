@@ -2,12 +2,6 @@ require "spec_helper"
 
 describe ::SocialSnippet::Repository::RepositoryManager do
 
-  let(:logger) do
-    logger = ::SocialSnippet::Logger.new(STDOUT)
-    logger.level = ::SocialSnippet::Logger::Severity::INFO
-    logger
-  end
-
   let(:config) do
     ::SocialSnippet::Config.new(social_snippet)
   end
@@ -19,8 +13,9 @@ describe ::SocialSnippet::Repository::RepositoryManager do
   end
 
   before do
+    allow(social_snippet).to receive(:storage).and_return fake_storage
+    allow(social_snippet).to receive(:logger).and_return fake_logger
     allow(social_snippet).to receive(:config).and_return config
-    allow(social_snippet).to receive(:logger).and_return logger
   end
   
   let(:repo_manager) do
