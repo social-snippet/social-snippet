@@ -1,8 +1,8 @@
 require "spec_helper"
 
-describe ::SocialSnippet::Storage do
+describe ::SocialSnippet::StorageBackend::FileSystemStorage do
 
-  let(:storage) { ::SocialSnippet::Storage::FileSystemStorage.new }
+  let(:storage) { ::SocialSnippet::StorageBackend::FileSystemStorage.new }
 
   context "test storage class" do
 
@@ -164,5 +164,5 @@ describe ::SocialSnippet::Storage do
 
   end # test storage class
 
-end # ::SocialSnippet::Storage::FileSystemStorage
+end # ::SocialSnippet::StorageBackend::FileSystemStorage
 
