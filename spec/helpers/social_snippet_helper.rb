@@ -3,7 +3,7 @@ module SocialSnippet::SpecHelpers
   class Fake; end
 
   def fake_storage
-    @fake_storage ||= ::SocialSnippet::StorageBackend::FileSystemStorage.new
+    @fake_storage ||= ::SocialSnippet::Storage.new
   end
 
   def fake_io
