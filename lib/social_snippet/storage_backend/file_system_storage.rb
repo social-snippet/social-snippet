@@ -34,6 +34,13 @@ module SocialSnippet::StorageBackend
       ::FileUtils.mkdir_p path
     end
 
+    def self.activate!
+      ::SocialSnippet.class_eval do
+        remove_const :Storage
+        const_set :Storage, FileSystemStorage
+      end
+    end
+
   end
 
 end
