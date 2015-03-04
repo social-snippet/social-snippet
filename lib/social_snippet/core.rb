@@ -8,11 +8,13 @@ class SocialSnippet::Core
   attr_reader :logger
   attr_reader :api
   attr_reader :prompt
+  attr_reader :storage
 
   # Constructor
   def initialize(new_input_stream = STDIN, new_output_stream = STDOUT)
     @input_stream   = new_input_stream
     @output_stream  = new_output_stream
+    init_storage
     @config = ::SocialSnippet::Config.new(self)
     @logger = ::SocialSnippet::Logger.new output_stream
     @prompt = ::HighLine.new(input_stream, output_stream)
@@ -21,6 +23,10 @@ class SocialSnippet::Core
     @repo_manager = ::SocialSnippet::Repository::RepositoryManager.new(self)
     @registry_client = ::SocialSnippet::Registry::RegistryClient.new(self)
     @api = ::SocialSnippet::Api.new(self)
+  end
+
+  def init_storage
+    @storage = ::SocialSnippet::Storage::FileSystemStorage.new
   end
 
   def init_logger
