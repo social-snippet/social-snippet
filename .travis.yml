@@ -11,9 +11,7 @@ bundler_args: "--without debug --jobs 3"
 sudo: false
 
 script:
-  - bundle exec rake spec_all
-  - bundle exec rake spec_without_fakefs
-  - bundle exec rake test_without_fakefs
+  - bundle exec rake spec_all spec_all_without_fakefs
 
   # shell access test
   - bundle exec rake build
