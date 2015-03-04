@@ -13,3 +13,12 @@ module FakeFSHelpers
 
 end
 
+module SocialSnippet
+  ::RSpec.configure do |config|
+    config.include FakeFSHelpers
+    config.before { enable_fakefs }
+    config.after { disable_fakefs }
+  end
+end
+
+$WITHOUT_FAKEFS = (ENV["RSPEC_WITHOUT_FAKEFS"] === "true")
