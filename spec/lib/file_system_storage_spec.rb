@@ -1,8 +1,10 @@
 require "spec_helper"
 
-describe ::SocialSnippet::StorageBackend::FileSystemStorage do
+describe ::SocialSnippet::StorageBackend::FileSystemStorage, :current => true do
 
   let(:storage) { ::SocialSnippet::StorageBackend::FileSystemStorage.new }
+
+  include_context :TestStorage
 
   context "test storage class" do
 
