@@ -4,9 +4,9 @@ module SocialSnippet::Repository::Drivers
 
     attr_reader :rugged_repo
 
-    def initialize(repo_path, new_ref = nil)
+    def initialize(new_core, repo_path, new_ref = nil)
       @rugged_repo = ::Rugged::Repository.new(repo_path)
-      super(repo_path)
+      super new_core, repo_path
     end
 
     def current_ref

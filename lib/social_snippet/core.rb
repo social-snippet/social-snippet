@@ -22,6 +22,7 @@ class SocialSnippet::Core
     init_logger
 
     @repo_manager = ::SocialSnippet::Repository::RepositoryManager.new(self)
+    @repo_factory = ::SocialSnippet::Repository::RepositoryFactory.new(self)
     @registry_client = ::SocialSnippet::Registry::RegistryClient.new(self)
     @api = ::SocialSnippet::Api.new(self)
   end

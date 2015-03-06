@@ -4,6 +4,7 @@ module SocialSnippet::Repository::Drivers
   # usage: class GitRepository < BaseRepository
   class BaseRepository
 
+    attr_reader :core
     attr_reader :path
     attr_reader :cache_path
     attr_reader :name
@@ -17,7 +18,8 @@ module SocialSnippet::Repository::Drivers
     # Constructor
     #
     # @param path [String] The path of repository
-    def initialize(new_path, new_ref = nil)
+    def initialize(new_core, new_path, new_ref = nil)
+      @core = new_core
       @path = new_path
       @cache_path = nil
       @ref = new_ref
@@ -53,8 +55,8 @@ module SocialSnippet::Repository::Drivers
 
       return if ::Dir.exists?(cache_path)
 
-      ::FileUtils.mkdir_p "#{base_cache_path}/#{name}"
-      ::FileUtils.cp_r path, cache_path
+      core.storage.mkdir_p "#{base_cache_path}/#{name}"
+      core.storage.cp_r path, cache_path
 
       return cache_path
     end

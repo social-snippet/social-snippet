@@ -64,7 +64,7 @@ module SocialSnippet::CommandLine
     end # GET /repositories/new-repo/dependencies
 
     before do
-      allow(::SocialSnippet::Repository::RepositoryFactory).to receive(:clone).with(/my-repo/) do |url|
+      allow(fake_core.repo_factory).to receive(:clone).with(/my-repo/) do |url|
         class FakeRepo
           attr_reader :path
         end
@@ -81,7 +81,7 @@ module SocialSnippet::CommandLine
     end # prepare my-repo
 
     before do
-      allow(::SocialSnippet::Repository::RepositoryFactory).to receive(:clone).with(/new-repo/) do |url|
+      allow(fake_core.repo_factory).to receive(:clone).with(/new-repo/) do |url|
         class FakeRepo
           attr_reader :path
         end

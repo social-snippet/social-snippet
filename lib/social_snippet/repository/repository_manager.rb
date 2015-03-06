@@ -81,7 +81,7 @@ module SocialSnippet::Repository
       repo_paths.each do |repo_path|
         path = "#{repo_path}/#{name}"
         if ::Dir.exists?(path)
-          repo = RepositoryFactory.create(path, ref)
+          repo = core.repo_factory.create(path, ref)
           repo.load_cache repo_cache_path
           return repo
         end

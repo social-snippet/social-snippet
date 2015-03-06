@@ -5,7 +5,7 @@ module SocialSnippet::Api::ManifestApi
   def init_manifest(options = {})
     current_answers = load_manifest_file || {}
     answer = loop_manifest_questions(current_answers)
-    ::File.write "snippet.json", ::JSON.pretty_generate(answer)
+    core.storage.write "snippet.json", ::JSON.pretty_generate(answer)
     answer
   end
 
@@ -24,8 +24,8 @@ module SocialSnippet::Api::ManifestApi
 
   # load current configuration
   def load_manifest_file
-    if ::File.exists?("snippet.json")
-      ::JSON.parse(::File.read "snippet.json")
+    if core.storage.exists?("snippet.json")
+      ::JSON.parse(core.storage.read "snippet.json")
     else
       nil
     end

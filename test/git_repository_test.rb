@@ -35,7 +35,7 @@ module ::SocialSnippet::Repository
         ]
         rugged_repo
       end
-      @repo = FakeDriver.new("/path/to/repo")
+      @repo = FakeDriver.new(fake_core, "/path/to/repo")
     end
 
     describe "#refs" do
@@ -76,7 +76,7 @@ module ::SocialSnippet::Repository
 
     context "clone example-repo" do
       before do
-        @cloned_repo = RepositoryFactory.clone "git://github.com/social-snippet/example-repo"
+        @cloned_repo = fake_core.repo_factory.clone "git://github.com/social-snippet/example-repo"
       end
 
       context "checkout 1.0.0" do

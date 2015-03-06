@@ -14,6 +14,10 @@ module SocialSnippet::StorageBackend
       ::FileUtils.touch path
     end
 
+    def cp_r(src, dest)
+      ::FileUtils.cp_r src, dest
+    end
+
     def rm(path)
       ::FileUtils.rm path
     end
