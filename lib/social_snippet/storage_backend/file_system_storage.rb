@@ -21,6 +21,14 @@ module SocialSnippet::StorageBackend
     def rm_r(path)
       ::FileUtils.rm_r path
     end
+    
+    def cd(path)
+      ::FileUtils.cd path
+    end
+
+    def pwd
+      ::Dir.pwd
+    end
 
     def glob(glob_path)
       ::Dir.glob glob_path
