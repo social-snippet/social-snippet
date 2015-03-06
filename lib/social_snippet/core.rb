@@ -3,6 +3,7 @@ class SocialSnippet::Core
   attr_reader :input_stream
   attr_reader :output_stream
   attr_reader :repo_manager
+  attr_reader :repo_factory
   attr_reader :config
   attr_reader :registry_client
   attr_reader :logger
