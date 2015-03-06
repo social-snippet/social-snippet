@@ -6,7 +6,7 @@ module SocialSnippet::Repository::Drivers
 
     describe "#to_snippet_json" do
 
-      let(:instance) { BaseRepository.new "/path/to/repo" }
+      let(:instance) { BaseRepository.new fake_core, "/path/to/repo" }
 
       before do
         FileUtils.mkdir_p "/path/to/repo"
@@ -37,7 +37,7 @@ module SocialSnippet::Repository::Drivers
 
     describe "#glob" do
 
-      let(:instance) { BaseRepository.new "/path/to/my-repo" }
+      let(:instance) { BaseRepository.new fake_core, "/path/to/my-repo" }
 
       before do
         FileUtils.mkdir_p "/path/to/my-repo/"

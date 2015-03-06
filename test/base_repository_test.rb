@@ -8,7 +8,7 @@ module SocialSnippet::Repository::Drivers
 
       context "new path/to/repo" do
 
-        let(:repo) { BaseRepository.new('/path/to/repo') }
+        let(:repo) { BaseRepository.new(fake_core, '/path/to/repo') }
 
         context "version only cases" do
 
@@ -225,7 +225,7 @@ module SocialSnippet::Repository::Drivers
           before { FileUtils.mkdir_p(cache_path) }
 
           let(:instance) do
-            repo = BaseRepository.new("/path/to/repo_1")
+            repo = BaseRepository.new(fake_core, "/path/to/repo_1")
             repo.load_snippet_json
             return repo
           end
@@ -296,9 +296,9 @@ module SocialSnippet::Repository::Drivers
 
         context "create three instances" do
 
-          let(:instance_1) { BaseRepository.new("/path/to/repo_1") }
-          let(:instance_b) { BaseRepository.new("/path/to/repo_b") }
-          let(:instance_3) { BaseRepository.new("/path/to/repo_3") }
+          let(:instance_1) { BaseRepository.new(fake_core, "/path/to/repo_1") }
+          let(:instance_b) { BaseRepository.new(fake_core, "/path/to/repo_b") }
+          let(:instance_3) { BaseRepository.new(fake_core, "/path/to/repo_3") }
 
           before do
             instance_1.load_snippet_json

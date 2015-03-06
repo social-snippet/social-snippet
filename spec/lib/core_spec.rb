@@ -40,7 +40,7 @@ module SocialSnippet
           ].join($/)
 
           repo_config = Proc.new do |path|
-            repo = ::SocialSnippet::Repository::Drivers::BaseRepository.new("#{repo_path}/my-repo")
+            repo = ::SocialSnippet::Repository::Drivers::BaseRepository.new(fake_core, "#{repo_path}/my-repo")
             allow(repo).to receive(:commit_id).and_return commit_id
             allow(repo).to receive(:refs).and_return []
             repo.load_snippet_json

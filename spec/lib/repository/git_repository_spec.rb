@@ -10,7 +10,7 @@ module SocialSnippet::Repository::Drivers
 
       context "clone social-snippet/example-repo" do
 
-        subject(:repo) { ::SocialSnippet::Repository::RepositoryFactory.clone("git://github.com/social-snippet/example-repo.git") }
+        subject(:repo) { fake_core.repo_factory.clone("git://github.com/social-snippet/example-repo.git") }
 
         context "load snippet.json" do
           before { repo.load_snippet_json }

@@ -32,7 +32,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
         repo_path = "#{tmp_repo_path_no_ver}/#{repo_name}"
       else
         base_repo_path = "#{tmp_repo_path}/#{repo_name}/#{repo_refs[repo_name].first}"
-        base_repo = SocialSnippet::Repository::Drivers::BaseRepository.new(base_repo_path)
+        base_repo = SocialSnippet::Repository::Drivers::BaseRepository.new(fake_core, base_repo_path)
         allow(base_repo).to receive(:refs).and_return repo_refs[repo_name]
         base_repo.load_snippet_json
         repo_version = base_repo.latest_version ref
@@ -45,7 +45,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
           repo_path = "#{tmp_repo_path}/#{repo_name}/#{repo_version}"
         end
       end
-      repo = SocialSnippet::Repository::Drivers::BaseRepository.new(repo_path)
+      repo = SocialSnippet::Repository::Drivers::BaseRepository.new(fake_core, repo_path)
       allow(repo).to receive(:refs).and_return repo_refs[repo_name]
       allow(repo).to receive(:commit_id).and_return "#{repo_version}#{commit_id}"
       repo.load_snippet_json
@@ -1258,7 +1258,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
         ].join($/)
 
         allow(fake_core.repo_manager).to receive(:find_repository).with(repo_name, ref_name) do
-          repo = SocialSnippet::Repository::Drivers::BaseRepository.new("#{repo_path}/#{repo_name}/#{ref_name}")
+          repo = SocialSnippet::Repository::Drivers::BaseRepository.new(fake_core, "#{repo_path}/#{repo_name}/#{ref_name}")
           allow(repo).to receive(:refs).and_return([
             '0.0.1',
             '0.0.2',
@@ -1304,7 +1304,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
         ].join($/)
 
         allow(fake_core.repo_manager).to receive(:find_repository).with(repo_name, ref_name) do
-          repo = SocialSnippet::Repository::Drivers::BaseRepository.new("#{repo_path}/#{repo_name}/#{ref_name}")
+          repo = SocialSnippet::Repository::Drivers::BaseRepository.new(fake_core, "#{repo_path}/#{repo_name}/#{ref_name}")
           allow(repo).to receive(:refs).and_return([
             '0.0.1',
             '0.0.2',
@@ -1449,7 +1449,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
         ].join($/)
 
         repo_config = Proc.new do |path|
-          repo = SocialSnippet::Repository::Drivers::BaseRepository.new("#{repo_path}/#{repo_name}")
+          repo = SocialSnippet::Repository::Drivers::BaseRepository.new(fake_core, "#{repo_path}/#{repo_name}")
           allow(repo).to receive(:commit_id).and_return commit_id
           allow(repo).to receive(:refs).and_return []
           repo.load_snippet_json
@@ -1526,7 +1526,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
         ].join($/)
 
         repo_config = Proc.new do |path|
-          repo = SocialSnippet::Repository::Drivers::BaseRepository.new("#{repo_path}/#{repo_name}")
+          repo = SocialSnippet::Repository::Drivers::BaseRepository.new(fake_core, "#{repo_path}/#{repo_name}")
           allow(repo).to receive(:commit_id).and_return commit_id
           allow(repo).to receive(:refs).and_return []
           repo.load_snippet_json
@@ -1586,7 +1586,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
         ].join($/)
 
         repo_config = Proc.new do |path|
-          repo = SocialSnippet::Repository::Drivers::BaseRepository.new("#{repo_path}/#{repo_name}")
+          repo = SocialSnippet::Repository::Drivers::BaseRepository.new(fake_core, "#{repo_path}/#{repo_name}")
           allow(repo).to receive(:commit_id).and_return commit_id
           allow(repo).to receive(:refs).and_return []
           repo.load_snippet_json
@@ -1649,7 +1649,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
         ].join($/)
 
         repo_config = Proc.new do |path|
-          repo = SocialSnippet::Repository::Drivers::BaseRepository.new("#{repo_path}/#{repo_name}")
+          repo = SocialSnippet::Repository::Drivers::BaseRepository.new(fake_core, "#{repo_path}/#{repo_name}")
           allow(repo).to receive(:commit_id).and_return commit_id
           allow(repo).to receive(:refs).and_return []
           repo.load_snippet_json
