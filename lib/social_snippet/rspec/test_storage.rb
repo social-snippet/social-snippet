@@ -127,6 +127,150 @@ RSpec.configure do
 
       end #glob
 
+      describe "change workdir" do
+
+        let!(:root_dir) { storage.pwd }
+
+        context "mkdir path/to/dir" do
+
+          subject { storage.pwd }
+
+          before { storage.mkdir_p "path/to/dir" }
+
+          context "cd path/to" do
+
+            before { storage.cd "path/to" }
+            it { should eq ::File.join(root_dir, "path", "to") }
+
+            context "cd ../" do
+
+              before { storage.cd "../" }
+              it { should eq ::File.join(root_dir, "path") }
+
+              context "storage.cd ./" do
+
+                before { storage.cd "./" }
+                it { should eq ::File.join(root_dir, "path") }
+
+                context "storage.cd ./to/dir" do
+                  before { storage.cd "to/dir" }
+                  it { should eq ::File.join(root_dir, "path", "to", "dir") }
+                end
+
+              end
+
+            end
+
+          end
+
+          context "touch path/to/dir/file" do
+            before { storage.touch "path/to/dir/file" }
+            context "cd path/to/dir" do
+              before { storage.cd "path/to/dir" }
+              context "read file" do
+                subject { storage.file? "file" }
+                it { should be_truthy }
+              end
+            end
+          end
+
+        end # mkdir path/to/dir
+
+        context "mkdir path" do
+
+          before { storage.mkdir "path" }
+
+          context "cd path" do
+
+            before { storage.cd "path" }
+
+            context "mkdir to" do
+
+              before { storage.mkdir "to" }
+
+              context "cd to" do
+
+                before { storage.cd "to" }
+
+                context "write file, data" do
+
+                  before { storage.write "file", "data" }
+
+                  context "cd root" do
+
+                    before { storage.cd root_dir }
+
+                    context "read path/to/file" do
+                      subject { storage.read "path/to/file" }
+                      it { should eq "data" }
+                    end
+
+                  end
+
+                end
+
+              end
+
+            end
+
+          end
+
+        end
+
+      end # change workdir
+
+      describe "duplication" do
+
+        context "mkdir /lib" do
+
+          before { storage.mkdir "/lib" }
+
+          context "touch /lib/entity" do
+
+            before { storage.touch "/lib/entity" }
+
+            context "mkdir /lib/entity" do
+
+              subject do
+                lambda { storage.mkdir "/lib/entity" }
+              end
+
+              it { should raise_error ::Errno::EEXIST }
+
+            end
+
+          end
+
+          context "mkdir /lib/entity" do
+
+            before { storage.mkdir "/lib/entity" } 
+
+            context "touch /lib/entity" do
+
+              subject do
+                lambda { storage.touch "/lib/entity" }
+              end
+
+              it { should_not raise_error }
+
+            end
+
+            context "write /lib/entity, data" do
+
+              subject do
+                lambda { storage.write "/lib/entity", "data" }
+              end
+
+              it { should raise_error ::Errno::EISDIR }
+
+            end
+
+          end
+
+        end # mkdir /lib
+
+      end # duplication
+
       context "mkdir_p /path/to" do
 
         before { storage.mkdir_p "/path/to" }
