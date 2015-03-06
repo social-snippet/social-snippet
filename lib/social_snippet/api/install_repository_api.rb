@@ -52,7 +52,7 @@ module SocialSnippet::Api::InstallRepositoryApi
     output "Found at: #{info["url"]}"
 
     output "Cloning repository..."
-    repo = ::SocialSnippet::Repository::RepositoryFactory.clone(info["url"])
+    repo = core.repo_factory.clone(info["url"])
 
     install_repository installed_as, repo_ref, repo
   end
@@ -60,14 +60,14 @@ module SocialSnippet::Api::InstallRepositoryApi
   # $ sspm install URL
   def install_repository_by_url(repo_url, repo_ref, options = {})
     output "Cloning repository..."
-    repo = ::SocialSnippet::Repository::RepositoryFactory.clone(repo_url)
+    repo = core.repo_factory.clone(repo_url)
     install_repository_by_repo repo, repo_ref, options
   end
 
   # $ sspm install ./path/to/repo
   def install_repository_by_path(repo_path, repo_ref, options = {})
     output "Cloning repository..."
-    repo = ::SocialSnippet::Repository::RepositoryFactory.clone_local(repo_path)
+    repo = core.repo_factory.clone_local(repo_path)
     install_repository_by_repo repo, repo_ref, options
   end
 
