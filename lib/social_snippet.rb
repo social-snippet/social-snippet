@@ -29,7 +29,11 @@ require_relative "social_snippet/api"
 require_relative "social_snippet/tsortable_hash"
 require_relative "social_snippet/storage_backend"
 require_relative "social_snippet/storage"
+require_relative "social_snippet/document_backend"
+require_relative "social_snippet/document"
 
-# use file system as storage
+# use file system as default storage backend
 SocialSnippet::StorageBackend::FileSystemStorage.activate!
+# use yaml as default document backend
+SocialSnippet::DocumentBackend::YAMLDocument.activate!
 

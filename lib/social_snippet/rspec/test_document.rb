@@ -2,7 +2,13 @@ RSpec.configure do
 
   shared_context :TestDocument do
 
-    class TestDocument < ::SocialSnippet::Document
+    class TestDocument1 < ::SocialSnippet::Document
+      field :field_string, :type => String
+      field :field_array, :type => Array, :default => ::Array.new
+      field :field_hash, :type => Hash, :default => ::Hash.new
+    end
+
+    class TestDocument2 < ::SocialSnippet::Document
       field :field_string, :type => String
       field :field_array, :type => Array, :default => ::Array.new
       field :field_hash, :type => Hash, :default => ::Hash.new
@@ -11,7 +17,7 @@ RSpec.configure do
     describe "test field" do
 
       let(:doc) do
-        TestDocument.new
+        TestDocument1.new
       end
 
       context "doc.field_string = test" do
@@ -36,7 +42,7 @@ RSpec.configure do
       context "create item" do
 
         before do
-          item = TestDocument.create(:id => "item")
+          item = TestDocument1.create(:id => "item")
           item.field_string = "this is string"
           item.field_array.push "this is array"
           item.field_hash["key"] = "this is hash"
@@ -44,21 +50,34 @@ RSpec.configure do
         end
 
         context "check existance" do
-          subject { TestDocument.where(:id => "item").exists? }
-          it { should be_truthy }
+          context "TestDocument1.where(:id => item).exists?" do
+            subject { TestDocument1.where(:id => "item").exists? }
+            it { should be_truthy }
+          end
+          context "TestDocument2.where(:id => item).exists?" do
+            subject { TestDocument2.where(:id => "item").exists? }
+            it { should be_falsey }
+          end
         end
 
         context "find item" do
-          subject { TestDocument.find "item" }
-          it { expect(subject.field_string).to eq "this is string" }
-          it { expect(subject.field_array).to include "this is array" }
-          it { expect(subject.field_hash["key"]).to eq "this is hash" }
+          context "in document-1" do
+            subject { TestDocument1.find "item" }
+            it { expect(subject.field_string).to eq "this is string" }
+            it { expect(subject.field_array).to include "this is array" }
+            it { expect(subject.field_hash["key"]).to eq "this is hash" }
+          end
+          context "in document-2" do
+            example do
+              expect { TestDocument2.find "item" }.to raise_error
+            end
+          end
         end
 
         context "remove item" do
-          before { TestDocument.find("item").remove }
+          before { TestDocument1.find("item").remove }
           context "re-find item" do
-            subject { TestDocument.where(:id => "item").exists? }
+            subject { TestDocument1.where(:id => "item").exists? }
             it { should be_falsey }
           end
         end
