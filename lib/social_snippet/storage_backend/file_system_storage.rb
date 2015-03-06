@@ -14,6 +14,14 @@ module SocialSnippet::StorageBackend
       ::FileUtils.touch path
     end
 
+    def rm(path)
+      ::FileUtils.rm path
+    end
+
+    def rm_r(path)
+      ::FileUtils.rm_r path
+    end
+
     def glob(glob_path)
       ::Dir.glob glob_path
     end
@@ -30,6 +38,10 @@ module SocialSnippet::StorageBackend
       ::File.directory? path
     end
 
+    def mkdir(path)
+      ::FileUtils.mkdir path
+    end
+
     def mkdir_p(path)
       ::FileUtils.mkdir_p path
     end
@@ -37,7 +49,7 @@ module SocialSnippet::StorageBackend
     def self.activate!
       ::SocialSnippet.class_eval do
         remove_const :Storage
-        const_set :Storage, FileSystemStorage
+        const_set :Storage, ::SocialSnippet::StorageBackend::FileSystemStorage
       end
     end
 
