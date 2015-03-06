@@ -64,7 +64,7 @@ module SocialSnippet::Repository
     end
 
     def fetch(repo_name, options)
-      repo = ::SocialSnippet::Repository::RepositoryFactory.create(repo_path(repo_name), options)
+      repo = core.repo_factory.create(repo_path(repo_name), options)
       repo.update
     end
 
