@@ -1,11 +1,17 @@
-module SocialSnippet::Repository::RepositoryFactory
+module SocialSnippet::Repository
 
-  class << self
+  class RepositoryFactory
+
+    attr_reader :core
+
+    def initialize(new_core)
+      @core = new_core
+    end
 
     def clone(repo_url)
       uri = URI.parse repo_url
       if is_git_repo(uri)
-        path = ::SocialSnippet::Repository::Drivers::GitRepository.download uri
+        path = Drivers::GitRepository.download uri
         repo = create_git_repo(path)
         repo.set_url repo_url
         repo.load_snippet_json
@@ -17,7 +23,7 @@ module SocialSnippet::Repository::RepositoryFactory
 
     def clone_local(repo_path)
       if has_git_dir?(repo_path)
-        cloned_path = ::SocialSnippet::Repository::Drivers::GitRepository.download repo_path
+        cloned_path = Drivers::GitRepository.download repo_path
         repo = create_git_repo(cloned_path)
         repo.set_url repo_path
         repo.load_snippet_json
@@ -41,7 +47,7 @@ module SocialSnippet::Repository::RepositoryFactory
     end
 
     def create_git_repo(path, ref = nil)
-      ::SocialSnippet::Repository::Drivers::GitRepository.new(path, ref)
+      Drivers::GitRepository.new(core, path, ref)
     end
 
     def has_git_dir?(dir_path)
