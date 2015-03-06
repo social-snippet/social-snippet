@@ -1,6 +1,6 @@
 module SocialSnippet::SpecHelpers
 
-  class Fake; end
+  class FakeCore; end
 
   def fake_storage
     @fake_storage ||= ::SocialSnippet::Storage.new
@@ -72,17 +72,22 @@ module SocialSnippet::SpecHelpers
     @fake_repo_manager ||= ::SocialSnippet::Repository::RepositoryManager.new(fake_core)
   end
 
+  def fake_repo_factory
+    @fake_repo_factory ||= ::SocialSnippet::Repository::RepositoryFactory.new(fake_core)
+  end
+
   def fake_registry_client
     @fake_registry_client ||= ::SocialSnippet::Registry::RegistryClient.new(fake_core)
   end
 
   def reset_fake_core
-    @fake_core = Fake.new
+    @fake_core = FakeCore.new
     allow(fake_core).to receive(:storage).and_return fake_storage
     allow(fake_core).to receive(:logger).and_return fake_logger
     allow(fake_core).to receive(:config).and_return fake_config
     allow(fake_core).to receive(:api).and_return fake_api
     allow(fake_core).to receive(:repo_manager).and_return fake_repo_manager
+    allow(fake_core).to receive(:repo_factory).and_return fake_repo_factory
     allow(fake_core).to receive(:registry_client).and_return fake_registry_client
     allow_any_instance_of(::SocialSnippet::CommandLine::Command).to receive(:core).and_return fake_core
   end
