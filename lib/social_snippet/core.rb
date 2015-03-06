@@ -14,7 +14,7 @@ class SocialSnippet::Core
   def initialize(new_input_stream = STDIN, new_output_stream = STDOUT)
     @input_stream   = new_input_stream
     @output_stream  = new_output_stream
-    init_storage
+    @storage = ::SocialSnippet::Storage.new
     @config = ::SocialSnippet::Config.new(self)
     @logger = ::SocialSnippet::Logger.new output_stream
     @prompt = ::HighLine.new(input_stream, output_stream)
@@ -23,10 +23,6 @@ class SocialSnippet::Core
     @repo_manager = ::SocialSnippet::Repository::RepositoryManager.new(self)
     @registry_client = ::SocialSnippet::Registry::RegistryClient.new(self)
     @api = ::SocialSnippet::Api.new(self)
-  end
-
-  def init_storage
-    @storage = ::SocialSnippet::Storage.new
   end
 
   def init_logger
