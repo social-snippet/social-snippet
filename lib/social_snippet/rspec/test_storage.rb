@@ -171,6 +171,11 @@ RSpec.configure do
                 subject { storage.file? "file" }
                 it { should be_truthy }
               end
+              context "read file from root" do
+                before { storage.cd root_dir }
+                subject { storage.file? "path/to/dir/file" }
+                it { should be_truthy }
+              end
             end
           end
 
