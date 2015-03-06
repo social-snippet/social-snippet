@@ -197,6 +197,23 @@ RSpec.configure do
 
                 before { storage.cd "to" }
 
+                context "mkdir dir" do
+
+                  before { storage.mkdir "dir" }
+
+                  context "cd root" do
+
+                    before { storage.cd root_dir }
+
+                    context "directory? path/to/dir" do
+                      subject { storage.directory? "path/to/dir" }
+                      it { should be_truthy }
+                    end
+
+                  end
+
+                end
+
                 context "write file, data" do
 
                   before { storage.write "file", "data" }
