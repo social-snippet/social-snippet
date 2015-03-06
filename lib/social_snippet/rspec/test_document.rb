@@ -50,11 +50,11 @@ RSpec.configure do
         end
 
         context "check existance" do
-          context "in document-1" do
+          context "TestDocument1.where(:id => item).exists?" do
             subject { TestDocument1.where(:id => "item").exists? }
             it { should be_truthy }
           end
-          context "in document-2" do
+          context "TestDocument2.where(:id => item).exists?" do
             subject { TestDocument2.where(:id => "item").exists? }
             it { should be_falsey }
           end
