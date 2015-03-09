@@ -99,4 +99,17 @@ module SocialSnippet
     config.include SpecHelpers
     config.before { reset_fake_core }
   end
+
+  # setup yaml document
+  ::RSpec.configure do |config|
+    config.before do
+      if ::SocialSnippet::Document == ::SocialSnippet::DocumentBackend::YAMLDocument
+        document_path = "/config/document.yml"
+        ::FileUtils.mkdir_p "/config"
+        $yaml_document_hash = nil
+        ::FileUtils.rm document_path if ::File.exists?(document_path)
+        ::SocialSnippet::DocumentBackend::YAMLDocument.set_path document_path
+      end
+    end
+  end
 end
