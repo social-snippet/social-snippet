@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ::SocialSnippet::DocumentBackend::YAMLDocument, :current => true do
+describe ::SocialSnippet::DocumentBackend::YAMLDocument do
 
   before { ::FileUtils.mkdir_p "/path/to" }
   before { ::SocialSnippet::DocumentBackend::YAMLDocument.set_path "/path/to/document.yml" }
