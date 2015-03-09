@@ -52,6 +52,16 @@ module SocialSnippet::DocumentBackend
 
     class << self
 
+      # "Callback invoked whenever a subclass of the current class is created."
+      # http://docs.ruby-lang.org/en/2.2.0/Class.html#method-i-inherited
+      def inherited(child)
+        load_file!
+      end
+
+      def load_file!
+        $yaml_document_hash ||= ::YAML.load(::File.read path)
+      end
+
       def set_path(new_path)
         @path = new_path
         ::FileUtils.touch(path) unless ::File.exists?(path)
