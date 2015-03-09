@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ::SocialSnippet::StorageBackend::FileSystemStorage, :current => true do
+describe ::SocialSnippet::StorageBackend::FileSystemStorage do
 
   let(:storage) { ::SocialSnippet::StorageBackend::FileSystemStorage.new }
 
