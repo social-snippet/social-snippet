@@ -51,7 +51,7 @@ module SocialSnippet::Repository
     end
 
     def has_git_dir?(dir_path)
-      Dir.exists?("#{dir_path}/.git")
+      ::Dir.exists?("#{dir_path}/.git")
     end
 
     def is_git_repo(uri)

@@ -51,7 +51,7 @@ module SocialSnippet::Repository::Drivers
       # @return path
       def download(uri, dest_path = nil)
         if dest_path.nil?
-          dest_path = Dir.mktmpdir
+          dest_path = ::Dir.mktmpdir
         end
 
         # git clone

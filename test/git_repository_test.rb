@@ -64,14 +64,14 @@ module ::SocialSnippet::Repository
     end
 
     before do
-      @curdir = Dir.pwd
-      @tmpdir = Dir.mktmpdir
-      Dir.chdir @tmpdir
+      @curdir = ::Dir.pwd
+      @tmpdir = ::Dir.mktmpdir
+      ::Dir.chdir @tmpdir
     end
 
     after do
-      Dir.chdir @curdir
-      FileUtils.rm_r @tmpdir
+      ::Dir.chdir @curdir
+      ::FileUtils.rm_r @tmpdir
     end
 
     context "clone example-repo" do
@@ -100,7 +100,7 @@ module ::SocialSnippet::Repository
             end
 
             it do
-              expect(File.exists?("#{@cloned_repo.cache_path}")).to be_truthy
+              expect(::File.exists?("#{@cloned_repo.cache_path}")).to be_truthy
             end
 
           end

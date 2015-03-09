@@ -7,7 +7,7 @@ module SocialSnippet::SpecHelpers
   end
 
   def fake_io
-    @fake_io ||= StringIO.new
+    @fake_io ||= ::StringIO.new
   end
 
   def fake_logger
@@ -26,9 +26,9 @@ module SocialSnippet::SpecHelpers
   end
 
   def reset_fake_home
-    tmp_root = File.join(Dir.tmpdir, "social_snippet")
-    FileUtils.mkdir_p tmp_root
-    @tmp_path = Dir.mktmpdir(nil, tmp_root)
+    tmp_root = ::File.join(::Dir.tmpdir, "social_snippet")
+    ::FileUtils.mkdir_p tmp_root
+    @tmp_path = ::Dir.mktmpdir(nil, tmp_root)
   end
 
   def make_fake_home

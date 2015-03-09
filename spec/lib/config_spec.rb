@@ -15,7 +15,7 @@ describe SocialSnippet::Config, :without_fakefs => $WITHOUT_FAKEFS do
     allow(social_snippet).to receive(:storage).and_return fake_storage
   end
 
-  before { stub_const "ENV", "HOME" => Dir.mktmpdir }
+  before { stub_const "ENV", "HOME" => ::Dir.mktmpdir }
 
   describe "sspm_url" do
 
@@ -104,7 +104,7 @@ describe SocialSnippet::Config, :without_fakefs => $WITHOUT_FAKEFS do
 
   context "set ENV[SOCIAL_SNIPPET_HOME]" do
 
-    before { stub_const "ENV", "HOME" => Dir.mktmpdir, "SOCIAL_SNIPPET_HOME" => Dir.mktmpdir }
+    before { stub_const "ENV", "HOME" => ::Dir.mktmpdir, "SOCIAL_SNIPPET_HOME" => Dir.mktmpdir }
     it { expect(config.home).to_not eq ::File.join(ENV["HOME"], ".social-snippet") }
     it { expect(config.home).to eq ENV["SOCIAL_SNIPPET_HOME"] }
     it { expect(config.file_path).to eq ::File.join(ENV["SOCIAL_SNIPPET_HOME"], "config.json") }

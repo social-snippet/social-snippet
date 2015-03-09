@@ -15,12 +15,12 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
   def find_repo_mock
     repo_refs = {}
-    repos = Dir.glob("#{tmp_repo_path}/*").map{|path| Pathname.new(path).basename.to_s }
+    repos = ::Dir.glob("#{tmp_repo_path}/*").map{|path| Pathname.new(path).basename.to_s }
     repos.each do |repo_name|
-      repo_refs[repo_name] = Dir.glob("#{tmp_repo_path}/#{repo_name}/*").map {|path| Pathname.new(path).basename.to_s }
+      repo_refs[repo_name] = ::Dir.glob("#{tmp_repo_path}/#{repo_name}/*").map {|path| Pathname.new(path).basename.to_s }
     end
 
-    repos_no_ver = Dir.glob("#{tmp_repo_path_no_ver}/*").map {|path| Pathname.new(path).basename.to_s }
+    repos_no_ver = ::Dir.glob("#{tmp_repo_path_no_ver}/*").map {|path| Pathname.new(path).basename.to_s }
 
     allow(fake_core.repo_manager).to receive(:find_repository).with(any_args) do |repo_name, ref|
       repo_refs[repo_name] ||= []
@@ -38,7 +38,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
         repo_version = base_repo.latest_version ref
         if repo_version.nil?
           repo_path = "#{tmp_repo_path}/#{repo_name}/#{repo_ref}"
-          unless Dir.exists?(repo_path)
+          unless ::Dir.exists?(repo_path)
             raise SocialSnippet::Repository::Errors::NotExistRef
           end
         else
@@ -139,18 +139,18 @@ describe SocialSnippet::Api::InsertSnippetApi do
             ref_name = "1.0.0"
 
             ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}"
-              ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
-              ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
-              ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c"
+            ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/#{ref_name}/.git"
+            ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json"
+            ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c"
 
-              # snippet.json
-              ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
-                '{"name": "' + repo_name + '"}'
-              ].join($/)
+            # snippet.json
+            ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/snippet.json", [
+              '{"name": "' + repo_name + '"}'
+            ].join($/)
 
-              ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c", [
-                'func: 1.0.0',
-              ].join($/)
+            ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/func.c", [
+              'func: 1.0.0',
+            ].join($/)
           end # prepare my-repo#1.0.0
 
           before { find_repo_mock }

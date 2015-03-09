@@ -16,7 +16,7 @@ describe SocialSnippet::Config, :without_fakefs => $WITHOUT_FAKEFS do
     allow(social_snippet).to receive(:logger).and_return fake_logger
   end
 
-  before { stub_const "ENV", "HOME" => Dir.mktmpdir }
+  before { stub_const "ENV", "HOME" => ::Dir.mktmpdir }
 
   describe "priority" do
 
