@@ -14,6 +14,56 @@ RSpec.configure do
       field :field_hash, :type => Hash, :default => ::Hash.new
     end
 
+    describe "#count" do
+
+      subject { TestDocument1.count }
+      it { should eq 0 }
+
+      context "create a item" do
+
+        before { TestDocument1.create(:field_string => "item") }
+        it { should eq 1 }
+
+        context "find_or_create_by item" do
+
+          before { TestDocument1.find_or_create_by(:field_string => "item") }
+          it { should eq 1 }
+
+          context "create another item" do
+            before { TestDocument1.create(:field_string => "item") }
+            it { should eq 2 }
+          end
+
+        end
+
+      end
+
+    end
+
+    describe "#exists?" do
+
+      subject { TestDocument1.exists? }
+      it { should be_falsey }
+
+      context "TestDocument2.exists?" do
+        subject { TestDocument2.exists? }
+        it { should be_falsey }
+      end
+
+      context "create a item" do
+
+        before { TestDocument1.create(:field_string => "item1") }
+        it { should be_truthy }
+
+        context "TestDocument2.exists?" do
+          subject { TestDocument2.exists? }
+          it { should be_falsey }
+        end
+
+      end # create a item
+
+    end #exists?
+
     describe "#find_by" do
 
       context "find_or_create_by :field_string => abc" do
