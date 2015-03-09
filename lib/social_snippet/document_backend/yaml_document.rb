@@ -57,6 +57,18 @@ module SocialSnippet::DocumentBackend
       self.class.update_file!
     end
 
+    def push(attrs)
+      attrs.each do |key, value|
+        fields[key].push value
+      end
+    end
+
+    def pull(attrs)
+      attrs.each do |key, value|
+        fields[key].delete value
+      end
+    end
+
     class << self
 
       # "Callback invoked whenever a subclass of the current class is created."
