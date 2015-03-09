@@ -8,6 +8,13 @@ RSpec.configure do
 
       describe "no entry" do
 
+        context "read not_found.txt" do
+          subject do
+            lambda { storage.read "not_found.txt" }
+          end
+          it { should raise_error ::Errno::ENOENT }
+        end
+
         context "rm path/to/not_found" do
           subject do
             lambda { storage.rm "path/to/not_found.txt" }
