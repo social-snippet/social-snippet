@@ -18,7 +18,7 @@ module SocialSnippet::DocumentBackend
       @fields = ::Hash.new
       @field_keys = self.class.field_keys
       init_fields options
-      @id ||= new_id
+      @id ||= new_id || self.class.uuid
     end
 
     def serialize
