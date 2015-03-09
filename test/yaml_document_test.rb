@@ -14,24 +14,24 @@ describe ::SocialSnippet::DocumentBackend::YAMLDocument, :current => true do
         ::File.write "/path/to/document.yml", {
           "TestDocument" => {
             "item1" => {
-              "name" => "item-1",
-              "values" => [
+              :name => "item-1",
+              :values => [
                 "val1-1",
                 "val1-2",
                 "val1-3",
               ],
-              "info" => {
+              :info => {
                 "hello" => "world",
               },
             },
             "item2" => {
-              "name" => "item-2",
-              "values" => [
-                "val1-1",
-                "val1-2",
-                "val1-3",
+              :name => "item-2",
+              :values => [
+                "val2-1",
+                "val2-2",
+                "val2-3",
               ],
-              "info" => {
+              :info => {
                 "foo" => "bar",
               },
             },
@@ -55,8 +55,8 @@ describe ::SocialSnippet::DocumentBackend::YAMLDocument, :current => true do
 
         context "find item1" do
           let(:item) { doc_class.find "item1" }
-          it { expect(item.name).to eq "item1" }
-          it { expect(item.values.length).to 3 }
+          it { expect(item.name).to eq "item-1" }
+          it { expect(item.values.length).to eq 3 }
           it { expect(item.values).to include "val1-1" }
           it { expect(item.values).to include "val1-2" }
           it { expect(item.values).to include "val1-3" }
@@ -65,8 +65,8 @@ describe ::SocialSnippet::DocumentBackend::YAMLDocument, :current => true do
 
         context "find item2" do
           let(:item) { doc_class.find "item2" }
-          it { expect(item.name).to eq "item2" }
-          it { expect(item.values.length).to 3 }
+          it { expect(item.name).to eq "item-2" }
+          it { expect(item.values.length).to eq 3 }
           it { expect(item.values).to include "val2-1" }
           it { expect(item.values).to include "val2-2" }
           it { expect(item.values).to include "val2-3" }
@@ -83,7 +83,7 @@ describe ::SocialSnippet::DocumentBackend::YAMLDocument, :current => true do
           end
           context "find item1" do
             let(:item) { doc_class.find("item1") }
-            it { expect(item.name).to eq "item1" }
+            it { expect(item.name).to eq "item-1" }
           end
         end # remove item2
 
