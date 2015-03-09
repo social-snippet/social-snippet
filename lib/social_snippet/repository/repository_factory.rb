@@ -9,7 +9,7 @@ module SocialSnippet::Repository
     end
 
     def clone(repo_url)
-      uri = URI.parse repo_url
+      uri = ::URI.parse repo_url
       if is_git_repo(uri)
         path = Drivers::GitRepository.download uri
         repo = create_git_repo(path)
