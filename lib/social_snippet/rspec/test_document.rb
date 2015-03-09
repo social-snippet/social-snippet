@@ -14,6 +14,32 @@ RSpec.configure do
       field :field_hash, :type => Hash, :default => ::Hash.new
     end
 
+    describe "#push" do
+
+      context "create item" do
+
+        let(:item) { TestDocument1.create }
+        it { expect(item.field_array).to be_empty }
+
+        context "push item" do
+
+          before { item.push :field_array => "val" }
+          it { expect(item.field_array).to_not be_empty }
+          it { expect(item.field_array).to include "val" }
+
+          context "pull item" do
+
+            before { item.pull :field_array => "val" }
+            it { expect(item.field_array).to be_empty }
+
+          end
+
+        end
+
+      end
+
+    end #push
+
     describe "#count" do
 
       subject { TestDocument1.count }
