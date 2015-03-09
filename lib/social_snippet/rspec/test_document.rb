@@ -14,6 +14,40 @@ RSpec.configure do
       field :field_hash, :type => Hash, :default => ::Hash.new
     end
 
+    describe "#find_by" do
+
+      context "find_or_create_by :field_string => abc" do
+
+        before do
+          doc = TestDocument1.find_or_create_by(:field_string => "abc")
+          doc.field_array.push "val1"
+          doc.field_array.push "val2"
+          doc.field_array.push "val3"
+          doc.field_hash["key"] = "val"
+          doc.save!
+        end
+
+        context "find_by :field_string => abc" do
+          let(:item) { TestDocument1.find_by :field_string => "abc" }
+          it { expect(item.field_string).to eq "abc" }
+          it { expect(item.field_array.length).to eq 3 }
+          it { expect(item.field_array).to include "val1" }
+          it { expect(item.field_array).to include "val2" }
+          it { expect(item.field_array).to include "val3" }
+          it { expect(item.field_hash["key"]).to include "val" }
+        end
+
+        context "find_by :field_string => not_found" do
+          subject do
+            lambda { TestDocument1.find_by :field_string => "not_found" }
+          end
+          it { should raise_error }
+        end
+
+      end
+
+    end #find_by
+
     describe "test field" do
 
       let(:doc) do
