@@ -19,6 +19,10 @@ module SocialSnippet::DocumentBackend
       self.class.new collection
     end
 
+    def count
+      collection.length
+    end
+
   end
 
 end
