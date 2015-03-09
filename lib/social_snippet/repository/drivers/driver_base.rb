@@ -1,8 +1,8 @@
 module SocialSnippet::Repository::Drivers
 
   # Repository base class
-  # usage: class GitRepository < BaseRepository
-  class BaseRepository
+  # usage: class GitRepository < DriverBase
+  class DriverBase
 
     attr_reader :core
     attr_reader :path
@@ -186,6 +186,6 @@ module SocialSnippet::Repository::Drivers
       throw "not implement update"
     end
 
-  end # BaseRepository
+  end # DriverBase
 
 end # SocialSnippet

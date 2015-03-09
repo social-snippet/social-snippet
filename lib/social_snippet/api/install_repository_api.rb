@@ -2,7 +2,7 @@ module SocialSnippet::Api::InstallRepositoryApi
 
   # Install repository (Core API)
   #
-  # @param repo [::SocialSnippet::Repository::Drivers::BaseRepository]
+  # @param repo [::SocialSnippet::Repository::Drivers::DriverBase]
   def install_repository(repo_name, repo_ref, repo, options = {})
     display_name = repo_name
 
