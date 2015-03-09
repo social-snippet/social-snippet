@@ -11,7 +11,7 @@ module SocialSnippet::Repository
     def clone(repo_url)
       uri = ::URI.parse repo_url
       if is_git_repo(uri)
-        path = Drivers::GitRepository.download uri
+        path = Drivers::GitDriver.download uri
         repo = create_git_repo(path)
         repo.set_url repo_url
         repo.load_snippet_json
@@ -23,7 +23,7 @@ module SocialSnippet::Repository
 
     def clone_local(repo_path)
       if has_git_dir?(repo_path)
-        cloned_path = Drivers::GitRepository.download repo_path
+        cloned_path = Drivers::GitDriver.download repo_path
         repo = create_git_repo(cloned_path)
         repo.set_url repo_path
         repo.load_snippet_json
@@ -47,7 +47,7 @@ module SocialSnippet::Repository
     end
 
     def create_git_repo(path, ref = nil)
-      Drivers::GitRepository.new(core, path, ref)
+      Drivers::GitDriver.new(core, path, ref)
     end
 
     def has_git_dir?(dir_path)

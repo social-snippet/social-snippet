@@ -1,7 +1,7 @@
 module SocialSnippet::Repository::Drivers
 
   # Repository base class
-  # usage: class GitRepository < DriverBase
+  # usage: class GitDriver < DriverBase
   class DriverBase
 
     attr_reader :core
