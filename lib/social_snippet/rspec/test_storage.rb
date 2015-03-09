@@ -6,6 +6,51 @@ RSpec.configure do
 
       let(:storage) { ::SocialSnippet::Storage.new }
 
+      describe "no entry" do
+
+        context "rm path/to/not_found" do
+          subject do
+            lambda { storage.rm "path/to/not_found.txt" }
+          end
+          it { should raise_error ::Errno::ENOENT }
+        end
+
+        context "touch not_found/path/to/file" do
+          subject do
+            lambda { storage.touch "not_found/path/to/file" }
+          end
+          it { should raise_error ::Errno::ENOENT }
+        end
+
+        context "rm_r path/to/not_found" do
+          subject do
+            lambda { storage.rm_r "path/to/not_found" }
+          end
+          it { should raise_error ::Errno::ENOENT }
+        end
+
+        context "cd path/to/not_found" do
+          subject do
+            lambda { storage.cd "path/to/not_found" }
+          end
+          it { should raise_error ::Errno::ENOENT }
+        end
+
+        context "prepare file" do
+          before do
+            storage.mkdir_p "path/to"
+            storage.touch "path/to/file"
+          end
+          context "cd path/to/file" do
+            subject do
+              lambda { storage.cd "path/to/file"; p storage.pwd; p storage.file?(storage.pwd) }
+            end
+            # TODO: it { should raise_error ::Errno::ENOTDIR }
+          end
+        end
+
+      end # no entry
+
       describe "#glob" do
 
         context "prepare storage" do
