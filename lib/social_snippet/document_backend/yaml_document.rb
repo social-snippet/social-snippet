@@ -96,7 +96,7 @@ module SocialSnippet::DocumentBackend
       end
 
       def create_collection
-        $yaml_document_hash[self.to_s.downcase] ||= ::Hash.new
+        $yaml_document_hash[self.name] ||= ::Hash.new
       end
 
       def field_keys
