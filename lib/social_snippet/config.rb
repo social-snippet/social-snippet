@@ -87,6 +87,12 @@ class SocialSnippet::Config
   #
   # config helpers
   #
+  
+  def package_path(repo_name, rev_hash, path = nil)
+    path = "" if path.nil?
+    raise "ERROR" if rev_hash.nil?
+    ::File.join home, "packages", repo_name, rev_hash, path
+  end
 
   def file_path
     ::File.join home, "config.json"
