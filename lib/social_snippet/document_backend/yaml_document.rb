@@ -62,8 +62,6 @@ module SocialSnippet::DocumentBackend
       # "Callback invoked whenever a subclass of the current class is created."
       # http://docs.ruby-lang.org/en/2.2.0/Class.html#method-i-inherited
       def inherited(child)
-        child.field_keys = ::Set.new
-        child.default_field = ::Hash.new
         load_file!
       end
 
@@ -154,19 +152,14 @@ module SocialSnippet::DocumentBackend
         @field_keys
       end
 
-      def field_keys=(new_field_keys)
-        @field_keys = new_field_keys
-      end
-
       def default_field
         @default_field
       end
 
-      def default_field=(new_default_field)
-        @default_field = new_default_field
-      end
-
       def field(sym, options = {})
+        @field_keys ||= ::Set.new
+        @default_field ||= ::Hash.new
+
         default_field[sym] = options[:default] unless options[:default].nil?
 
         field_keys.add sym
