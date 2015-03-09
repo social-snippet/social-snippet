@@ -4,9 +4,13 @@ describe ::SocialSnippet::DocumentBackend::YAMLDocument do
 
   context "set yaml path" do
 
+    let(:document_path) { "/path/to/document.yml" }
+
     before do
       ::FileUtils.mkdir_p "/path/to"
-      ::SocialSnippet::DocumentBackend::YAMLDocument.set_path "/path/to/document.yml"
+      $yaml_document_hash = nil
+      ::FileUtils.rm document_path if ::File.exists?(document_path)
+      ::SocialSnippet::DocumentBackend::YAMLDocument.set_path document_path
     end
 
     context "activate" do
