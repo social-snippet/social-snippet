@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ::SocialSnippet::DocumentBackend::YAMLDocument, :current => true do
+describe ::SocialSnippet::DocumentBackend::YAMLDocument do
 
   context "set yaml path" do
 
