@@ -4,6 +4,8 @@ module SocialSnippet::DocumentBackend
 
   class YAMLDocument
 
+    require_relative "yaml_document/query"
+
     attr_reader :path
     attr_reader :field_keys
     attr_reader :fields
@@ -48,27 +50,6 @@ module SocialSnippet::DocumentBackend
       self.class.update_file!
     end
 
-    class YAMLDocumentQuery
-
-      attr_reader :collection
-
-      def initialize(new_collection)
-        @collection = new_collection
-      end
-
-      def exists?
-        collection.size > 0
-      end
-
-      def find(cond)
-        collection.select do |item_id, item|
-          cond.any? {|k, _| cond[k] === item[k] }
-        end
-        self.class.new collection
-      end
-
-    end
-
     class << self
 
       def set_path(new_path)
@@ -97,7 +78,7 @@ module SocialSnippet::DocumentBackend
       end
 
       def where(cond)
-        YAMLDocumentQuery.new(collection).find cond
+        Query.new(collection).find cond
       end
 
       def collection
