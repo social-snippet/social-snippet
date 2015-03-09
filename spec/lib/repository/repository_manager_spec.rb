@@ -137,7 +137,7 @@ module SocialSnippet::Repository
         end
 
         before do
-          expect(::SocialSnippet::Repository::Drivers::GitRepository).to receive(:new) do |core, path|
+          expect(::SocialSnippet::Repository::Drivers::GitDriver).to receive(:new) do |core, path|
             ::SocialSnippet::Repository::Drivers::DriverBase.new(core, path)
           end
           expect_any_instance_of(::SocialSnippet::Repository::Drivers::DriverBase).to receive(:commit_id).and_return commit_id

@@ -2,7 +2,7 @@ require "spec_helper"
 
 module ::SocialSnippet::Repository
 
-  describe Drivers::GitRepository do
+  describe Drivers::GitDriver do
 
     class FakeClass; end
 
@@ -23,7 +23,7 @@ module ::SocialSnippet::Repository
     end
 
     before do
-      class FakeDriver < Drivers::GitRepository; end
+      class FakeDriver < Drivers::GitDriver; end
       allow(Rugged::Repository).to receive(:new) do
         rugged_repo = create_fake_instance
 
@@ -56,7 +56,7 @@ module ::SocialSnippet::Repository
 
   end
 
-  describe Drivers::GitRepository, :without_fakefs => true do
+  describe Drivers::GitDriver, :without_fakefs => true do
 
     before do
       disable_fakefs
@@ -109,6 +109,6 @@ module ::SocialSnippet::Repository
 
     end # clone example-repo
 
-  end # Drivers::GitRepository
+  end # Drivers::GitDriver
 
 end # ::SocialSnippet::Repository

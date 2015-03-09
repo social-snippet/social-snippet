@@ -2,7 +2,7 @@ require "spec_helper"
 
 module SocialSnippet::Repository::Drivers
 
-  describe GitRepository, :without_fakefs => true do
+  describe GitDriver, :without_fakefs => true do
 
     before { disable_fakefs }
 
@@ -77,7 +77,7 @@ module SocialSnippet::Repository::Drivers
 
     end # github repo
 
-  end # GitRepository
+  end # GitDriver
 
 end # SocialSnippet::Repository::Drivers
 
