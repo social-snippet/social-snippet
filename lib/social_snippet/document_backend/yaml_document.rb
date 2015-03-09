@@ -52,6 +52,13 @@ module SocialSnippet::DocumentBackend
       self.class.update_file!
     end
 
+    def update_attributes!(attrs)
+      attrs.each do |key, value|
+        fields[key] = clone_value(value)
+      end
+      save!
+    end
+
     def save!
       self.class.collection[id] = serialize
       self.class.update_file!
