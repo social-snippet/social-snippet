@@ -107,7 +107,6 @@ module SocialSnippet
     config.before do
       if ::SocialSnippet::Document == ::SocialSnippet::DocumentBackend::YAMLDocument
         document_path = ::File.join(::Dir.mktmpdir, "document.yml")
-        ::FileUtils.mkdir_p ::File.dirname(document_path)
         $yaml_document_hash = nil
         ::FileUtils.rm document_path if ::File.exists?(document_path)
         ::SocialSnippet::DocumentBackend::YAMLDocument.set_path document_path

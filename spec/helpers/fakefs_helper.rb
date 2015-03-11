@@ -17,6 +17,7 @@ module SocialSnippet
   ::RSpec.configure do |config|
     config.include FakeFSHelpers
     config.before { enable_fakefs }
+    config.before(:example, :without_fakefs => true) { disable_fakefs }
     config.after { disable_fakefs }
   end
 end
