@@ -37,7 +37,6 @@ describe SocialSnippet::Api::InsertSnippetApi do
   def add_tmp_repo_files(repo_dirpath, pkg)
     ::Dir.glob(::File.join repo_dirpath, "**", "*") do |s|
       next unless ::File.file?(s)
-      p "create file: #{s}"
       filepath = s[repo_dirpath.length..-1]
       pkg.add_directory ::File.dirname(filepath)
       pkg.add_file filepath, ::File.read(s)
@@ -179,13 +178,16 @@ describe SocialSnippet::Api::InsertSnippetApi do
               ].join($/)
             end # prepare my-repo#1.0.1
 
-            it do
-              expect(fake_core.api.insert_snippet(input)).to eq [
+            let(:output) do
+              [
                 '/* @snippet<my-repo#1.0.1:func.c> */',
                 'func: 1.0.1',
                 'main',
-              ].join($/).freeze
+              ].join($/)
             end
+
+            subject { fake_core.api.insert_snippet(input) }
+            it { should eq output }
 
             context "release 1.1.0" do
 
