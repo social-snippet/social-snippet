@@ -5,8 +5,15 @@ describe SocialSnippet::Resolvers::InsertResolver do
   context "prepare stubs" do
 
     before do
-      allow(fake_core.repo_manager).to receive(:resolve_snippet_path) do |c, t|
-        t.repo
+      allow(fake_core.repo_manager).to receive(:find_package) do |name|
+        pkg = ::SocialSnippet::Repository::Models::Package.new(
+          :repo_name => name,
+          :rev_hash => "rev-#{name}",
+        )
+        pkg.add_system_file "snippet.json", {
+          :name => name,
+        }.to_json
+        pkg
       end
       allow(fake_core.repo_manager).to receive(:get_snippet) do |c, t|
         ::SocialSnippet::Snippet.new_text(t.repo)
@@ -82,11 +89,11 @@ describe SocialSnippet::Resolvers::InsertResolver do
 
         let(:expected) do
           [
-            "// @snippet <my-repo-1:path/to/file.d>",
+            "// @snippet <my-repo-1#rev-my-repo-1:path/to/file.d>",
             "my-repo-1",
-            "// @snippet <my-repo-2:path/to/file.d>",
+            "// @snippet <my-repo-2#rev-my-repo-2:path/to/file.d>",
             "my-repo-2",
-            "// @snippet <my-repo-3:path/to/file.d>",
+            "// @snippet <my-repo-3#rev-my-repo-3:path/to/file.d>",
             "my-repo-3",
           ].join($/)
         end
@@ -117,17 +124,17 @@ describe SocialSnippet::Resolvers::InsertResolver do
             "",
             "",
             "",
-            "// @snippet <my-repo-1:path/to/file.d>",
+            "// @snippet <my-repo-1#rev-my-repo-1:path/to/file.d>",
             "my-repo-1",
             "",
             "",
             "",
-            "// @snippet <my-repo-2:path/to/file.d>",
+            "// @snippet <my-repo-2#rev-my-repo-2:path/to/file.d>",
             "my-repo-2",
             "",
             "",
             "",
-            "// @snippet <my-repo-3:path/to/file.d>",
+            "// @snippet <my-repo-3#rev-my-repo-3:path/to/file.d>",
             "my-repo-3",
           ].join($/)
         end
@@ -155,17 +162,17 @@ describe SocialSnippet::Resolvers::InsertResolver do
 
         let(:expected) do
           [
-            "// @snippet <my-repo-1:path/to/file.d>",
+            "// @snippet <my-repo-1#rev-my-repo-1:path/to/file.d>",
             "my-repo-1",
             "",
             "",
             "",
-            "// @snippet <my-repo-2:path/to/file.d>",
+            "// @snippet <my-repo-2#rev-my-repo-2:path/to/file.d>",
             "my-repo-2",
             "",
             "",
             "",
-            "// @snippet <my-repo-3:path/to/file.d>",
+            "// @snippet <my-repo-3#rev-my-repo-3:path/to/file.d>",
             "my-repo-3",
             "",
             "",
