@@ -78,11 +78,11 @@ module SocialSnippet::DocumentBackend
 
     def push(attrs)
       attrs.each do |key, value|
-        case @@field_type[key]
-        when :Array
+        case @@field_type[key].to_s
+        when "Array"
           fields[key].push value
-        when :Hash
-          fields[key] = value
+        when "Hash"
+          fields[key].merge! value
         end
       end
       save!
