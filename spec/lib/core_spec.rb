@@ -11,46 +11,31 @@ module SocialSnippet
 
     describe "#insert_snippet" do
 
-      context "create files" do
+      context "prepare repository" do
 
         before do
-          repo_name = "my-repo"
-
-          ::FileUtils.mkdir_p "#{repo_path}"
-          ::FileUtils.mkdir_p "#{repo_path}/my-repo"
-          ::FileUtils.mkdir_p "#{repo_path}/my-repo/.git"
-          ::FileUtils.mkdir_p "#{repo_path}/my-repo/src"
-          ::FileUtils.touch   "#{repo_path}/my-repo/snippet.json"
-          ::FileUtils.touch   "#{repo_path}/my-repo/src/get_42.cpp"
-
-          # snippet.json
-          ::File.write "#{repo_path}/my-repo/snippet.json", [
-            '{',
-            '  "name": "my-repo",',
-            '  "language": "C++",',
-            '  "main": "src/"',
-            '}',
+          repo = ::SocialSnippet::Repository::Models::Repository.create(
+            :name => "my-repo",
+            :current_ref => "master",
+            :rev_hash => {
+              "master" => "rev-master",
+            },
+          )
+          package = ::SocialSnippet::Repository::Models::Package.create(
+            :repo_name => "my-repo",
+            :rev_hash => "rev-master",
+          )
+          package.add_system_file "snippet.json", {
+            :name => "my-repo",
+            :main => "src",
+          }.to_json
+          package.add_directory "src"
+          package.add_file "src/get_42.cpp", [
+            "int get_42() {",
+            "  return 42;",
+            "}",
           ].join($/)
-
-          # src/get_42.cpp
-          ::File.write "#{repo_path}/my-repo/src/get_42.cpp", [
-            'int get_42() {',
-            '  return 42;',
-            '}',
-          ].join($/)
-
-          repo_config = Proc.new do |path|
-            repo = ::SocialSnippet::Repository::Drivers::DriverBase.new(fake_core, "#{repo_path}/my-repo")
-            allow(repo).to receive(:commit_id).and_return commit_id
-            allow(repo).to receive(:refs).and_return []
-            repo.load_snippet_json
-            repo.create_cache repo_cache_path
-            repo
-          end
-
-          allow(fake_core.repo_manager).to receive(:find_repository).with("my-repo") { repo_config.call }
-          allow(fake_core.repo_manager).to receive(:find_repository).with("my-repo", short_commit_id) { repo_config.call }
-        end # prepare for my-repo
+        end
 
         context "there are no @snip tags" do
 
@@ -100,7 +85,7 @@ module SocialSnippet
             [
               '#include <iostream>',
               '',
-              '// @snippet <my-repo#dummycom:get_42.cpp>',
+              '// @snippet <my-repo#master:get_42.cpp>',
               'int get_42() {',
               '  return 42;',
               '}',
