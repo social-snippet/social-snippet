@@ -41,6 +41,15 @@ RSpec.configure do
               it { expect(item.field_array).to include "value" }
               it { expect(item.field_array).to include "new-value" }
 
+              context "find item.id" do
+
+                let(:found_item) { TestDocument2.find(item.id) }
+                it { expect(item.field_array.length).to eq 2 }
+                it { expect(item.field_array).to include "value" }
+                it { expect(item.field_array).to include "new-value" }
+
+              end
+
             end
 
           end
