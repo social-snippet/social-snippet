@@ -68,11 +68,10 @@ describe ::SocialSnippet::Repository::Models::Package do
         }.to_json
       end
 
-      context "load snippet.json" do
-        before { package.load_snippet_json }
-        it { expect(package.name).to eq "package-name" }
-        it { expect(package.desc).to eq "package-desc" }
-        it { expect(package.main).to eq "package-main" }
+      context "check snippet.json" do
+        it { expect(package.snippet_json["name"]).to eq "package-name" }
+        it { expect(package.snippet_json["desc"]).to eq "package-desc" }
+        it { expect(package.snippet_json["main"]).to eq "package-main" }
       end
 
     end
