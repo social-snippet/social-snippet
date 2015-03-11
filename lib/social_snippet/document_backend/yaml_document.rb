@@ -4,19 +4,20 @@ module SocialSnippet::DocumentBackend
 
   class YAMLDocument
 
+    @@path = nil
+
     require_relative "yaml_document/query"
 
     attr_reader :path
     attr_reader :field_keys
     attr_reader :fields
-    attr_reader :collection
 
     attr_accessor :id
 
     def initialize(options = {}, new_id = nil)
-      @path   = self.class.path
+      @path   = @@path
       @fields = ::Hash.new
-      @field_keys = self.class.field_keys
+      @field_keys = @@field_keys
       init_fields options
       @id ||= new_id || self.class.uuid
     end
@@ -40,7 +41,7 @@ module SocialSnippet::DocumentBackend
 
     def init_fields(options = {})
       field_keys.each do |k|
-        fields[k] = clone_value(self.class.default_field[k])
+        fields[k] = clone_value(@@default_field[k])
       end
       options.each do |k, v|
         fields[k] = clone_value(v)
@@ -59,21 +60,39 @@ module SocialSnippet::DocumentBackend
       save!
     end
 
+    #
+    # Persistence Methods
+    #
     def save!
       self.class.collection[id] = serialize
       self.class.update_file!
     end
 
-    def push(attrs)
+    def add_to_set(attrs)
       attrs.each do |key, value|
         fields[key].push value
+        fields[key].uniq!
       end
+      save!
+    end
+
+    def push(attrs)
+      attrs.each do |key, value|
+        case @@field_type[key].to_s
+        when "Array"
+          fields[key].push value
+        when "Hash"
+          fields[key].merge! value
+        end
+      end
+      save!
     end
 
     def pull(attrs)
       attrs.each do |key, value|
         fields[key].delete value
       end
+      save!
     end
 
     class << self
@@ -97,7 +116,7 @@ module SocialSnippet::DocumentBackend
       end
 
       def set_path(new_path)
-        @path = new_path
+        @@path = new_path
         ::FileUtils.touch(path) unless ::File.exists?(path)
       end
 
@@ -105,7 +124,7 @@ module SocialSnippet::DocumentBackend
         if self != ::SocialSnippet::DocumentBackend::YAMLDocument
           ::SocialSnippet::DocumentBackend::YAMLDocument.path
         else
-          @path
+          @@path
         end
       end
 
@@ -115,6 +134,9 @@ module SocialSnippet::DocumentBackend
         load_file!
       end
 
+      #
+      # Queries
+      #
       def all
         Query.new collection
       end
@@ -168,20 +190,26 @@ module SocialSnippet::DocumentBackend
       end
 
       def field_keys
-        @field_keys
+        @@field_keys
       end
 
       def default_field
-        @default_field
+        @@default_field
+      end
+
+      def field_type
+        @@field_type
       end
 
       def field(sym, options = {})
-        @field_keys ||= ::Set.new
-        @default_field ||= ::Hash.new
+        @@field_keys ||= ::Set.new
+        @@default_field ||= ::Hash.new
+        @@field_type ||= ::Hash.new
 
         default_field[sym] = options[:default] unless options[:default].nil?
 
         field_keys.add sym
+        field_type[sym] = options[:type] || :String
 
         # define getter
         define_method sym do
