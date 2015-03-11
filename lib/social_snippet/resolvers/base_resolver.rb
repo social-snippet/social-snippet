@@ -85,7 +85,11 @@ module SocialSnippet
           tag.set_ref repo.current_ref
         end
       else
-        tag.set_ref repo.latest_version(tag.ref) unless repo.has_ref?(tag.ref)
+        unless repo.has_ref?(tag.ref)
+          new_ref = repo.latest_version(tag.ref)
+          raise "error" if new_ref.nil?
+          tag.set_ref new_ref
+        end
       end
     end
 
