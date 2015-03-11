@@ -64,6 +64,13 @@ module SocialSnippet::DocumentBackend
       self.class.update_file!
     end
 
+    def add_to_set(attrs)
+      attrs.each do |key, value|
+        fields[key].push value
+        fields[key].uniq!
+      end
+    end
+
     def push(attrs)
       attrs.each do |key, value|
         fields[key].push value
