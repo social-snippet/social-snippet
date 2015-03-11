@@ -7,8 +7,8 @@ module SocialSnippet::Repository::Models
     field :refs, :type => Array, :default => ::Array.new
     field :ref_to_rev_hash, :type => Hash, :default => ::Hash.new
 
-    def add_ref(ref)
-      push :refs => ref
+    def add_ref(ref, rev_hash)
+      add_to_set :refs => ref
     end
 
     # Returns latest version
