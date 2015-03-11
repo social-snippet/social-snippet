@@ -26,6 +26,30 @@ module SocialSnippet::Repository
     let(:commit_id) { "dummycommitid" }
     let(:short_commit_id) { commit_id[0..7] }
 
+    before do # prepare repo_a
+      repo = ::SocialSnippet::Repository::Models::Repository.create(
+        :name => "repo_a",
+      )
+      repo.push :refs => "master"
+      repo.push :refs => "develop"
+      repo.push :refs => "1.2.3"
+      repo.push :rev_hash => {
+        "master" => "rev-master",
+        "develop" => "rev-develop",
+        "1.2.3" => "rev-1.2.3",
+      }
+      repo.update_attributes! :current_ref => "master"
+      package = ::SocialSnippet::Repository::Models::Package.create(
+        :repo_name => "repo_a",
+        :rev_hash => "rev-1.2.3",
+      )
+      package.add_system_file "snippet.json", {
+        :name => "repo_a",
+        :main => "src",
+        :desc => "this is repo_a",
+      }.to_json
+    end
+
     describe "#resolve_snippet_path" do
 
       context "without repo" do
@@ -63,31 +87,6 @@ module SocialSnippet::Repository
 
       context "with repo" do
 
-        let(:repo_path) { "#{ENV["SOCIAL_SNIPPET_HOME"]}/repo" }
-
-        before do
-          FileUtils.mkdir_p "#{repo_path}/repo_a"
-          FileUtils.mkdir_p "#{repo_path}/repo_a/.git"
-          FileUtils.touch   "#{repo_path}/repo_a/snippet.json"
-
-          File.write "#{repo_path}/repo_a/snippet.json", [
-            '{',
-            '  "name": "repo_a",',
-            '  "desc": "this is repo_a",',
-            '  "language": "C++",',
-            '  "main": "src"',
-            '}',
-          ].join($/)
-
-          allow(repo_manager).to receive(:find_repository).with("repo_a") do |path|
-            repo = ::SocialSnippet::Repository::Drivers::DriverBase.new(fake_core, "#{repo_path}/repo_a")
-            expect(repo).to receive(:commit_id).and_return commit_id
-            repo.load_snippet_json
-            repo.create_cache repo_manager.repo_cache_path
-            repo
-          end
-        end
-
         context "cur = path/to/file.cpp" do
 
           let(:context) { ::SocialSnippet::Context.new("path/to/file.cpp") }
@@ -98,7 +97,7 @@ module SocialSnippet::Repository
 
             context "result" do
               subject { repo_manager.resolve_snippet_path(context, tag) }
-              it { should eq "/path/to/repo_cache/repo_a/#{commit_id[0..7]}/src/path/to/file2.cpp" }
+              it { should eq "/path/to/packages/repo_a/rev-1.2.3/src/path/to/file2.cpp" }
             end
 
           end # snip<./file2.cpp>
@@ -109,49 +108,35 @@ module SocialSnippet::Repository
 
     end # resolve_snippet_path
 
-    describe "#find_repository" do
+    describe "#find_package" do
 
-      let(:repo_path) { "#{ENV["SOCIAL_SNIPPET_HOME"]}/repo" }
+      context "find_package nil" do
 
-      context "passed empty name" do
+        subject do
+          lambda { repo_manager.find_package nil }
+        end
+        it { should raise_error }
 
-        it { expect(repo_manager.find_repository(nil)).to be_nil }
-        it { expect(repo_manager.find_repository("")).to be_nil }
+      end
 
+      context "find_package empty_str" do
+        subject do
+          lambda { repo_manager.find_package "" }
+        end
+        it { should raise_error }
       end
 
       context "create repo_a as a git repo" do
 
-        before do
-          FileUtils.mkdir_p "#{repo_path}/repo_a"
-          FileUtils.mkdir_p "#{repo_path}/repo_a/.git"
-          FileUtils.touch   "#{repo_path}/repo_a/snippet.json"
-
-          File.write "#{repo_path}/repo_a/snippet.json", [
-            '{',
-            '  "name": "repo_a",',
-            '  "desc": "this is repo_a",',
-            '  "language": "C++"',
-            '}',
-          ].join($/)
-        end
-
-        before do
-          expect(::SocialSnippet::Repository::Drivers::GitDriver).to receive(:new) do |core, path|
-            ::SocialSnippet::Repository::Drivers::DriverBase.new(core, path)
-          end
-          expect_any_instance_of(::SocialSnippet::Repository::Drivers::DriverBase).to receive(:commit_id).and_return commit_id
-        end
-
         context "find repo_a" do
-          let(:repo) { repo_manager.find_repository("repo_a") }
-          it { expect(repo.name).to eq "repo_a" }
-          it { expect(repo.desc).to eq "this is repo_a" }
+          let(:repo) { repo_manager.find_package("repo_a") }
+          it { expect(repo.snippet_json["name"]).to eq "repo_a" }
+          it { expect(repo.snippet_json["desc"]).to eq "this is repo_a" }
         end # find repo_a
 
       end # create three repos
 
-    end # find_repository
+    end # find_package
 
     describe "find_repositories_start_with" do
 
