@@ -34,7 +34,7 @@ module SocialSnippet::Repository
     def create_package
       pkg = Models::Package.new(
         :repo_name => snippet_json["name"],
-        :rev_hash => rev_hash(current_ref),
+        :rev_hash => rev_hash(latest_version || current_ref),
       )
       each_directory do |dir|
         pkg.add_directory dir.path
@@ -49,6 +49,10 @@ module SocialSnippet::Repository
     end
 
     def rev_hash(ref)
+      raise "not implemented"
+    end
+
+    def latest_version
       raise "not implemented"
     end
 
