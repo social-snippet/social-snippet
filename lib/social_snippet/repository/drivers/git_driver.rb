@@ -4,13 +4,57 @@ module SocialSnippet::Repository::Drivers
 
     attr_reader :rugged_repo
 
-    def initialize(new_core, repo_path, new_ref = nil)
-      @rugged_repo = ::Rugged::Repository.new(repo_path)
-      super new_core, repo_path
+    def initialize(new_core, new_url, new_ref = nil)
+      super new_core, new_url
+    end
+
+    def fetch
+      dest_dir = ::Dir.mktmpdir
+      @rugged_repo = ::Rugged::Repository.clone_at(url, dest_dir)
+    end
+
+    def snippet_json
+      @snippet_json ||= read_snippet_json
+    end
+
+    def read_snippet_json
+      oid = rugged_repo.head.target.tree["snippet.json"][:oid]
+      @snippet_json ||= ::JSON.parse rugged_repo.lookup(oid).read_raw.data
+    end
+
+    def read_file(path)
+      oid = rugged_repo.head.target.tree[path][:oid]
+      rugged_repo.lookup(oid).read_raw.data
+    end
+
+    def each_directory
+      rugged_ref(ref).target.tree.each do |c|
+        next unless c[:type] == :tree
+        yield ::SocialSnippet::Repository::Drivers::Entry.new(c[:name])
+      end
+    end
+
+    def each_content
+      rugged_ref(ref).target.tree.each do |c|
+        next unless c[:type] == :blob
+        yield ::SocialSnippet::Repository::Drivers::Entry.new(c[:name], read_file(c[:name]))
+      end
+    end
+
+    def each_ref
+      refs.each {|r| yield r }
     end
 
     def current_ref
       rugged_repo.head.name.gsub /^refs\/heads\//, ""
+    end
+
+    def rugged_ref(ref_name)
+      rugged_repo.references.each("refs/*/#{ref_name}").first
+    end
+
+    def rev_hash(ref)
+      rugged_ref(ref).target_id
     end
 
     def update
@@ -19,52 +63,42 @@ module SocialSnippet::Repository::Drivers
       fetch_status[:received_bytes]
     end
 
-    def commit_id
-      rugged_repo.head.target_id
-    end
-
     def checkout(ref_name)
       rugged_repo.checkout ref_name, :strategy => [:force]
     end
 
     def refs
-      refs = []
-      refs.concat remote_refs
-      refs.concat tags
-      return refs
+      all_refs = []
+      all_refs.concat remote_refs
+      all_refs.concat tags
+      all_refs
     end
 
     def remote_refs
-      rugged_repo.references
-        .select {|ref| /^refs\/remotes\/origin\// === ref.name }
-        .map {|ref| /^refs\/remotes\/origin\/(.*)/.match(ref.name)[1] }
+      rugged_repo.references.each("refs/remotes/origin/**/*").map do |r|
+        r.name.match(/^refs\/remotes\/origin\/(.*)/)[1]
+      end
     end
 
     def tags
-      rugged_repo.references
-        .select {|ref| /^refs\/tags\// === ref.name }
-        .map {|ref| /^refs\/tags\/(.*)/.match(ref.name)[1] }
+      rugged_repo.references.each("refs/tags/**/*").map do |r|
+        r.name.match(/^refs\/tags\/(.*)/)[1]
+      end
     end
 
     class << self
 
-      # @return path
-      def download(uri, dest_path = nil)
-        if dest_path.nil?
-          dest_path = ::Dir.mktmpdir
-        end
+      def target_url?(url)
+        uri = ::URI.parse(url)
+        is_git_uri(uri)
+      end
 
-        # git clone
-        cloned_repo = ::Rugged::Repository.clone_at uri.to_s, dest_path
-        cloned_repo_files = cloned_repo.head.target.tree.map {|item| item[:name] }
+      def is_git_uri(uri)
+        uri.scheme === "git"
+      end
 
-        # check snippet.json
-        unless cloned_repo_files.include?("snippet.json")
-          raise "ERROR: Not found snippet.json in the repository"
-        end
-
-        cloned_repo.close
-        dest_path
+      def target_path?(path)
+        ::File.directory?(path) && ::File.directory?(::File.join path, ".git")
       end
 
     end # class << self
