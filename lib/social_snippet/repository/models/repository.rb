@@ -6,6 +6,7 @@ module SocialSnippet::Repository::Models
 
     field :url, :type => String
     field :name, :type => String
+    field :current_ref, :type => String
     field :refs, :type => Array, :default => ::Array.new
     # rev_hash[ref] => Commit ID
     field :rev_hash, :type => Hash, :default => ::Hash.new
