@@ -5,10 +5,14 @@ module SocialSnippet::Repository::Models
     field :url, :type => String
     field :name, :type => String
     field :refs, :type => Array, :default => ::Array.new
-    field :ref_to_rev_hash, :type => Hash, :default => ::Hash.new
+    # rev_hash[ref] => Commit ID
+    field :rev_hash, :type => Hash, :default => ::Hash.new
 
     def add_ref(ref, rev_hash)
       add_to_set :refs => ref
+      modifier = ::Hash.new
+      modifier[ref] = rev_hash
+      push :rev_hash => modifier
     end
 
     # Returns latest version
