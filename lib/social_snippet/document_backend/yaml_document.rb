@@ -59,6 +59,9 @@ module SocialSnippet::DocumentBackend
       save!
     end
 
+    #
+    # Persistence Methods
+    #
     def save!
       self.class.collection[id] = serialize
       self.class.update_file!
@@ -69,18 +72,21 @@ module SocialSnippet::DocumentBackend
         fields[key].push value
         fields[key].uniq!
       end
+      save!
     end
 
     def push(attrs)
       attrs.each do |key, value|
         fields[key].push value
       end
+      save!
     end
 
     def pull(attrs)
       attrs.each do |key, value|
         fields[key].delete value
       end
+      save!
     end
 
     class << self
@@ -122,6 +128,9 @@ module SocialSnippet::DocumentBackend
         load_file!
       end
 
+      #
+      # Queries
+      #
       def all
         Query.new collection
       end
