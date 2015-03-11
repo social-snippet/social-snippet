@@ -13,10 +13,10 @@ module SocialSnippet::DocumentBackend
     end
 
     def find(cond)
-      collection.select do |item_id, item|
-        cond.any? {|k, _| cond[k] === item[k] }
+      new_collection = collection.select do |item_id, item|
+        cond.all? {|k, _| cond[k] === item[k] }
       end
-      self.class.new collection
+      self.class.new new_collection
     end
 
     def count
