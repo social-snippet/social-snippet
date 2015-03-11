@@ -14,6 +14,43 @@ RSpec.configure do
       field :field_hash, :type => Hash, :default => ::Hash.new
     end
 
+    describe "#add_to_set" do
+
+      context "create item" do
+
+        let(:item) { TestDocument2.create }
+        it { expect(item.field_array).to be_empty }
+
+        context "add_to_set value" do
+
+          before { item.add_to_set :field_array => "value" }
+          it { expect(item.field_array.length).to eq 1 }
+          it { expect(item.field_array).to include "value" }
+
+          context "add_to_set new_value" do
+
+            before { item.add_to_set :field_array => "new-value" }
+            it { expect(item.field_array.length).to eq 2 }
+            it { expect(item.field_array).to include "value" }
+            it { expect(item.field_array).to include "new-value" }
+
+            context "add_to_set value (duplicated value)" do
+
+              before { item.add_to_set :field_array => "value" }
+              it { expect(item.field_array.length).to eq 2 }
+              it { expect(item.field_array).to include "value" }
+              it { expect(item.field_array).to include "new-value" }
+
+            end
+
+          end
+
+        end
+
+      end
+
+    end #add_to_set
+
     describe "#update_attributes!" do
 
       context "create item" do
