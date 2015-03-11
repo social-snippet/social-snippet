@@ -2,6 +2,8 @@ module SocialSnippet::Repository::Models
 
   class Repository < ::SocialSnippet::Document
 
+    @@core = nil
+
     field :url, :type => String
     field :name, :type => String
     field :refs, :type => Array, :default => ::Array.new

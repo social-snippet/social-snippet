@@ -2,6 +2,8 @@ module SocialSnippet::Repository::Models
 
   class Package < ::SocialSnippet::Document
 
+    @@core = nil
+
     # set from snippet.json
     attr_reader :name
     attr_reader :dependencies
