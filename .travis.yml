@@ -15,7 +15,7 @@ env:
     - NOKOGIRI_USE_SYSTEM_LIBRARIES=YES
 
 script:
-  - bundle exec rake spec_all spec_all_without_fakefs
+  - bundle exec rake spec spec_all_without_fakefs
 
   # shell access test
   - bundle exec rake build
