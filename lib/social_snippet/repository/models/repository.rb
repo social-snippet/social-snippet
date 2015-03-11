@@ -18,6 +18,10 @@ module SocialSnippet::Repository::Models
       push :rev_hash => modifier
     end
 
+    def has_ref?(ref)
+      refs.include? ref
+    end
+
     # Returns latest version
     def latest_version(pattern = "")
       pattern = "" if pattern.nil?
