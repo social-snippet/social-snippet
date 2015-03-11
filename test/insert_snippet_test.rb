@@ -23,13 +23,13 @@ describe SocialSnippet::Api::InsertSnippetApi do
   def add_tmp_repo_refs(repo_name, repo)
     ::Dir.glob(::File.join tmp_repo_path, repo_name, "*") do |s|
       next unless ::File.directory?(s)
-      repo_rev_ref = ::File.basename(s)
-      repo.add_ref repo_rev_ref, "rev-#{repo_rev_ref}"
+      repo_ref = ::File.basename(s)
+      repo.add_ref repo_ref, "rev-#{repo_ref}"
       pkg = ::SocialSnippet::Repository::Models::Package.find_or_create_by(
         :repo_name => repo_name,
-        :rev_hash => "rev-#{repo_rev_ref}",
+        :rev_hash => "rev-#{repo_ref}",
       )
-      repo_dirpath = ::File.join(tmp_repo_path, repo_name, repo_rev_ref)
+      repo_dirpath = ::File.join(tmp_repo_path, repo_name, repo_ref)
       add_tmp_repo_files(repo_dirpath, pkg)
     end
   end
