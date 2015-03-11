@@ -21,8 +21,13 @@ module SocialSnippet::Repository
     end
 
     def cache
+      resolve_ref
       create_package
       update_repository
+    end
+
+    def resolve_ref
+      @ref ||= latest_version || current_ref
     end
 
     def update_repository
@@ -36,7 +41,7 @@ module SocialSnippet::Repository
     def create_package
       pkg = Models::Package.new(
         :repo_name => snippet_json["name"],
-        :rev_hash => rev_hash(ref || latest_version || current_ref),
+        :rev_hash => rev_hash(ref),
       )
       pkg.add_system_file "snippet.json", snippet_json.to_json
       each_directory do |dir|
