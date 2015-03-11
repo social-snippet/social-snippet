@@ -3,39 +3,59 @@ require "spec_helper"
 describe SocialSnippet::Api::InsertSnippetApi do
 
   let(:tmp_repo_path) { "/tmp/repos" }
-  let(:tmp_repo_path_no_ver) { "/tmp/repos_no_ver" }
   let(:repo_cache_path) { fake_config.repository_cache_path }
   let(:commit_id) { "thisisdummy" }
   let(:short_commit_id) { commit_id[0..7] }
 
+  #
+  # Helpers
+  #
   def reload_tmp_repos
     ::Dir.glob(::File.join tmp_repo_path, "*") do |s|
       repo_name = ::File.basename(s)
       repo = ::SocialSnippet::Repository::Models::Repository.find_or_create_by(
         :name => repo_name,
       )
-      ::Dir.glob(::File.join tmp_repo_path, repo_name, "*") do |s|
-        repo_rev_ref = ::File.basename(s)
-        repo.add_ref repo_rev_ref, "rev-#{repo_rev_ref}"
-        pkg = ::SocialSnippet::Repository::Models::Package.find_or_create_by(
-          :repo_name => repo_name,
-          :rev_hash => "rev-#{repo_rev_ref}",
-        )
-        repo_dirpath = ::File.join(tmp_repo_path, repo_name, repo_rev_ref)
-        ::Dir.glob(::File.join repo_dirpath, "**", "*") do |s|
-          filepath = s[repo_dirpath.length..-1]
-          pkg.add_directory ::File.dirname(filepath)
-          pkg.add_file filepath, ::File.read(s)
-        end
-      end
+      add_tmp_repo_refs repo_name, repo
+    end
+  end
+
+  def add_tmp_repo_refs(repo_name, repo)
+    ::Dir.glob(::File.join tmp_repo_path, repo_name, "*") do |s|
+      next unless ::File.directory?(s)
+      repo_rev_ref = ::File.basename(s)
+      repo.add_ref repo_rev_ref, "rev-#{repo_rev_ref}"
+      pkg = ::SocialSnippet::Repository::Models::Package.find_or_create_by(
+        :repo_name => repo_name,
+        :rev_hash => "rev-#{repo_rev_ref}",
+      )
+      repo_dirpath = ::File.join(tmp_repo_path, repo_name, repo_rev_ref)
+      add_tmp_repo_files(repo_dirpath, pkg)
+    end
+  end
+
+  def add_tmp_repo_files(repo_dirpath, pkg)
+    ::Dir.glob(::File.join repo_dirpath, "**", "*") do |s|
+      next unless ::File.file?(s)
+      p "create file: #{s}"
+      filepath = s[repo_dirpath.length..-1]
+      pkg.add_directory ::File.dirname(filepath)
+      pkg.add_file filepath, ::File.read(s)
+    end
+  end
+
+  def self.prepare_repository(&block)
+    before do
+      instance_eval &block
+      reload_tmp_repos
     end
   end
 
   describe "#insert_snippet" do
 
-    context "use commit id", :current => true do
+    context "use commit id" do
 
-      before do
+      prepare_repository do
         repo_name = "my-repo"
         ref_name = "thisisdu"
 
@@ -52,8 +72,6 @@ describe SocialSnippet::Api::InsertSnippetApi do
         ::File.write "#{tmp_repo_path}/#{repo_name}/#{ref_name}/file.c", [
           '/* file.c */'
         ].join($/)
-
-        reload_tmp_repos
       end # prepare my-repo#thisisdu
 
       context "snip my-repo#thisisdu" do
@@ -108,9 +126,9 @@ describe SocialSnippet::Api::InsertSnippetApi do
           ].join($/)
         end
 
-        context "release 1.0.0" do
+        context "release 1.0.0", :current => true do
 
-          before do
+          prepare_repository do
             repo_name = "my-repo"
             ref_name = "1.0.0"
 
@@ -129,17 +147,20 @@ describe SocialSnippet::Api::InsertSnippetApi do
             ].join($/)
           end # prepare my-repo#1.0.0
 
-          it do
-            expect(fake_core.api.insert_snippet(input)).to eq [
+          let(:output) do
+            [
               '/* @snippet<my-repo#1.0.0:func.c> */',
               'func: 1.0.0',
               'main',
-            ].join($/).freeze
+            ].join($/)
           end
+
+          subject { fake_core.api.insert_snippet(input) }
+          it { should eq output }
 
           context "release 1.0.1" do
 
-            before do
+            prepare_repository do
               repo_name = "my-repo"
               ref_name = "1.0.1"
 
@@ -168,7 +189,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
             context "release 1.1.0" do
 
-              before do
+              prepare_repository do
                 repo_name = "my-repo"
                 ref_name = "1.1.0"
 
@@ -197,7 +218,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
               context "release 9.9.9" do
 
-                before do
+                prepare_repository do
                   repo_name = "my-repo"
                   ref_name = "9.9.9"
 
@@ -238,7 +259,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
     context "use parent path" do
 
-      before do
+      prepare_repository do
         repo_name = "my-repo"
         ref_name = "1.2.3"
 
@@ -311,7 +332,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
     context "snip self" do
 
-      before do
+      prepare_repository do
         repo_name = "directly"
         ref_name = "3.2.1"
 
@@ -332,7 +353,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
         ].join($/)
       end # prepare directly#3.2.1
 
-      before do
+      prepare_repository do
         repo_name = "loop-1"
         ref_name = "1.1.1"
 
@@ -353,7 +374,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
         ].join($/)
       end # prepare loop-1#1.1.1
 
-      before do
+      prepare_repository do
         repo_name = "loop-2"
         ref_name = "1.1.1"
 
@@ -374,7 +395,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
         ].join($/)
       end # prepare loop-2#1.1.1
 
-      before do
+      prepare_repository do
         repo_name = "loop-3"
         ref_name = "1.1.1"
 
@@ -396,7 +417,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
         ].join($/)
       end # prepare loop-3#1.1.1
 
-      before do
+      prepare_repository do
         repo_name = "non-loop-4"
         ref_name = "1.1.1"
 
@@ -476,7 +497,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
     context "snippet snippet ... snippet" do
 
-      before do
+      prepare_repository do
         repo_name = "my-repo-1"
         ref_name = "0.0.1"
 
@@ -497,7 +518,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
         ].join($/)
       end # prepare my-repo-1
 
-      before do
+      prepare_repository do
         repo_name = "my-repo-2"
         ref_name = "0.0.1"
 
@@ -518,7 +539,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
         ].join($/)
       end # prepare my-repo-2#0.0.1
 
-      before do
+      prepare_repository do
         repo_name = "my-repo-2"
         ref_name = "1.2.3"
 
@@ -538,7 +559,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
         ].join($/)
       end # prepare my-repo-2#1.2.3
 
-      before do
+      prepare_repository do
         repo_name = "my-repo-3"
         ref_name = "1.2.3"
 
@@ -561,7 +582,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
         ].join($/)
       end # prepare my-repo-3#1.2.3
 
-      before do
+      prepare_repository do
         repo_name = "my-repo-4"
         ref_name = "1.2.3"
 
@@ -586,7 +607,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
         ].join($/)
       end # prepare my-repo-4#1.2.3
 
-      before do
+      prepare_repository do
         repo_name = "my-repo-5"
         ref_name = "100.200.300"
 
@@ -611,7 +632,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
         ].join($/)
       end # prepare my-repo-5#100.200.300
 
-      before do
+      prepare_repository do
         repo_name = "my-repo-5"
         ref_name = "99.999.999"
 
@@ -636,29 +657,29 @@ describe SocialSnippet::Api::InsertSnippetApi do
         ].join($/)
       end # prepare my-repo-5#99.999.999
 
-      before do
+      prepare_repository do
         repo_name = "my-repo-6"
 
-        ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}"
-        ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/.git"
-        ::FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json"
-        ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/sources"
-        ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/sources/path"
-        ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/sources/path/to"
-        ::FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/sources/path/to/6"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/.git"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/snippet.json"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/sources"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/sources/path"
+        ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/sources/path/to"
+        ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/sources/path/to/6"
 
         # snippet.json
-        ::File.write "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/snippet.json", [
           '{"name": "' + repo_name + '", "main": "sources"}'
         ].join($/)
 
-        ::File.write "#{tmp_repo_path_no_ver}/#{repo_name}/sources/path/to/6", [
+        ::File.write "#{tmp_repo_path}/#{repo_name}/sources/path/to/6", [
           '@snip<my-repo-7:path/to/7>',
           'my-repo-6:sources/path/to/6',
         ].join($/)
       end # prepare my-repo-6
 
-      before do
+      prepare_repository do
         repo_name = "my-repo-7"
         ref_name = "1.2.3"
 
@@ -720,7 +741,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
     context "snippet snippets" do
 
-      before do
+      prepare_repository do
         repo_name = "my-repo"
         ref_name = "0.0.1"
 
@@ -826,7 +847,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
     context "use multiple repos and multiple versions" do
 
-      before do
+      prepare_repository do
         repo_name = "my-repo"
         ref_name = "0.0.3"
 
@@ -856,7 +877,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
       end # prepare my-repo#0.0.3
 
-      before do
+      prepare_repository do
         repo_name = "my-repo"
         ref_name = "0.0.2"
 
@@ -888,7 +909,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
       end # prepare my-repo#0.0.2
 
-      before do
+      prepare_repository do
         repo_name = "my-repo"
         ref_name = "0.0.1"
 
@@ -920,7 +941,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
       end # prepare my-repo#0.0.1
 
-      before do
+      prepare_repository do
         repo_name = "my-repo"
         ref_name = "1.0.0"
 
@@ -951,7 +972,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
         ].join($/)
       end # prepare my-repo#1.0.0
 
-      before do
+      prepare_repository do
         repo_name = "new-my-repo"
         ref_name = "0.0.1"
 
@@ -973,7 +994,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
         ].join($/)
       end # prepare new-my-repo#0.0.1
 
-      before do
+      prepare_repository do
         repo_name = "new-my-repo"
         ref_name = "0.0.2"
 
@@ -1119,7 +1140,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
     context "use latest version without ref" do
 
-      before do
+      prepare_repository do
         repo_name = "my-repo"
         ref_name = "0.0.3"
 
@@ -1179,7 +1200,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
     context "snippet snippet with ref" do
 
-      before do
+      prepare_repository do
         repo_name = "my-repo"
         ref_name = "0.0.1"
 
@@ -1211,21 +1232,9 @@ describe SocialSnippet::Api::InsertSnippetApi do
           'end',
         ].join($/)
 
-        allow(fake_core.repo_manager).to receive(:find_repository).with(repo_name, ref_name) do
-          repo = SocialSnippet::Repository::Drivers::DriverBase.new(fake_core, "#{tmp_repo_path}/#{repo_name}/#{ref_name}")
-          allow(repo).to receive(:refs).and_return([
-            '0.0.1',
-            '0.0.2',
-          ])
-          allow(repo).to receive(:commit_id).and_return "#{ref_name}#{commit_id}"
-          repo.load_snippet_json
-          repo.create_cache repo_cache_path
-          repo
-        end
-
       end # prepare my-repo#0.0.1
 
-      before do
+      prepare_repository do
         repo_name = "my-repo"
         ref_name = "0.0.2"
 
@@ -1257,17 +1266,6 @@ describe SocialSnippet::Api::InsertSnippetApi do
           'end',
         ].join($/)
 
-        allow(fake_core.repo_manager).to receive(:find_repository).with(repo_name, ref_name) do
-          repo = SocialSnippet::Repository::Drivers::DriverBase.new(fake_core, "#{tmp_repo_path}/#{repo_name}/#{ref_name}")
-          allow(repo).to receive(:refs).and_return([
-            '0.0.1',
-            '0.0.2',
-          ])
-          allow(repo).to receive(:commit_id).and_return "#{ref_name}#{commit_id}"
-          repo.load_snippet_json
-          repo.create_cache repo_cache_path
-          repo
-        end
       end # prepare my-repo#0.0.2
 
       context "use 0.0.1" do
@@ -1371,7 +1369,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
     context "snippet snippet" do
 
-      before do
+      prepare_repository do
         repo_name = "my-repo"
 
         ::FileUtils.mkdir_p "#{tmp_repo_path}"
@@ -1401,18 +1399,6 @@ describe SocialSnippet::Api::InsertSnippetApi do
           '  return 42',
           'end',
         ].join($/)
-
-        repo_config = Proc.new do |path|
-          repo = SocialSnippet::Repository::Drivers::DriverBase.new(fake_core, "#{tmp_repo_path}/#{repo_name}")
-          allow(repo).to receive(:commit_id).and_return commit_id
-          allow(repo).to receive(:refs).and_return []
-          repo.load_snippet_json
-          repo.create_cache repo_cache_path
-          repo
-        end
-
-        allow(fake_core.repo_manager).to receive(:find_repository).with(repo_name) { repo_config.call }
-        allow(fake_core.repo_manager).to receive(:find_repository).with(repo_name, short_commit_id) { repo_config.call }
 
       end # prepare my-repo
 
@@ -1446,7 +1432,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
     context "snip with repo" do
 
-      before do
+      prepare_repository do
         repo_name = "my-repo"
 
         ::FileUtils.mkdir_p "#{tmp_repo_path}"
@@ -1478,18 +1464,6 @@ describe SocialSnippet::Api::InsertSnippetApi do
         ::File.write "#{tmp_repo_path}/#{repo_name}/a/2.rb", [
           'puts "2"',
         ].join($/)
-
-        repo_config = Proc.new do |path|
-          repo = SocialSnippet::Repository::Drivers::DriverBase.new(fake_core, "#{tmp_repo_path}/#{repo_name}")
-          allow(repo).to receive(:commit_id).and_return commit_id
-          allow(repo).to receive(:refs).and_return []
-          repo.load_snippet_json
-          repo.create_cache repo_cache_path
-          repo
-        end
-
-        allow(fake_core.repo_manager).to receive(:find_repository).with("my-repo") { repo_config.call }
-        allow(fake_core.repo_manager).to receive(:find_repository).with("my-repo", short_commit_id) { repo_config.call }
       end # my-repo
 
       let(:input) do
@@ -1515,7 +1489,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
     context "multiple snippets without duplicates" do
 
-      before do
+      prepare_repository do
         repo_name = "repo-a"
 
         ::FileUtils.mkdir_p "#{tmp_repo_path}"
@@ -1538,18 +1512,6 @@ describe SocialSnippet::Api::InsertSnippetApi do
           '@snip<child_2>',
           '@snip<child_3>',
         ].join($/)
-
-        repo_config = Proc.new do |path|
-          repo = SocialSnippet::Repository::Drivers::DriverBase.new(fake_core, "#{tmp_repo_path}/#{repo_name}")
-          allow(repo).to receive(:commit_id).and_return commit_id
-          allow(repo).to receive(:refs).and_return []
-          repo.load_snippet_json
-          repo.create_cache repo_cache_path
-          repo
-        end
-
-        allow(fake_core.repo_manager).to receive(:find_repository).with(repo_name) { repo_config.call }
-        allow(fake_core.repo_manager).to receive(:find_repository).with(repo_name, short_commit_id) { repo_config.call }
       end # repo-a
 
       let(:input) do
@@ -1574,7 +1536,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
     context "multiple snippets with duplicates" do
 
-      before do
+      prepare_repository do
         repo_name = "my_repo"
 
         ::FileUtils.mkdir_p "#{tmp_repo_path}"
@@ -1601,18 +1563,6 @@ describe SocialSnippet::Api::InsertSnippetApi do
           '@snip<child_2>',
           '@snip<child_3>',
         ].join($/)
-
-        repo_config = Proc.new do |path|
-          repo = SocialSnippet::Repository::Drivers::DriverBase.new(fake_core, "#{tmp_repo_path}/#{repo_name}")
-          allow(repo).to receive(:commit_id).and_return commit_id
-          allow(repo).to receive(:refs).and_return []
-          repo.load_snippet_json
-          repo.create_cache repo_cache_path
-          repo
-        end
-
-        allow(fake_core.repo_manager).to receive(:find_repository).with(repo_name) { repo_config.call }
-        allow(fake_core.repo_manager).to receive(:find_repository).with(repo_name, short_commit_id) { repo_config.call }
       end
 
       let(:input) do
@@ -1642,20 +1592,20 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
       context "already snipped" do
 
-        before do
+        prepare_repository do
           repo_name = "my-repo"
 
-          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}"
-          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}"
-          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/.git"
-          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/src"
-          ::FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json"
-          ::FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/src/1"
-          ::FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/src/2"
-          ::FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/src/3"
+          ::FileUtils.mkdir_p "#{tmp_repo_path}"
+          ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+          ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/.git"
+          ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/src"
+          ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/snippet.json"
+          ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/src/1"
+          ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/src/2"
+          ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/src/3"
 
           # snippet.json
-          ::File.write "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json", [
+          ::File.write "#{tmp_repo_path}/#{repo_name}/snippet.json", [
             '{',
             '  "name": "' + repo_name + '",',
             '  "main": "src"',
@@ -1663,23 +1613,23 @@ describe SocialSnippet::Api::InsertSnippetApi do
           ].join($/)
 
           # src/1
-          ::File.write "#{tmp_repo_path_no_ver}/#{repo_name}/src/1", [
+          ::File.write "#{tmp_repo_path}/#{repo_name}/src/1", [
             '@snip<2>',
             '@snip<3>',
           ].join($/)
 
           # src/2
-          ::File.write "#{tmp_repo_path_no_ver}/#{repo_name}/src/2", [
+          ::File.write "#{tmp_repo_path}/#{repo_name}/src/2", [
             '2',
           ].join($/)
 
           # src/3
-          ::File.write "#{tmp_repo_path_no_ver}/#{repo_name}/src/3", [
+          ::File.write "#{tmp_repo_path}/#{repo_name}/src/3", [
             '3',
           ].join($/)
         end # prepare for my-repo
 
-        before do
+        prepare_repository do
           repo_name = "has-version"
           repo_version = "0.0.1"
 
@@ -1719,7 +1669,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
           ].join($/)
         end # prepare has-version#0.0.1
 
-        before do
+        prepare_repository do
           repo_name = "has-version"
           repo_version = "1.2.3"
 
@@ -1911,18 +1861,18 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
       context "other repos have same snip tag" do
 
-        before do
+        prepare_repository do
           repo_name = "my_lib"
 
-          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}"
-          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}"
-          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/.git"
-          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/src/lib"
-          ::FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json"
-          ::FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/src/lib/add_func.cpp"
+          ::FileUtils.mkdir_p "#{tmp_repo_path}"
+          ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+          ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/.git"
+          ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/src/lib"
+          ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/snippet.json"
+          ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/src/lib/add_func.cpp"
 
           # snippet.json
-          ::File.write "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json", [
+          ::File.write "#{tmp_repo_path}/#{repo_name}/snippet.json", [
             '{',
             '  "name": "' + repo_name + '",',
             '  "main": "src"',
@@ -1930,29 +1880,29 @@ describe SocialSnippet::Api::InsertSnippetApi do
           ].join($/)
 
           # src/add_func.cpp
-          ::File.write "#{tmp_repo_path_no_ver}/#{repo_name}/src/add_func.cpp", [
+          ::File.write "#{tmp_repo_path}/#{repo_name}/src/add_func.cpp", [
             'int add_func( int a, int b ) {',
             '  return a + b;',
             '}',
           ].join($/)
         end # prepare for my_lib repo
 
-        before do
+        prepare_repository do
           repo_name = "my_repo_a"
 
-          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}"
-          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}"
-          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/.git"
-          ::FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json"
-          ::FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/use_add_func.cpp"
+          ::FileUtils.mkdir_p "#{tmp_repo_path}"
+          ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+          ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/.git"
+          ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/snippet.json"
+          ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/use_add_func.cpp"
 
           # snippet.json
-          ::File.write "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json", [
+          ::File.write "#{tmp_repo_path}/#{repo_name}/snippet.json", [
             '{"name": "' + repo_name + '"}',
           ].join($/)
 
           # use_add_func.cpp
-          ::File.write "#{tmp_repo_path_no_ver}/#{repo_name}/use_add_func.cpp", [
+          ::File.write "#{tmp_repo_path}/#{repo_name}/use_add_func.cpp", [
             '// @snip <my_lib:add_func.cpp>',
             'int my_repo_a_use_add_func( int a, int b ) {',
             '  return add_func(a, b);',
@@ -1960,23 +1910,23 @@ describe SocialSnippet::Api::InsertSnippetApi do
           ].join($/)
         end # prepare for my_repo_a repo
 
-        before do
+        prepare_repository do
           repo_name = "my_repo_b"
 
-          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}"
-          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}"
-          ::FileUtils.mkdir_p "#{tmp_repo_path_no_ver}/#{repo_name}/.git"
-          ::FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json"
-          ::FileUtils.touch   "#{tmp_repo_path_no_ver}/#{repo_name}/use_add_func.cpp"
+          ::FileUtils.mkdir_p "#{tmp_repo_path}"
+          ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}"
+          ::FileUtils.mkdir_p "#{tmp_repo_path}/#{repo_name}/.git"
+          ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/snippet.json"
+          ::FileUtils.touch   "#{tmp_repo_path}/#{repo_name}/use_add_func.cpp"
 
           # snippet.json
-          ::File.write "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json", [
+          ::File.write "#{tmp_repo_path}/#{repo_name}/snippet.json", [
 
             '{"name": "' + repo_name + '"}',
           ].join($/)
 
           # use_add_func.cpp
-          ::File.write "#{tmp_repo_path_no_ver}/#{repo_name}/use_add_func.cpp", [
+          ::File.write "#{tmp_repo_path}/#{repo_name}/use_add_func.cpp", [
             '// @snip <my_lib:add_func.cpp>',
             'int my_repo_b_use_add_func( int a, int b ) {',
             '  return add_func(a, b);',
@@ -2039,7 +1989,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
       context "range cut (simple)" do
 
-        before do
+        prepare_repository do
           ::FileUtils.touch "./file1.cpp"
           ::File.write "./file1.cpp", [
             "// @begin_cut",
@@ -2071,7 +2021,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
       context "range cut (nested snippet)" do
 
-        before do
+        prepare_repository do
           ::FileUtils.touch "./file1.cpp"
           ::File.write "./file1.cpp", [
             "// @begin_cut",
@@ -2114,7 +2064,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
       context "cut line" do
 
-        before do
+        prepare_repository do
           ::FileUtils.touch "./file1.cpp"
           ::File.write "./file1.cpp", [
             "#include <path/to/lib> // @cut",
@@ -2144,7 +2094,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
       context "cut line (nested case)" do
 
-        before do
+        prepare_repository do
           ::FileUtils.touch "./file1.cpp"
           ::File.write "./file1.cpp", [
             "#include <path/to/lib> // @cut",
@@ -2187,7 +2137,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
       context "Golang Project 1" do
 
-        before do
+        prepare_repository do
           ::FileUtils.mkdir "./runner"
           ::FileUtils.touch "./runner/runner.go"
           ::FileUtils.mkdir "./solver"
@@ -2352,7 +2302,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
       context "../" do
 
-        before do
+        prepare_repository do
           ::FileUtils.mkdir "./foo"
           ::FileUtils.touch "./foo/foo.go"
           ::FileUtils.mkdir "./bar"
@@ -2406,7 +2356,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
       context "no_tag is in cut range" do
 
-        before do
+        prepare_repository do
           ::FileUtils.touch "proxy.rb"
           ::FileUtils.touch "foo.rb"
           ::FileUtils.mkdir "foo"
@@ -2516,7 +2466,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
       context "for ruby module" do
 
-        before do
+        prepare_repository do
           ::FileUtils.touch "proxy.rb"
           ::FileUtils.touch "foo.rb"
           ::FileUtils.mkdir "foo"
@@ -2617,7 +2567,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
         context "add nested module" do
 
-          before do
+          prepare_repository do
             ::FileUtils.touch "foo/bar.rb"
             ::FileUtils.mkdir "foo/bar"
             ::FileUtils.touch "foo/bar/func1.rb"
@@ -2752,7 +2702,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
       context "create project on current directory" do
 
-        before do
+        prepare_repository do
           ::FileUtils.touch "snippet.c"
           ::FileUtils.mkdir_p "path/to"
           ::FileUtils.touch "path/to/found.c"
