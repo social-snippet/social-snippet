@@ -76,6 +76,7 @@ module SocialSnippet::Repository
     def find_package(name, ref = nil)
       repo = find_repository(name)
       ref ||= repo.latest_version || repo.current_ref
+      raise "invalid references" unless repo.has_ref?(ref)
       Models::Package.find_by(
         :repo_name => name,
         :rev_hash => repo.rev_hash[ref],
