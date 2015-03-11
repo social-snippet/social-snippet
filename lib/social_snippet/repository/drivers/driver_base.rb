@@ -7,6 +7,7 @@ module SocialSnippet::Repository
     attr_reader :core
     attr_reader :url
     attr_reader :ref
+    attr_reader :repo
 
     # @example
     # driver = Driver.new(core, url, ref)
@@ -16,6 +17,7 @@ module SocialSnippet::Repository
       @core = new_core
       @url  = new_url
       @ref  = new_ref
+      @repo = nil
     end
 
     def cache
@@ -24,7 +26,7 @@ module SocialSnippet::Repository
     end
 
     def update_repository
-      repo = Models::Repository.find_or_create_by(
+      @repo = Models::Repository.find_or_create_by(
         :url => url,
       )
       repo.update_attributes! :name => snippet_json["name"]
@@ -34,7 +36,7 @@ module SocialSnippet::Repository
     def create_package
       pkg = Models::Package.new(
         :repo_name => snippet_json["name"],
-        :rev_hash => rev_hash(latest_version || current_ref),
+        :rev_hash => rev_hash(ref || latest_version || current_ref),
       )
       each_directory do |dir|
         pkg.add_directory dir.path
@@ -74,6 +76,34 @@ module SocialSnippet::Repository
 
     def each_content
       raise "not implemented"
+    end
+
+    class << self
+
+      def target?(url)
+        if is_local_path?(url)
+          target_local_path?(url)
+        elsif is_url?(url)
+          target_url?(url)
+        end
+      end
+
+      def target_url?(url)
+        raise "not implemented"
+      end
+
+      def target_path?(path)
+        raise "not implemented"
+      end
+
+      def is_local_path?(s)
+        not /^[^:]*:\/\// === s
+      end
+
+      def is_url?(s)
+        ::URI.regexp === s
+      end
+
     end
 
   end # DriverBase
