@@ -52,7 +52,7 @@ module SocialSnippet::Repository
     def resolve_snippet_path(context, tag)
       if tag.has_repo?
         pkg = find_package_by_tag(tag)
-        pkg.real_path tag.path
+        pkg.snippet_path tag.path
       else
         new_context = context.clone
         new_context.dirname + "/" + tag.filename
@@ -74,12 +74,16 @@ module SocialSnippet::Repository
     #
     # @param name [String] The name of repository
     def find_package(name, ref = nil)
-      repo = Models::Repository.find_by(:name => name)
+      repo = find_repository(name)
       ref ||= repo.latest_version || repo.current_ref
       Models::Package.find_by(
         :repo_name => name,
         :rev_hash => repo.rev_hash[ref],
       )
+    end
+
+    def find_repository(name)
+      Models::Repository.find_by(:name => name)
     end
 
     def find_repositories_start_with(prefix)
