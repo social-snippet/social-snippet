@@ -2,8 +2,6 @@ module SocialSnippet::Repository::Models
 
   class Package < ::SocialSnippet::Document
 
-    @@core = nil
-
     # set from snippet.json
     attr_reader :name
     attr_reader :dependencies
@@ -13,18 +11,6 @@ module SocialSnippet::Repository::Models
     field :repo_name, :type => String  # key
     field :rev_hash, :type => String   # key
     field :paths, :type => Array, :default => ::Array.new
-
-    def core
-      @@core
-    end
-
-    def self.core
-      @@core
-    end
-
-    def self.core=(new_core)
-      @@core = new_core
-    end
 
     def normalize_path(path)
       ::Pathname.new(path).cleanpath.to_s
@@ -70,6 +56,18 @@ module SocialSnippet::Repository::Models
 
     def real_path(path = nil)
       core.config.package_path repo_name, rev_hash, path
+    end
+
+    def core
+      @@core
+    end
+
+    def self.core
+      @@core
+    end
+
+    def self.core=(new_core)
+      @@core = new_core
     end
 
   end # Package
