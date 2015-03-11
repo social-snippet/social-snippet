@@ -4,15 +4,10 @@ module SocialSnippet::Repository::Models
 
     @@core = nil
 
-    # set from snippet.json
-    attr_reader :name
-    attr_reader :dependencies
-    attr_reader :main
-    attr_reader :desc
-
     field :repo_name, :type => String  # key
     field :rev_hash, :type => String   # key
     field :paths, :type => Array, :default => ::Array.new
+    field :dependencies, :type => Array, :default => ::Array.new
 
     def normalize_path(path)
       ::Pathname.new(path).cleanpath.to_s
@@ -42,12 +37,12 @@ module SocialSnippet::Repository::Models
       core.storage.read json_path
     end
 
-    def load_snippet_json
-      snippet_json = ::JSON.parse(snippet_json_text)
-      @name = snippet_json["name"]
-      @desc = snippet_json["desc"]
-      @main = snippet_json["main"] || ""
-      @dependencies = snippet_json["dependencies"] || {}
+    def snippet_json
+      @snippet_json ||= parse_snippet_json
+    end
+
+    def parse_snippet_json
+      ::JSON.parse(snippet_json_text)
     end
 
     def glob(glob_pattern)
