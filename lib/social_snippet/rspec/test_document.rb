@@ -14,6 +14,28 @@ RSpec.configure do
       field :field_hash, :type => Hash, :default => ::Hash.new
     end
 
+    describe "#update_attributes!" do
+
+      context "create item" do
+        let(:item) { TestDocument1.create :field_string => "value" }
+        subject { item.field_string }
+        it { should eq "value" }
+        context "find item.id" do
+          subject { TestDocument1.find item.id }
+          it { expect(subject.field_string).to eq "value" }
+        end
+        context "item.update_attributes! field_string => new-value" do
+          before { item.update_attributes! :field_string => "new-value" }
+          it { should eq "new-value" }
+          context "find item.id" do
+            subject { TestDocument1.find item.id }
+            it { expect(subject.field_string).to eq "new-value" }
+          end
+        end
+      end
+
+    end
+
     describe "#push" do
 
       context "create item" do

@@ -18,7 +18,7 @@ module SocialSnippet::DocumentBackend
       @fields = ::Hash.new
       @field_keys = self.class.field_keys
       init_fields options
-      @id ||= new_id
+      @id ||= new_id || self.class.uuid
     end
 
     def serialize
@@ -50,6 +50,13 @@ module SocialSnippet::DocumentBackend
     def remove
       self.class.collection.delete id
       self.class.update_file!
+    end
+
+    def update_attributes!(attrs)
+      attrs.each do |key, value|
+        fields[key] = clone_value(value)
+      end
+      save!
     end
 
     def save!
