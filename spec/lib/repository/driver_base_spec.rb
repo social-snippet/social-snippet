@@ -96,7 +96,12 @@ describe ::SocialSnippet::Repository::Drivers::DriverBase, :current => true do
 
       before { driver.cache }
 
-      context "::SocialSnippet::Repository::Models::Repository.find repo_url" do
+      context "storage.exists? file1" do
+        subject { fake_core.storage.exists? fake_core.config.package_path(repo_name, "rev-0.0.2", "file1") }
+        it { should be_truthy }
+      end
+
+      context "find repository by url" do
 
         let(:repo) do
           ::SocialSnippet::Repository::Models::Repository.find_by(:url => repo_url)
