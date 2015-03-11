@@ -36,7 +36,7 @@ describe ::SocialSnippet::Repository::Models::Package do
         subject { package.paths }
         it { should include "file" }
         context "check filesystem" do
-          subject { ::FileTest.file? fake_core.config.package_path(repo_name, rev_hash, ::File.join("package-main", "file")) }
+          subject { ::FileTest.file? fake_core.config.package_path(repo_name, rev_hash, "file") }
           it { should be_truthy }
         end
       end
@@ -46,7 +46,7 @@ describe ::SocialSnippet::Repository::Models::Package do
         subject { package.paths }
         it { should include "dir/" }
         context "check filesystem" do
-          subject { ::FileTest.directory? fake_core.config.package_path(repo_name, rev_hash, ::File.join("package-main", "dir")) }
+          subject { ::FileTest.directory? fake_core.config.package_path(repo_name, rev_hash, "dir") }
           it { should be_truthy }
         end
         context "add dir/file" do
@@ -54,7 +54,7 @@ describe ::SocialSnippet::Repository::Models::Package do
           subject { package.paths }
           it { should include "dir/file" }
           context "check filesystem" do
-            subject { ::FileTest.file? fake_core.config.package_path(repo_name, rev_hash, ::File.join("package-main", "dir/file")) }
+            subject { ::FileTest.file? fake_core.config.package_path(repo_name, rev_hash, "dir/file") }
             it { should be_truthy }
           end
         end
@@ -65,7 +65,7 @@ describe ::SocialSnippet::Repository::Models::Package do
         subject { package.paths }
         it { should include "dir/" }
         context "check filesystem" do
-          subject { ::FileTest.directory? fake_core.config.package_path(repo_name, rev_hash, ::File.join("package-main", "dir")) }
+          subject { ::FileTest.directory? fake_core.config.package_path(repo_name, rev_hash, "dir") }
           it { should be_truthy }
         end
       end
