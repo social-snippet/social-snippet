@@ -82,6 +82,8 @@ module SocialSnippet::SpecHelpers
 
   def reset_fake_core
     @fake_core = FakeCore.new
+    ::SocialSnippet::Repository::Models::Package.core = fake_core
+    ::SocialSnippet::Repository::Models::Repository.core = fake_core
     allow(fake_core).to receive(:storage).and_return fake_storage
     allow(fake_core).to receive(:logger).and_return fake_logger
     allow(fake_core).to receive(:config).and_return fake_config
