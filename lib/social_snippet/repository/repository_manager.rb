@@ -30,9 +30,7 @@ module SocialSnippet::Repository
     end
 
     def deps(repo_name, repo_ref = nil)
-      repo = find_repository(repo_name)
-      repo.checkout(repo_ref) unless repo_ref.nil?
-      repo.dependencies
+      find_package(repo_name).dependencies
     end
 
     def has_deps?(repo_name, repo_ref = nil)
@@ -53,8 +51,8 @@ module SocialSnippet::Repository
     # @param tag [::SocialSnippet::Tag] The tag of snippet
     def resolve_snippet_path(context, tag)
       if tag.has_repo?
-        repo = find_repository_by_tag(tag)
-        repo.real_path tag.path
+        pkg = find_package_by_tag(tag)
+        pkg.real_path tag.path
       else
         new_context = context.clone
         new_context.dirname + "/" + tag.filename
@@ -64,30 +62,24 @@ module SocialSnippet::Repository
     # Find repository by tag
     #
     # @param tag [::SocialSnippet::Tag] The tag of repository
-    def find_repository_by_tag(tag)
+    def find_package_by_tag(tag)
       if tag.has_ref?
-        find_repository(tag.repo, tag.ref)
+        find_package(tag.repo, tag.ref)
       else
-        find_repository(tag.repo)
+        find_package(tag.repo)
       end
     end
 
     # Find repository by repo name
     #
     # @param name [String] The name of repository
-    def find_repository(name, ref = nil)
-      return nil if name.nil? || name.empty?
-
-      repo_paths.each do |repo_path|
-        path = "#{repo_path}/#{name}"
-        if ::Dir.exists?(path)
-          repo = core.repo_factory.create(path, ref)
-          repo.load_cache repo_cache_path
-          return repo
-        end
-      end
-
-      nil
+    def find_package(name, ref = nil)
+      repo = Models::Repository.find_by(:name => name)
+      ref ||= repo.latest_version || repo.current_ref
+      Models::Package.find_by(
+        :repo_name => name,
+        :rev_hash => repo.rev_hash[ref],
+      )
     end
 
     def find_repositories_start_with(prefix)
@@ -103,12 +95,12 @@ module SocialSnippet::Repository
     end
 
     def complete_file_name(keyword)
-      repo_name   = get_repo_name(keyword)
-      repo        = find_repository(repo_name)
-      file_path   = get_file_path_prefix(keyword)
-      glob_path   = "#{file_path}*"
+      repo_name = get_repo_name(keyword)
+      package   = find_package(repo_name)
+      file_path = keyword_filepath(keyword)
+      glob_path = "#{file_path}*"
 
-      repo.glob(glob_path).map do |cand_file_path|
+      package.glob(glob_path).map do |cand_file_path|
         if ::File.directory?(cand_file_path)
           Pathname(cand_file_path).basename.to_s + "/"
         else
@@ -135,7 +127,7 @@ module SocialSnippet::Repository
       /^[^@]*@[^<]+<([^:#>]*[^:#>])$/.match(keyword)[1]
     end
 
-    def get_file_path_prefix(keyword)
+    def keyword_filepath(keyword)
       /^[^@]*@[^<]+<[^#:]+:([^>]*)$/.match(keyword)[1]
     end
 
