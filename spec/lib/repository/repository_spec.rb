@@ -16,10 +16,13 @@ describe ::SocialSnippet::Repository::Models::Repository, :current => true do
       before { repo.add_ref "master", "rev-master" }
       subject { repo.refs }
       it { should include "master" }
+      it { expect(repo.rev_hash["master"]).to eq "rev-master" }
       context "add develop" do
         before { repo.add_ref "develop", "rev-develop" }
         subject { repo.refs }
         it { should include "develop" }
+        it { expect(repo.rev_hash["master"]).to eq "rev-master" }
+        it { expect(repo.rev_hash["develop"]).to eq "rev-develop" }
       end
     end
   end #add_ref
