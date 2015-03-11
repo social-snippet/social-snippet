@@ -2,57 +2,12 @@ require "spec_helper"
 
 describe SocialSnippet::Api::InsertSnippetApi do
 
-  before do
-    allow_any_instance_of(::SocialSnippet::CommandLine::Command).to receive(:social_snippet).and_return fake_core
-  end
-
   let(:repo_path) { fake_config.install_path }
   let(:tmp_repo_path) { "/tmp/repos" }
   let(:tmp_repo_path_no_ver) { "/tmp/repos_no_ver" }
   let(:repo_cache_path) { fake_config.repository_cache_path }
   let(:commit_id) { "thisisdummy" }
   let(:short_commit_id) { commit_id[0..7] }
-
-  def find_repo_mock
-    repo_refs = {}
-    repos = ::Dir.glob("#{tmp_repo_path}/*").map{|path| Pathname.new(path).basename.to_s }
-    repos.each do |repo_name|
-      repo_refs[repo_name] = ::Dir.glob("#{tmp_repo_path}/#{repo_name}/*").map {|path| Pathname.new(path).basename.to_s }
-    end
-
-    repos_no_ver = ::Dir.glob("#{tmp_repo_path_no_ver}/*").map {|path| Pathname.new(path).basename.to_s }
-
-    allow(fake_core.repo_manager).to receive(:find_repository).with(any_args) do |repo_name, ref|
-      repo_refs[repo_name] ||= []
-      versions = repo_refs[repo_name].select {|ver| SocialSnippet::Version.is_matched_version_pattern(ref, ver) }
-      latest_version = VersionSorter.rsort(versions).first
-
-      repo_ref = ref
-      if repos_no_ver.include?(repo_name)
-        repo_path = "#{tmp_repo_path_no_ver}/#{repo_name}"
-      else
-        base_repo_path = "#{tmp_repo_path}/#{repo_name}/#{repo_refs[repo_name].first}"
-        base_repo = SocialSnippet::Repository::Drivers::DriverBase.new(fake_core, base_repo_path)
-        allow(base_repo).to receive(:refs).and_return repo_refs[repo_name]
-        base_repo.load_snippet_json
-        repo_version = base_repo.latest_version ref
-        if repo_version.nil?
-          repo_path = "#{tmp_repo_path}/#{repo_name}/#{repo_ref}"
-          unless ::Dir.exists?(repo_path)
-            raise SocialSnippet::Repository::Errors::NotExistRef
-          end
-        else
-          repo_path = "#{tmp_repo_path}/#{repo_name}/#{repo_version}"
-        end
-      end
-      repo = SocialSnippet::Repository::Drivers::DriverBase.new(fake_core, repo_path)
-      allow(repo).to receive(:refs).and_return repo_refs[repo_name]
-      allow(repo).to receive(:commit_id).and_return "#{repo_version}#{commit_id}"
-      repo.load_snippet_json
-      repo.create_cache repo_cache_path
-      repo
-    end
-  end
 
   describe "#insert_snippet" do
 
@@ -77,8 +32,6 @@ describe SocialSnippet::Api::InsertSnippetApi do
         ].join($/)
 
       end # prepare my-repo#thisisdu
-
-      before { find_repo_mock }
 
       context "snip my-repo#thisisdu" do
 
@@ -153,8 +106,6 @@ describe SocialSnippet::Api::InsertSnippetApi do
             ].join($/)
           end # prepare my-repo#1.0.0
 
-          before { find_repo_mock }
-
           it do
             expect(fake_core.api.insert_snippet(input)).to eq [
               '/* @snippet<my-repo#1.0.0:func.c> */',
@@ -183,8 +134,6 @@ describe SocialSnippet::Api::InsertSnippetApi do
                 'func: 1.0.1',
               ].join($/)
             end # prepare my-repo#1.0.1
-
-            before { find_repo_mock }
 
             it do
               expect(fake_core.api.insert_snippet(input)).to eq [
@@ -215,8 +164,6 @@ describe SocialSnippet::Api::InsertSnippetApi do
                 ].join($/)
               end # prepare my-repo#1.1.0
 
-              before { find_repo_mock }
-
               it do
                 expect(fake_core.api.insert_snippet(input)).to eq [
                   '/* @snippet<my-repo#1.1.0:func.c> */',
@@ -245,8 +192,6 @@ describe SocialSnippet::Api::InsertSnippetApi do
                     'func: 9.9.9',
                   ].join($/)
                 end # prepare my-repo#9.9.9
-
-                before { find_repo_mock }
 
                 it do
                   expect(fake_core.api.insert_snippet(input)).to eq [
@@ -310,8 +255,6 @@ describe SocialSnippet::Api::InsertSnippetApi do
           'file_4',
         ].join($/)
       end # prepare my-repo#1.2.3
-
-      before { find_repo_mock }
 
       context "snip my-repo:file_1" do
 
@@ -449,8 +392,6 @@ describe SocialSnippet::Api::InsertSnippetApi do
           'non-loop-4',
         ].join($/)
       end # prepare non-loop-4#1.1.1
-
-      before { find_repo_mock }
 
       context "indirectly" do
 
@@ -719,8 +660,6 @@ describe SocialSnippet::Api::InsertSnippetApi do
         ].join($/)
       end # prepare my-repo-7#1.2.3
 
-      before { find_repo_mock }
-
       context "snip my-repo-1:1" do
 
         let(:input) do
@@ -825,8 +764,6 @@ describe SocialSnippet::Api::InsertSnippetApi do
           '9',
         ].join($/)
       end
-
-      before { find_repo_mock }
 
       let(:input) do
         [
@@ -1050,10 +987,6 @@ describe SocialSnippet::Api::InsertSnippetApi do
         ].join($/)
       end # prepare new-my-repo#0.0.2
 
-      before do
-        find_repo_mock
-      end
-
       context "use my-repo" do
 
         let(:input) do
@@ -1196,8 +1129,6 @@ describe SocialSnippet::Api::InsertSnippetApi do
         ].join($/)
 
       end # prepare my-repo#0.0.3
-
-      before { find_repo_mock }
 
       let(:input) do
         [
@@ -1805,10 +1736,6 @@ describe SocialSnippet::Api::InsertSnippetApi do
           ].join($/)
         end # prepare has-version#1.2.3
 
-        before do
-          find_repo_mock
-        end
-
         context "already snipped using version" do
 
           context "not already snipped" do
@@ -2021,6 +1948,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
 
           # snippet.json
           ::File.write "#{tmp_repo_path_no_ver}/#{repo_name}/snippet.json", [
+
             '{"name": "' + repo_name + '"}',
           ].join($/)
 
@@ -2032,8 +1960,6 @@ describe SocialSnippet::Api::InsertSnippetApi do
             '}',
           ].join($/)
         end # prepare for my_repo_b repo
-
-        before { find_repo_mock }
 
         let(:input) do
           [
