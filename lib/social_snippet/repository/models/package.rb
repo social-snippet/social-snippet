@@ -35,13 +35,13 @@ module SocialSnippet::Repository::Models
     def add_system_file(path, data)
       path = normalize_path(path)
       add_path path
-      file_path = root_path(path)
+      file_path = real_path(path)
       core.storage.mkdir_p ::File.dirname(file_path)
       core.storage.write file_path, data
     end
 
     def snippet_json_text
-      json_path = root_path("snippet.json")
+      json_path = real_path("snippet.json")
       core.storage.read json_path
     end
 
@@ -59,17 +59,16 @@ module SocialSnippet::Repository::Models
       end
     end
 
-    # path from root of repository
-    def root_path(path = nil)
+    def real_path(path = nil)
       core.config.package_path repo_name, rev_hash, path
     end
 
     # path from snippet_json["main"]
-    def real_path(path = nil)
+    def snippet_path(path = nil)
       if snippet_json["main"].nil?
-        root_path path
+        real_path path
       else
-        root_path ::File.join(snippet_json["main"], path)
+        real_path ::File.join(snippet_json["main"], path)
       end
     end
 
