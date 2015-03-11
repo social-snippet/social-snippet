@@ -28,10 +28,14 @@ module SocialSnippet::Repository
     end
 
     def resolve_driver(url)
-      driver_class = @@drivers.first do |driver_class|
+      driver_class = @@drivers.select do |driver_class|
         driver_class.target? url
+      end.first
+      if driver_class.nil?
+        raise "ERROR: driver not found"
+      else
+        driver_class.new core, url
       end
-      driver_class.new core, url
     end
 
   end # class << self
