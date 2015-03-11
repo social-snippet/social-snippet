@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ::SocialSnippet::Repository::Drivers::DriverBase, :current => true do
+describe ::SocialSnippet::Repository::Drivers::DriverBase do
 
   describe "version" do
 
