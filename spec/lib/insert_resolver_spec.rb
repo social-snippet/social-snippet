@@ -5,6 +5,12 @@ describe SocialSnippet::Resolvers::InsertResolver do
   context "prepare stubs" do
 
     before do
+      allow(fake_core.repo_manager).to receive(:find_repository) do |name|
+        repo = ::SocialSnippet::Repository::Models::Repository.new(
+          :repo_name => name,
+        )
+        repo
+      end
       allow(fake_core.repo_manager).to receive(:find_package) do |name|
         pkg = ::SocialSnippet::Repository::Models::Package.new(
           :repo_name => name,
@@ -89,11 +95,11 @@ describe SocialSnippet::Resolvers::InsertResolver do
 
         let(:expected) do
           [
-            "// @snippet <my-repo-1#rev-my-repo-1:path/to/file.d>",
+            "// @snippet <my-repo-1:path/to/file.d>",
             "my-repo-1",
-            "// @snippet <my-repo-2#rev-my-repo-2:path/to/file.d>",
+            "// @snippet <my-repo-2:path/to/file.d>",
             "my-repo-2",
-            "// @snippet <my-repo-3#rev-my-repo-3:path/to/file.d>",
+            "// @snippet <my-repo-3:path/to/file.d>",
             "my-repo-3",
           ].join($/)
         end
@@ -124,17 +130,17 @@ describe SocialSnippet::Resolvers::InsertResolver do
             "",
             "",
             "",
-            "// @snippet <my-repo-1#rev-my-repo-1:path/to/file.d>",
+            "// @snippet <my-repo-1:path/to/file.d>",
             "my-repo-1",
             "",
             "",
             "",
-            "// @snippet <my-repo-2#rev-my-repo-2:path/to/file.d>",
+            "// @snippet <my-repo-2:path/to/file.d>",
             "my-repo-2",
             "",
             "",
             "",
-            "// @snippet <my-repo-3#rev-my-repo-3:path/to/file.d>",
+            "// @snippet <my-repo-3:path/to/file.d>",
             "my-repo-3",
           ].join($/)
         end
@@ -162,17 +168,17 @@ describe SocialSnippet::Resolvers::InsertResolver do
 
         let(:expected) do
           [
-            "// @snippet <my-repo-1#rev-my-repo-1:path/to/file.d>",
+            "// @snippet <my-repo-1:path/to/file.d>",
             "my-repo-1",
             "",
             "",
             "",
-            "// @snippet <my-repo-2#rev-my-repo-2:path/to/file.d>",
+            "// @snippet <my-repo-2:path/to/file.d>",
             "my-repo-2",
             "",
             "",
             "",
-            "// @snippet <my-repo-3#rev-my-repo-3:path/to/file.d>",
+            "// @snippet <my-repo-3:path/to/file.d>",
             "my-repo-3",
             "",
             "",
