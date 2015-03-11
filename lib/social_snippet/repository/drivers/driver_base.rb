@@ -47,15 +47,32 @@ module SocialSnippet::Repository
       end
     end
 
+    # Returns latest version
+    #
+    # @param pattern [String] The pattern of version
+    # @return [String] The version
+    def latest_version(pattern = "")
+      pattern = "" if pattern.nil?
+      matched_versions = versions.select {|ref| ::SocialSnippet::Version.is_matched_version_pattern(pattern, ref)}
+      ::VersionSorter.rsort(matched_versions).first
+    end
+
+    # Returns all versions
+    #
+    # @return [Array<String>] All versions of repository
+    def versions
+      refs.select {|ref| ::SocialSnippet::Version.is_version(ref) }
+    end
+
+    def refs
+      raise "not implemented"
+    end
+
     def snippet_json
       raise "not implemented"
     end
 
     def rev_hash(ref)
-      raise "not implemented"
-    end
-
-    def latest_version
       raise "not implemented"
     end
 
