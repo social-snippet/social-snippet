@@ -106,7 +106,7 @@ module SocialSnippet
   ::RSpec.configure do |config|
     config.before do
       if ::SocialSnippet::Document == ::SocialSnippet::DocumentBackend::YAMLDocument
-        document_path = "/tmp/config/document.yml"
+        document_path = ::File.join(::Dir.mktmpdir, "document.yml")
         ::FileUtils.mkdir_p ::File.dirname(document_path)
         $yaml_document_hash = nil
         ::FileUtils.rm document_path if ::File.exists?(document_path)
