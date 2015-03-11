@@ -83,10 +83,15 @@ module SocialSnippet
 
     # Resolve tag's ref
     def resolve_tag_repo_ref!(tag)
-      package = core.repo_manager.find_package_by_tag(tag)
-
-      if tag.has_ref? === false || tag.ref != package.latest_version(tag.ref)
-        tag.set_ref package.rev_hash
+      return unless tag.has_repo?
+      repo = core.repo_manager.find_repository(tag.repo)
+      # set latest version
+      if tag.has_ref? === false
+        if repo.has_versions?
+          tag.set_ref repo.latest_version
+        else
+          tag.set_ref repo.current_ref
+        end
       end
     end
 
