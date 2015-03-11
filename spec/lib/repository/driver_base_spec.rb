@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ::SocialSnippet::Repository::Drivers::DriverBase, :current => true do
+describe ::SocialSnippet::Repository::Drivers::DriverBase do
 
   let(:repo_url) { "git://github.com/user/repo" }
   let(:repo_name) { "my-repo" }
@@ -143,13 +143,6 @@ describe ::SocialSnippet::Repository::Drivers::DriverBase, :current => true do
           it { expect(subject).to include "dir1/subdir3/file5" }
           it { expect(subject).to include "dir2/file6" }
           it { expect(subject).to include "dir3/file7" }
-        end
-
-        context "load snippet.json" do
-          subject do
-            lambda { package.load_snippet_json }
-          end
-          it { should raise_error ::Errno::ENOENT }
         end
 
       end
