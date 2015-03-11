@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ::SocialSnippet::Repository::Models::Repository, :current => true do
+describe ::SocialSnippet::Repository::Models::Repository do
 
   let(:repo_url) { "git://github.com/user/my-repo" }
   let(:repo) do
