@@ -21,6 +21,8 @@ class SocialSnippet::Core
     @prompt = ::HighLine.new(input_stream, output_stream)
     init_logger
 
+    ::SocialSnippet::Repository::Models::Package.core = self
+    ::SocialSnippet::Repository::Models::Repository.core = self
     @repo_manager = ::SocialSnippet::Repository::RepositoryManager.new(self)
     @repo_factory = ::SocialSnippet::Repository::RepositoryFactory.new(self)
     @registry_client = ::SocialSnippet::Registry::RegistryClient.new(self)
