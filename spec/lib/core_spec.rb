@@ -17,10 +17,8 @@ module SocialSnippet
           repo = ::SocialSnippet::Repository::Models::Repository.create(
             :name => "my-repo",
             :current_ref => "master",
-            :rev_hash => {
-              "master" => "rev-master",
-            },
           )
+          repo.add_ref "master", "rev-master"
           package = ::SocialSnippet::Repository::Models::Package.create(
             :repo_name => "my-repo",
             :rev_hash => "rev-master",
