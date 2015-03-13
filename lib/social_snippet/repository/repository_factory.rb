@@ -23,7 +23,7 @@ module SocialSnippet::Repository
     def clone(url, ref = nil)
       driver = resolve_driver(url)
       driver.fetch
-      driver.cache(ref)
+      driver.update_repository
       driver
     end
 
