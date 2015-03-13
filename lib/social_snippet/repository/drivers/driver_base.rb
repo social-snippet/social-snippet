@@ -7,7 +7,9 @@ module SocialSnippet::Repository
     attr_reader :core
     attr_reader :url
     attr_reader :ref
+
     attr_reader :repo
+    attr_reader :package
 
     # @example
     # driver = Driver.new(core, url, ref)
@@ -20,14 +22,14 @@ module SocialSnippet::Repository
       @repo = nil
     end
 
-    def cache
-      resolve_ref
+    def cache(new_ref = nil)
+      resolve_ref new_ref
       create_package
       update_repository
     end
 
-    def resolve_ref
-      @ref ||= latest_version || current_ref
+    def resolve_ref(new_ref)
+      @ref ||= new_ref || latest_version || current_ref
     end
 
     def update_repository
@@ -39,15 +41,15 @@ module SocialSnippet::Repository
     end
 
     def create_package
-      pkg = Models::Package.new(
+      @package = Models::Package.new(
         :repo_name => snippet_json["name"],
         :rev_hash => rev_hash(ref),
       )
       each_directory do |dir|
-        pkg.add_directory dir.path
+        package.add_directory dir.path
       end
       each_content do |content|
-        pkg.add_file content.path, content.data
+        package.add_file content.path, content.data
       end
     end
 
