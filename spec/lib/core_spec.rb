@@ -23,7 +23,7 @@ module SocialSnippet
             :repo_name => "my-repo",
             :rev_hash => "rev-master",
           )
-          package.add_system_file "snippet.json", {
+          package.add_file "snippet.json", {
             :name => "my-repo",
             :main => "src",
           }.to_json

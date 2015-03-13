@@ -16,7 +16,7 @@ describe ::SocialSnippet::Repository::Models::Package do
   context "add snippet.json" do
 
     before do
-      package.add_system_file "snippet.json", {
+      package.add_file "snippet.json", {
         :name => "package-name",
         :desc => "package-desc",
         :main => "package-main"
