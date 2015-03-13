@@ -12,6 +12,7 @@ require "rspec/core/rake_task"
 
 RSpec::Core::RakeTask.new(:spec_all) do |t|
   ENV["RSPEC_WITHOUT_FAKEFS"] = "false"
+  ENV["ENABLE_CODECLIMATE"] = "false"
   t.pattern = [
     'spec/**/*_spec.rb',
     'test/**/*_test.rb',
@@ -24,6 +25,7 @@ end
 
 RSpec::Core::RakeTask.new(:spec_all_without_fakefs) do |t|
   ENV["RSPEC_WITHOUT_FAKEFS"] = "true"
+  ENV["ENABLE_CODECLIMATE"] = "true"
   t.pattern = [
     'spec/**/*_spec.rb',
     'test/**/*_test.rb',
@@ -35,6 +37,7 @@ end
 
 RSpec::Core::RakeTask.new(:spec) do |t|
   ENV["RSPEC_WITHOUT_FAKEFS"] = "false"
+  ENV["ENABLE_CODECLIMATE"] = "false"
   t.rspec_opts = [
     "--format documentation",
     "--color",
@@ -44,6 +47,7 @@ end
 
 RSpec::Core::RakeTask.new(:spec_current) do |t|
   ENV["RSPEC_WITHOUT_FAKEFS"] = "false"
+  ENV["ENABLE_CODECLIMATE"] = "false"
   t.rspec_opts = [
     "--format documentation",
     "--color",
@@ -53,6 +57,7 @@ end
 
 RSpec::Core::RakeTask.new(:spec_without_fakefs) do |t|
   ENV["RSPEC_WITHOUT_FAKEFS"] = "true"
+  ENV["ENABLE_CODECLIMATE"] = "false"
   t.rspec_opts = [
     "--format documentation",
     "--color",
@@ -62,6 +67,7 @@ end
 
 RSpec::Core::RakeTask.new(:test) do |t|
   ENV["RSPEC_WITHOUT_FAKEFS"] = "false"
+  ENV["ENABLE_CODECLIMATE"] = "false"
   t.rspec_opts = [
     "--pattern '../test/*_test.rb'",
     "--color",
@@ -71,6 +77,7 @@ end
 
 RSpec::Core::RakeTask.new(:test_current) do |t|
   ENV["RSPEC_WITHOUT_FAKEFS"] = "false"
+  ENV["ENABLE_CODECLIMATE"] = "false"
   t.rspec_opts = [
     "--pattern '../test/*_test.rb'",
     "--color",
@@ -81,6 +88,7 @@ end
 
 RSpec::Core::RakeTask.new(:test_without_fakefs) do |t|
   ENV["RSPEC_WITHOUT_FAKEFS"] = "true"
+  ENV["ENABLE_CODECLIMATE"] = "false"
   t.rspec_opts = [
     "--pattern '../test/*_test.rb'",
     "--color",
