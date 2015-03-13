@@ -19,12 +19,12 @@ module SocialSnippet::Repository
     end
 
     # @param url [String] The URL of repository
-    # @reutrn [::SocialSnippet::Repository::Models::Repository]
-    def clone(url)
+    # @reutrn [::SocialSnippet::Repository::Drivers::DriverBase]
+    def clone(url, ref = nil)
       driver = resolve_driver(url)
       driver.fetch
-      driver.cache
-      driver.repo
+      driver.cache(ref)
+      driver
     end
 
     def resolve_driver(url)
