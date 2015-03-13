@@ -4,8 +4,6 @@ module SocialSnippet::Repository
 
   describe RepositoryManager, :current => true do
 
-    before { stub_const "ENV", "SOCIAL_SNIPPET_HOME" => "/path/to" }
-
     let(:rest_resource) { ::RestClient::Resource.new "http://api.server/api/dummy" }
 
     before do
@@ -14,30 +12,14 @@ module SocialSnippet::Repository
       end
     end # use dummy api server
 
-    let(:config) do
-      ::SocialSnippet::Config.new(fake_core)
-    end
-
-    before do
-      allow(fake_core).to receive(:config).and_return config
-    end
-
-    let(:repo_manager) { RepositoryManager.new fake_core }
-    let(:commit_id) { "dummycommitid" }
-    let(:short_commit_id) { commit_id[0..7] }
-
     before do # prepare repo_a
       repo = ::SocialSnippet::Repository::Models::Repository.create(
         :name => "repo_a",
+        :url => "dummy://driver.test/user/repo_a",
       )
-      repo.push :refs => "master"
-      repo.push :refs => "develop"
-      repo.push :refs => "1.2.3"
-      repo.push :rev_hash => {
-        "master" => "rev-master",
-        "develop" => "rev-develop",
-        "1.2.3" => "rev-1.2.3",
-      }
+      repo.add_ref "master", "rev-master"
+      repo.add_ref "develop", "rev-develop"
+      repo.add_ref "1.2.3", "rev-1.2.3"
       repo.update_attributes! :current_ref => "master"
       package = ::SocialSnippet::Repository::Models::Package.create(
         :repo_name => "repo_a",
@@ -63,7 +45,7 @@ module SocialSnippet::Repository
             let(:tag) { ::SocialSnippet::Tag.new("// @snip<./file2.cpp>") }
 
             context "result" do
-              subject { repo_manager.resolve_snippet_path(context, tag) }
+              subject { fake_core.repo_manager.resolve_snippet_path(context, tag) }
               it { should eq "path/to/file2.cpp" }
             end
 
@@ -75,7 +57,7 @@ module SocialSnippet::Repository
             before { context.move tag.path }
 
             context "result" do
-              subject { repo_manager.resolve_snippet_path(context, tag) }
+              subject { fake_core.repo_manager.resolve_snippet_path(context, tag) }
               it { should eq "path/to/subdir/file3.cpp" }
             end
 
@@ -96,8 +78,8 @@ module SocialSnippet::Repository
             let(:tag) { ::SocialSnippet::Tag.new("// @snip<repo_a:path/to/file2.cpp>") }
 
             context "result" do
-              subject { repo_manager.resolve_snippet_path(context, tag) }
-              it { should eq "/path/to/packages/repo_a/rev-1.2.3/src/path/to/file2.cpp" }
+              subject { fake_core.repo_manager.resolve_snippet_path(context, tag) }
+              it { should eq ::File.join(fake_core.config.home, "packages", "repo_a", "rev-1.2.3", "src", "path", "to", "file2.cpp") }
             end
 
           end # snip<./file2.cpp>
@@ -113,7 +95,7 @@ module SocialSnippet::Repository
       context "find_package nil" do
 
         subject do
-          lambda { repo_manager.find_package nil }
+          lambda { fake_core.repo_manager.find_package nil }
         end
         it { should raise_error }
 
@@ -121,7 +103,7 @@ module SocialSnippet::Repository
 
       context "find_package empty_str" do
         subject do
-          lambda { repo_manager.find_package "" }
+          lambda { fake_core.repo_manager.find_package "" }
         end
         it { should raise_error }
       end
@@ -129,7 +111,7 @@ module SocialSnippet::Repository
       context "create repo_a as a git repo" do
 
         context "find repo_a" do
-          let(:repo) { repo_manager.find_package("repo_a") }
+          let(:repo) { fake_core.repo_manager.find_package("repo_a") }
           it { expect(repo.snippet_json["name"]).to eq "repo_a" }
           it { expect(repo.snippet_json["desc"]).to eq "this is repo_a" }
         end # find repo_a
@@ -149,7 +131,7 @@ module SocialSnippet::Repository
         end
 
         context "find my-" do
-          subject { repo_manager.find_repositories_start_with("my-") }
+          subject { fake_core.repo_manager.find_repositories_start_with("my-") }
           it { should     include "my-repo" }
           it { should_not include "new-repo" }
           it { should     include "my-graph-lib" }
@@ -157,7 +139,7 @@ module SocialSnippet::Repository
         end
 
         context "find my-re" do
-          subject { repo_manager.find_repositories_start_with("my-re") }
+          subject { fake_core.repo_manager.find_repositories_start_with("my-re") }
           it { should     include "my-repo" }
           it { should_not include "new-repo" }
           it { should_not include "my-graph-lib" }
@@ -165,7 +147,7 @@ module SocialSnippet::Repository
         end
 
         context "find new-" do
-          subject { repo_manager.find_repositories_start_with("new-") }
+          subject { fake_core.repo_manager.find_repositories_start_with("new-") }
           it { should_not     include "new-repo" }
           it { should_not include "my-repo" }
           it { should_not include "my-graph-lib" }
