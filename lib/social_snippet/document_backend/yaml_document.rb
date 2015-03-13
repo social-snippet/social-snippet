@@ -140,7 +140,7 @@ module SocialSnippet::DocumentBackend
       # Queries
       #
       def all
-        Query.new collection
+        Query.new self, collection
       end
 
       def exists?
@@ -184,7 +184,7 @@ module SocialSnippet::DocumentBackend
       end
 
       def where(cond)
-        Query.new(collection).find cond
+        Query.new(self, collection).find cond
       end
 
       def collection
