@@ -14,6 +14,41 @@ RSpec.configure do
       field :field_hash, :type => Hash, :default => ::Hash.new
     end
 
+    describe "find by regexp" do
+
+      context "create items" do
+
+        before do
+          TestDocument1.create :field_string => "a"
+          TestDocument1.create :field_string => "A"
+          TestDocument1.create :field_string => "abc"
+          TestDocument1.create :field_string => "b"
+          TestDocument1.create :field_string => "bc"
+          TestDocument1.create :field_string => "c"
+        end
+
+        context "where /^a/" do
+
+          let(:result) { TestDocument1.where :field_string => /^a/ }
+
+          context "map result" do
+            subject do
+              result.map {|item| item.field_string }
+            end
+            it { should include "a" }
+            it { should_not include "A" }
+            it { should include "abc" }
+            it { should_not include "b" }
+            it { should_not include "bc" }
+            it { should_not include "c" }
+          end
+
+        end
+
+      end
+
+    end # find by regexp
+
     describe "#add_to_set" do
 
       context "create item" do
