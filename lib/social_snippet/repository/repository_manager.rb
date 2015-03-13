@@ -139,7 +139,7 @@ module SocialSnippet::Repository
       if repo_ref.nil?
         true
       else
-        pkg = Models::Package.where(
+        Models::Package.where(
           :repo_name => repo_name,
           :rev_hash => repo.rev_hash[repo_ref],
         ).exists?
