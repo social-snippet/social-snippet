@@ -100,7 +100,6 @@ module SocialSnippet
       end
 
       before do
-        fake_core.repo_factory.reset_drivers
         fake_core.repo_factory.add_driver FakeDriver
       end
 
