@@ -70,7 +70,9 @@ module SocialSnippet::Repository
     end
 
     def find_repositories_start_with(prefix)
-      raise "not implemented"
+      Models::Repository.where(:name => /^#{prefix}.*/).map do |repo|
+        repo.name
+      end
     end
 
     def complete_repo_name(keyword)
