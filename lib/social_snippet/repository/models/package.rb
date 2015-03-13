@@ -32,14 +32,6 @@ module SocialSnippet::Repository::Models
       core.storage.write file_path, data
     end
 
-    def add_system_file(path, data)
-      path = normalize_path(path)
-      add_path path
-      file_path = real_path(path)
-      core.storage.mkdir_p ::File.dirname(file_path)
-      core.storage.write file_path, data
-    end
-
     def snippet_json_text
       json_path = real_path("snippet.json")
       core.storage.read json_path
