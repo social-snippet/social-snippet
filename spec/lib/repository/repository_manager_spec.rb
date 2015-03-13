@@ -140,16 +140,7 @@ module SocialSnippet::Repository
 
     describe "find_repositories_start_with" do
 
-      let(:dummy_install_path) { "/path/to/install/path" }
-
-      before do
-        FileUtils.mkdir_p "#{dummy_install_path}"
-        FileUtils.mkdir_p "#{dummy_install_path}/my-repo"
-        FileUtils.mkdir_p "#{dummy_install_path}/new-repo"
-        FileUtils.mkdir_p "#{dummy_install_path}/my-graph-lib"
-        FileUtils.mkdir_p "#{dummy_install_path}/my-math-lib"
-        allow(repo_manager.installer).to receive(:path).and_return dummy_install_path
-      end # prepare install_path
+      # TODO: rewrite here
 
       context "find my-" do
         subject { repo_manager.find_repositories_start_with("my-") }
