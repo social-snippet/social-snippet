@@ -46,8 +46,8 @@ module SocialSnippet::Api::UpdateRepositoryApi
   # Update all installed repositories
   # $ sspm update
   def update_all_repositories(options = {})
-    core.repo_manager.each_installed_repo do |repo_name|
-      update_repository repo_name, options
+    core.repo_manager.each_repo do |repo|
+      update_repository repo.name, options
     end
   end
 
