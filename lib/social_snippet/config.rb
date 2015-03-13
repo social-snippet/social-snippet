@@ -87,6 +87,10 @@ class SocialSnippet::Config
   #
   # config helpers
   #
+
+  def document_path
+    ::File.join home, "documents.yml"
+  end
   
   def package_path(repo_name, rev_hash, path = nil)
     path = "" if path.nil?
