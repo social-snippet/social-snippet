@@ -22,8 +22,7 @@ module SocialSnippet::Repository::Drivers
       @snippet_json ||= ::JSON.parse rugged_repo.lookup(oid).read_raw.data
     end
 
-    def read_file(path)
-      oid = rugged_repo.head.target.tree[path][:oid]
+    def read_file(oid)
       rugged_repo.lookup(oid).read_raw.data
     end
 
@@ -34,10 +33,15 @@ module SocialSnippet::Repository::Drivers
       end
     end
 
-    def each_content
-      rugged_ref(ref).target.tree.each do |c|
-        next unless c[:type] == :blob
-        yield ::SocialSnippet::Repository::Drivers::Entry.new(c[:name], read_file(c[:name]))
+    def each_content(tree = nil)
+      tree = rugged_ref(ref).target.tree if tree.nil?
+      tree.each_blob do |c|
+        yield ::SocialSnippet::Repository::Drivers::Entry.new(c[:name], read_file(c[:oid]))
+      end
+      tree.each_tree do |t|
+        each_content(rugged_repo.lookup(t[:oid])) do |content|
+          yield content
+        end
       end
     end
 
