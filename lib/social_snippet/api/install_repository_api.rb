@@ -19,7 +19,7 @@ module SocialSnippet::Api::InstallRepositoryApi
     end
     output "Success #{url}"
 
-    if package && package.has_dependencies?
+    if package.has_dependencies?
       output "Finding package dependencies..."
       install_missing_dependencies package.dependencies, options
       output "Finished finding package dependencies."
