@@ -23,16 +23,12 @@ describe ::SocialSnippet::Repository::RepositoryManager do
   end
 
   describe "complete (repo)" do
-    
+
     before do
-      install_path = "/path/to/install/path"
-      FileUtils.mkdir_p "#{install_path}"
-      FileUtils.mkdir_p "#{install_path}/my-repo"
-      FileUtils.mkdir_p "#{install_path}/new-repo"
-      FileUtils.mkdir_p "#{install_path}/my-math-repo"
-      FileUtils.mkdir_p "#{install_path}/myrepo"
-      allow(repo_manager.installer).to receive(:path).and_return install_path
-    end # prepare files
+      ::SocialSnippet::Repository::Models::Repository.create :name => "my-repo"
+      ::SocialSnippet::Repository::Models::Repository.create :name => "new-repo"
+      ::SocialSnippet::Repository::Models::Repository.create :name => "my-math-repo"
+    end
 
     context "key = my-" do
       it { expect(repo_manager.complete "@snip <my-").to      include "my-repo" }
