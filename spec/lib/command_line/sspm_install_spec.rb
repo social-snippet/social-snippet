@@ -89,22 +89,35 @@ describe ::SocialSnippet::CommandLine::SSpm::SubCommands::InstallCommand do
       end
 
       context "install new-repo" do
+
         let(:install_command) { ::SocialSnippet::CommandLine::SSpm::SubCommands::InstallCommand.new ["new-repo"] }
-        example do
-          expect(fake_core.repo_manager).to receive(:install).with("git://driver.test/user/my-repo", "1.2.3", kind_of(::Hash)).once do
-            ::SocialSnippet::Repository::Models::Package.new
+
+        context "prepare stubs" do
+
+          before do
+            expect(fake_core.repo_manager).to receive(:install).with("git://driver.test/user/my-repo", "1.2.3", kind_of(::Hash)).once do
+              ::SocialSnippet::Repository::Models::Package.new
+            end
+            expect(fake_core.repo_manager).to receive(:install).with("git://driver.test/user/new-repo", nil, kind_of(::Hash)).once do
+              pkg = ::SocialSnippet::Repository::Models::Package.new
+              pkg.add_dependency "my-repo", "1.2.3"
+              pkg
+            end
           end
-          expect(fake_core.repo_manager).to receive(:install).with("git://driver.test/user/new-repo", nil, kind_of(::Hash)).once do
-            pkg = ::SocialSnippet::Repository::Models::Package.new
-            pkg.add_dependency "my-repo", "1.2.3"
-            pkg
+
+          context "run command" do
+            subject do
+              lambda do
+                install_command.init
+                install_command.run
+              end
+            end
+            it { should_not raise_error }
           end
+
         end
-        after do
-          install_command.init
-          install_command.run
-        end
-      end
+
+      end # install new-repo
 
     end # prepare registry info
 
