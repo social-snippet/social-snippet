@@ -43,7 +43,7 @@ module SocialSnippet::Repository
         :repo_name => "repo_a",
         :rev_hash => "rev-1.2.3",
       )
-      package.add_system_file "snippet.json", {
+      package.add_file "snippet.json", {
         :name => "repo_a",
         :main => "src",
         :desc => "this is repo_a",

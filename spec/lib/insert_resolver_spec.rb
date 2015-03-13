@@ -16,7 +16,7 @@ describe SocialSnippet::Resolvers::InsertResolver do
           :repo_name => name,
           :rev_hash => "rev-#{name}",
         )
-        pkg.add_system_file "snippet.json", {
+        pkg.add_file "snippet.json", {
           :name => name,
         }.to_json
         pkg
