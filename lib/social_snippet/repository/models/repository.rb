@@ -2,8 +2,11 @@ module SocialSnippet::Repository::Models
 
   class Repository < ::SocialSnippet::Document
 
+    @@core = nil
+
     field :url, :type => String
     field :name, :type => String
+    field :current_ref, :type => String
     field :refs, :type => Array, :default => ::Array.new
     # rev_hash[ref] => Commit ID
     field :rev_hash, :type => Hash, :default => ::Hash.new
@@ -13,6 +16,10 @@ module SocialSnippet::Repository::Models
       modifier = ::Hash.new
       modifier[ref] = rev_hash
       push :rev_hash => modifier
+    end
+
+    def has_ref?(ref)
+      refs.include? ref
     end
 
     # Returns latest version

@@ -82,6 +82,8 @@ module SocialSnippet::SpecHelpers
 
   def reset_fake_core
     @fake_core = FakeCore.new
+    ::SocialSnippet::Repository::Models::Package.core = fake_core
+    ::SocialSnippet::Repository::Models::Repository.core = fake_core
     allow(fake_core).to receive(:storage).and_return fake_storage
     allow(fake_core).to receive(:logger).and_return fake_logger
     allow(fake_core).to receive(:config).and_return fake_config
@@ -98,14 +100,14 @@ module SocialSnippet
   ::RSpec.configure do |config|
     config.include SpecHelpers
     config.before { reset_fake_core }
+    config.before { fake_core.repo_factory.reset_drivers }
   end
 
   # setup yaml document
   ::RSpec.configure do |config|
     config.before do
       if ::SocialSnippet::Document == ::SocialSnippet::DocumentBackend::YAMLDocument
-        document_path = "/config/document.yml"
-        ::FileUtils.mkdir_p "/config"
+        document_path = ::File.join(::Dir.mktmpdir, "document.yml")
         $yaml_document_hash = nil
         ::FileUtils.rm document_path if ::File.exists?(document_path)
         ::SocialSnippet::DocumentBackend::YAMLDocument.set_path document_path

@@ -2,9 +2,6 @@ module SocialSnippet::Repository
 
   class RepositoryManager
 
-    attr_reader :installer
-    attr_reader :repo_paths
-    attr_reader :repo_cache_path
     attr_reader :core
 
     # Constructor
@@ -12,27 +9,10 @@ module SocialSnippet::Repository
     # @param new_core [::SocialSnippet::Core]
     def initialize(new_core)
       @core = new_core
-      @installer = ::SocialSnippet::Repository::RepositoryInstaller.new(core)
-      @repo_cache_path = core.config.repository_cache_path
-      @repo_paths = []
-
-      init_repo_paths
-      init_repo_cache_path
-    end
-
-    def init_repo_cache_path
-      ::FileUtils.mkdir_p repo_cache_path
-    end
-
-    def init_repo_paths
-      repo_paths.push installer.path
-      repo_paths.each {|path| ::FileUtils.mkdir_p path }
     end
 
     def deps(repo_name, repo_ref = nil)
-      repo = find_repository(repo_name)
-      repo.checkout(repo_ref) unless repo_ref.nil?
-      repo.dependencies
+      find_package(repo_name).dependencies
     end
 
     def has_deps?(repo_name, repo_ref = nil)
@@ -53,8 +33,8 @@ module SocialSnippet::Repository
     # @param tag [::SocialSnippet::Tag] The tag of snippet
     def resolve_snippet_path(context, tag)
       if tag.has_repo?
-        repo = find_repository_by_tag(tag)
-        repo.real_path tag.path
+        pkg = find_package_by_tag(tag)
+        pkg.snippet_path tag.path
       else
         new_context = context.clone
         new_context.dirname + "/" + tag.filename
@@ -64,36 +44,34 @@ module SocialSnippet::Repository
     # Find repository by tag
     #
     # @param tag [::SocialSnippet::Tag] The tag of repository
-    def find_repository_by_tag(tag)
+    def find_package_by_tag(tag)
       if tag.has_ref?
-        find_repository(tag.repo, tag.ref)
+        find_package(tag.repo, tag.ref)
       else
-        find_repository(tag.repo)
+        find_package(tag.repo)
       end
     end
 
     # Find repository by repo name
     #
     # @param name [String] The name of repository
-    def find_repository(name, ref = nil)
-      return nil if name.nil? || name.empty?
+    def find_package(name, ref = nil)
+      repo = find_repository(name)
+      ref ||= repo.latest_version || repo.current_ref
+      raise "invalid references" unless repo.has_ref?(ref)
+      Models::Package.find_by(
+        :repo_name => name,
+        :rev_hash => repo.rev_hash[ref],
+      )
+    end
 
-      repo_paths.each do |repo_path|
-        path = "#{repo_path}/#{name}"
-        if ::Dir.exists?(path)
-          repo = core.repo_factory.create(path, ref)
-          repo.load_cache repo_cache_path
-          return repo
-        end
-      end
-
-      nil
+    def find_repository(name)
+      Models::Repository.find_by(:name => name)
     end
 
     def find_repositories_start_with(prefix)
-      glob_path = ::File.join(installer.path, "#{prefix}*")
-      ::Dir.glob(glob_path).map do |repopath|
-        Pathname(repopath).basename.to_s
+      Models::Repository.where(:name => /^#{prefix}.*/).map do |repo|
+        repo.name
       end
     end
 
@@ -103,12 +81,12 @@ module SocialSnippet::Repository
     end
 
     def complete_file_name(keyword)
-      repo_name   = get_repo_name(keyword)
-      repo        = find_repository(repo_name)
-      file_path   = get_file_path_prefix(keyword)
-      glob_path   = "#{file_path}*"
+      repo_name = get_repo_name(keyword)
+      package   = find_package(repo_name)
+      file_path = keyword_filepath(keyword)
+      glob_path = "#{file_path}*"
 
-      repo.glob(glob_path).map do |cand_file_path|
+      package.glob(glob_path).map do |cand_file_path|
         if ::File.directory?(cand_file_path)
           Pathname(cand_file_path).basename.to_s + "/"
         else
@@ -135,7 +113,7 @@ module SocialSnippet::Repository
       /^[^@]*@[^<]+<([^:#>]*[^:#>])$/.match(keyword)[1]
     end
 
-    def get_file_path_prefix(keyword)
+    def keyword_filepath(keyword)
       /^[^@]*@[^<]+<[^#:]+:([^>]*)$/.match(keyword)[1]
     end
 
@@ -147,30 +125,29 @@ module SocialSnippet::Repository
       /^[^@]*@[^<]+<[^#:]+:[^>]*$/ === keyword
     end
 
-    def cache_installing_repo(repo, options = {})
-      repo.create_cache repo_cache_path
-    end
-
-    def fetch(repo_name, options)
-      installer.fetch repo_name, options
-    end
-
-    def update(repo_name, repo_ref, repo, options)
-      cache_installing_repo repo, options
-      installer.add repo_name, repo_ref
-    end
-
-    def install(repo_name, repo_ref, repo, options)
-      installer.copy_repository repo, options
-      update repo_name, repo_ref, repo, options
+    def install(url, ref, options = ::Hash.new)
+      driver = core.repo_factory.clone(url, ref)
+      driver.cache(ref)
+      driver.package
     end
 
     def exists?(repo_name, repo_ref = nil)
-      installer.exists? repo_name, repo_ref
+      # not found repo
+      return false unless Models::Repository.where(:name => repo_name).exists?
+
+      repo = Models::Repository.find_by(:name => repo_name)
+      if repo_ref.nil?
+        true
+      else
+        Models::Package.where(
+          :repo_name => repo_name,
+          :rev_hash => repo.rev_hash[repo_ref],
+        ).exists?
+      end
     end
 
-    def each_installed_repo(&block)
-      installer.each &block
+    def each_repo(&block)
+      Models::Repository.all.each &block
     end
 
   end # RepositoryManager

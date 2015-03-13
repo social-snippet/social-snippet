@@ -21,10 +21,19 @@ class SocialSnippet::Core
     @prompt = ::HighLine.new(input_stream, output_stream)
     init_logger
 
+    init_yaml_document
+    ::SocialSnippet::Repository::Models::Package.core = self
+    ::SocialSnippet::Repository::Models::Repository.core = self
     @repo_manager = ::SocialSnippet::Repository::RepositoryManager.new(self)
     @repo_factory = ::SocialSnippet::Repository::RepositoryFactory.new(self)
     @registry_client = ::SocialSnippet::Registry::RegistryClient.new(self)
     @api = ::SocialSnippet::Api.new(self)
+  end
+
+  def init_yaml_document
+    if ::SocialSnippet::Document == ::SocialSnippet::DocumentBackend::YAMLDocument
+      ::SocialSnippet::DocumentBackend::YAMLDocument.set_path config.document_path
+    end
   end
 
   def init_logger

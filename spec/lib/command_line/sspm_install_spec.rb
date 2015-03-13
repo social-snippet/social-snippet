@@ -1,224 +1,173 @@
 require "spec_helper"
 
-module SocialSnippet::CommandLine
+describe ::SocialSnippet::CommandLine::SSpm::SubCommands::InstallCommand do
 
-  describe SSpm::SubCommands::InstallCommand do
+  before do
+    allow_any_instance_of(
+      ::SocialSnippet::Registry::RegistryResources::Base
+    ).to receive(:rest_client) do
+      ::RestClient::Resource.new "http://api.server/api/dummy"
+    end
+  end
+
+  describe "$ sspm install" do
 
     before do
-      allow_any_instance_of(
-        ::SocialSnippet::Registry::RegistryResources::Base
-      ).to receive(:rest_client) do
-        ::RestClient::Resource.new "http://api.server/api/dummy"
-      end
+      allow(fake_core.api).to receive(:install_repository).and_return false
+      allow(fake_core.api).to receive(:resolve_name_by_registry).and_return false
     end
 
-    let(:my_repo_info) do
-      {
-        "name" => "my-repo",
-        "desc" => "This is new repository.",
-        "url" => "git://github.com/user/my-repo",
-        "dependencies" => {
-        },
-      }
-    end # result
-
-    before do
-      WebMock
-        .stub_request(
-          :get,
-          "http://api.server/api/dummy/repositories/my-repo",
-        )
-        .to_return(
-          :status => 200,
-          :body => my_repo_info.to_json,
-          :headers => {
-            "Content-Type" => "application/json",
-          },
-        )
-    end # GET /repositories/my-repo/dependencies
-
-    let(:new_repo_info) do
-      {
-        "name" => "new-repo",
-        "desc" => "This is new repository.",
-        "url" => "git://github.com/user/new-repo",
-        "dependencies" => {
-          "my-repo" => "1.0.0",
-        },
-      }
-    end # result
-
-    before do
-      WebMock
-        .stub_request(
-          :get,
-          "http://api.server/api/dummy/repositories/new-repo",
-        )
-        .to_return(
-          :status => 200,
-          :body => new_repo_info.to_json,
-          :headers => {
-            "Content-Type" => "application/json",
-          },
-        )
-    end # GET /repositories/new-repo/dependencies
-
-    before do
-      allow(fake_core.repo_factory).to receive(:clone).with(/my-repo/) do |url|
-        class FakeRepo
-          attr_reader :path
-        end
-
-        repo = FakeRepo.new
-        allow(repo).to receive(:path).and_return "/path/to/my-repo"
-        allow(repo).to receive(:name).and_return "my-repo"
-        allow(repo).to receive(:create_cache).and_return ""
-        allow(repo).to receive(:has_versions?).and_return true
-        allow(repo).to receive(:latest_version).and_return "1.2.3"
-        allow(repo).to receive(:dependencies).and_return({})
-        repo
-      end
-    end # prepare my-repo
-
-    before do
-      allow(fake_core.repo_factory).to receive(:clone).with(/new-repo/) do |url|
-        class FakeRepo
-          attr_reader :path
-        end
-
-        repo = FakeRepo.new
-        allow(repo).to receive(:path).and_return "/path/to/new-repo"
-        allow(repo).to receive(:name).and_return "new-repo"
-        allow(repo).to receive(:create_cache).and_return ""
-        allow(repo).to receive(:has_versions?).and_return true
-        allow(repo).to receive(:latest_version).and_return "1.2.4"
-        allow(repo).to receive(:dependencies).and_return new_repo_info["dependencies"]
-        repo
-      end
-    end # prepare new-repo
-
-    before do
-      allow(::FileUtils).to receive(:cp_r) do
-        # do nothing
-      end
-    end
-
-    #
-    # main
-    #
-    let(:install_command_output) { ::StringIO.new }
-    let(:install_command_logger) { ::SocialSnippet::Logger.new install_command_output }
-    before { allow(fake_core).to receive(:logger).and_return install_command_logger }
-
-    describe "$ sspm install" do
-
-      context "create snippet.json" do
-
-        before do
-          FileUtils.touch "snippet.json"
-          File.write "snippet.json", {
-            :dependencies => {
-              "foo" => "1.2.3",
-              "bar" => "0.0.1"
-            },
-          }.to_json
-        end
-
-        example do
-          install_command = SSpm::SubCommands::InstallCommand.new([])
-          expect(fake_core.api).to receive(:install_repository_by_name).with("foo", "1.2.3", kind_of(Hash)).once
-          expect(fake_core.api).to receive(:install_repository_by_name).with("bar", "0.0.1", kind_of(Hash)).once
-          install_command.run
-        end
-
-      end # create snippet.json
-
-    end # $ sspm install
-
-    describe "$ sspm install my-repo" do
-
-      let(:install_command_output) { ::StringIO.new }
-      let(:install_command_logger) { ::SocialSnippet::Logger.new install_command_output }
+    context "create snippet.json" do
 
       before do
-        install_command_logger.level = ::SocialSnippet::Logger::Severity::INFO
-        allow(fake_core).to receive(:logger).and_return install_command_logger
-        install_command = SSpm::SubCommands::InstallCommand.new ["my-repo"]
-        install_command.init
-        install_command.run
+        ::FileUtils.touch "snippet.json"
+        ::File.write "snippet.json", {
+          :dependencies => {
+            "foo" => "1.2.3",
+            "bar" => "0.0.1"
+          },
+        }.to_json
       end
 
-      subject { install_command_output.string }
-      it { should match(/my-repo/) }
-      it { should match(/Installing/) }
-      it { should match(/Cloning/) }
-      it { should match(/Success/) }
-      it { should_not match(/dependencies/) }
+      before do
+        allow(fake_core.api).to receive(:resolve_name_by_registry).with("foo") do
+          "url-foo"
+        end
+        allow(fake_core.api).to receive(:resolve_name_by_registry).with("bar") do
+          "url-bar"
+        end
+      end
 
-      context "$ sspm install my-repo (second)" do
-
-        let(:second_install_command_output) { ::StringIO.new }
-        let(:second_install_command_logger) { ::SocialSnippet::Logger.new second_install_command_output }
-
-        subject do
-          install_command_logger.level = ::SocialSnippet::Logger::Severity::INFO
-          allow(fake_core).to receive(:logger).and_return second_install_command_logger
-          install_command = SSpm::SubCommands::InstallCommand.new ["my-repo"]
+      context "install by snippet.json" do
+        let(:install_command) { ::SocialSnippet::CommandLine::SSpm::SubCommands::InstallCommand.new [] }
+        it { expect(fake_core.api).to receive(:install_repository).with("url-foo", "1.2.3", kind_of(::Hash)).once }
+        it { expect(fake_core.api).to receive(:install_repository).with("url-bar", "0.0.1", kind_of(::Hash)).once }
+        after do
           install_command.init
           install_command.run
-          second_install_command_output.string
+        end
+      end
+
+    end # create snippet.json
+
+  end # $ sspm install
+
+  describe "$ sspm install my-repo" do
+
+    context "prepare registry info" do
+
+      before do
+        allow(fake_core.api).to receive(:resolve_name_by_registry).with("my-repo") do
+          "git://driver.test/user/my-repo"
+        end
+      end
+
+      context "install my-repo" do
+        let(:install_command) { ::SocialSnippet::CommandLine::SSpm::SubCommands::InstallCommand.new ["my-repo"] }
+        it { expect(fake_core.api).to receive(:install_repository).with("git://driver.test/user/my-repo", nil, kind_of(::Hash)) }
+        after do
+          install_command.init
+          install_command.run
+        end
+      end
+
+    end # prepare registry info
+
+  end # $ sspm install my-repo
+
+  describe "package dependencies" do
+
+    context "prepare registry info" do
+
+      before do
+        allow(fake_core.api).to receive(:resolve_name_by_registry).with("my-repo") do
+          "git://driver.test/user/my-repo"
+        end
+        allow(fake_core.api).to receive(:resolve_name_by_registry).with("new-repo") do
+          "git://driver.test/user/new-repo"
+        end
+      end
+
+      context "already installed my-repo" do
+
+        before do
+          repo = ::SocialSnippet::Repository::Models::Repository.find_or_create_by(:name => "my-repo")
+          repo.add_ref "1.2.3", "rev-1.2.3"
+          ::SocialSnippet::Repository::Models::Package.create(
+            :repo_name => "my-repo",
+            :rev_hash => "rev-1.2.3",
+          )
         end
 
-        it { should match(/my-repo/) }
-        it { should_not match(/Installing/) }
-        it { should_not match(/Cloning/) }
-        it { should_not match(/Success/) }
-        it { should_not match(/dependencies/) }
+        context "prepare args" do
 
-      end # (reinstall) $ sspm install my-repo
+          let(:install_command) { ::SocialSnippet::CommandLine::SSpm::SubCommands::InstallCommand.new ["new-repo"] }
 
-    end # $ sspm install my-repo
+          context "prepare stubs" do
 
-    describe "$ sspm install new-repo" do
+            before do
+              expect(fake_core.repo_manager).to_not receive(:install).with("git://driver.test/user/my-repo", "1.2.3", kind_of(::Hash))
+              expect(fake_core.repo_manager).to receive(:install).with("git://driver.test/user/new-repo", nil, kind_of(::Hash)).once do
+                pkg = ::SocialSnippet::Repository::Models::Package.new
+                pkg.add_dependency "my-repo", "1.2.3"
+                pkg
+              end
+            end
 
-      before do
-        install_command = SSpm::SubCommands::InstallCommand.new ["new-repo"]
-        install_command.init
-        install_command.run
-      end
+            context "install new-repo" do
+              subject!(:result) do
+                lambda do
+                  install_command.init
+                  install_command.run
+                end
+              end
+              it { should_not raise_error }
+            end
 
-      subject { install_command_output.string }
-      it { should match(/my-repo/) }
-      it { should match(/new-repo/) }
-      it { should match(/my-repo.*new-repo/m) }
-      it { should match(/Installing: new-repo#1.2.4/) }
-      it { should match(/Installing: my-repo#1.0.0/) }
-      it { should match(/Cloning/) }
-      it { should match(/Success/) }
-      it { should match(/Finding new-repo#1.2.4's/) }
+          end # prepare stubs
 
-    end # $ sspm install new-repo
+        end # prepare args
 
-    describe "$ sspm install --dry-run new-repo" do
+      end # already installed my-repo
 
-      before do
-        install_command = SSpm::SubCommands::InstallCommand.new ["--dry-run", "new-repo"]
-        install_command.init
-        install_command.run
-      end
+      context "prepare args" do
 
-      subject { install_command_output.string }
-      it { should match(/my-repo/) }
-      it { should match(/new-repo/) }
-      it { should match(/new-repo.*my-repo/m) }
-      it { should match(/Installing: new-repo#1.2.4/) }
-      it { should match(/Installing: my-repo#1.0.0/) }
-      it { should match(/Cloning/) }
-      it { should match(/Finding new-repo#1.2.4's/) }
-      it { should match(/Success/) }
+        let(:install_command) { ::SocialSnippet::CommandLine::SSpm::SubCommands::InstallCommand.new ["new-repo"] }
 
-    end # $ sspm install new-repo
+        context "prepare stubs" do
 
-  end # SSpm::SubCommands::InstallCommand
+          before do
+            expect(fake_core.repo_manager).to receive(:install).with("git://driver.test/user/my-repo", "1.2.3", kind_of(::Hash)).once do
+              ::SocialSnippet::Repository::Models::Repository.find_or_create_by :name => "my-repo"
+              ::SocialSnippet::Repository::Models::Package.create(
+                :repo_name => "my-repo",
+                :rev_hash => "rev-1.2.3",
+              )
+            end
+            expect(fake_core.repo_manager).to receive(:install).with("git://driver.test/user/new-repo", nil, kind_of(::Hash)).once do
+              pkg = ::SocialSnippet::Repository::Models::Package.new
+              pkg.add_dependency "my-repo", "1.2.3"
+              pkg
+            end
+          end
 
-end # SocialSnippet::CommandLine
+          context "install new-repo" do
+            subject!(:result) do
+              lambda do
+                install_command.init
+                install_command.run
+              end
+            end
+            it { should_not raise_error }
+          end
+
+        end # prepare stubs
+
+      end # prepare args
+
+    end # prepare registry info
+
+  end
+
+end # ::SocialSnippet::CommandLine::SSpm::SubCommands::InstallCommand
+

@@ -2,15 +2,12 @@ module SocialSnippet::Repository::Models
 
   class Package < ::SocialSnippet::Document
 
-    # set from snippet.json
-    attr_reader :name
-    attr_reader :dependencies
-    attr_reader :main
-    attr_reader :desc
+    @@core = nil
 
     field :repo_name, :type => String  # key
     field :rev_hash, :type => String   # key
     field :paths, :type => Array, :default => ::Array.new
+    field :dependencies, :type => Hash, :default => ::Hash.new
 
     def normalize_path(path)
       ::Pathname.new(path).cleanpath.to_s
@@ -35,17 +32,27 @@ module SocialSnippet::Repository::Models
       core.storage.write file_path, data
     end
 
+    def add_dependency(name, ref)
+      modifier = {}
+      modifier[name] = ref
+      push :dependencies => modifier
+    end
+
+    def has_dependencies?
+      not dependencies.empty?
+    end
+
     def snippet_json_text
       json_path = real_path("snippet.json")
       core.storage.read json_path
     end
 
-    def load_snippet_json
-      snippet_json = ::JSON.parse(snippet_json_text)
-      @name = snippet_json["name"]
-      @desc = snippet_json["desc"]
-      @main = snippet_json["main"] || ""
-      @dependencies = snippet_json["dependencies"] || {}
+    def snippet_json
+      @snippet_json ||= parse_snippet_json
+    end
+
+    def parse_snippet_json
+      ::JSON.parse(snippet_json_text)
     end
 
     def glob(glob_pattern)
@@ -56,6 +63,15 @@ module SocialSnippet::Repository::Models
 
     def real_path(path = nil)
       core.config.package_path repo_name, rev_hash, path
+    end
+
+    # path from snippet_json["main"]
+    def snippet_path(path = nil)
+      if snippet_json["main"].nil?
+        real_path path
+      else
+        real_path ::File.join(snippet_json["main"], path)
+      end
     end
 
     def core

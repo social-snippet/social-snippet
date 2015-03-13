@@ -20,9 +20,13 @@ script:
   # shell access test
   - bundle exec rake build
   - gem install pkg/social_snippet-*.gem
-  - sspm install example-repo
+  - export SOCIAL_SNIPPET_HOME=$HOME/.social-snippet-test
+  - export SOCIAL_SNIPPET_DEBUG=true
+  - sspm install example-repo#1.0.0
   - sspm update
   - echo "// @snip <example-repo:func.cpp>" | ssnip
+  - unset SOCIAL_SNIPPET_HOME
+  - unset SOCIAL_SNIPPET_DEBUG
 
 deploy:
   provider: rubygems

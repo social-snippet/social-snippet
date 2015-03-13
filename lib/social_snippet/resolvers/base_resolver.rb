@@ -32,7 +32,6 @@ module SocialSnippet
           move_context_by_tag! new_context, t
           overwrite_tag_in_same_repository! new_context, t
           update_tag_path_by_context! new_context, t
-          resolve_tag_repo_ref! t
         end
 
         resolve_tag_repo_ref! t
@@ -46,13 +45,6 @@ module SocialSnippet
     end
 
     private
-
-    def resolve_tag_repo_ref!(t)
-      if t.has_repo?
-        repo = core.repo_manager.find_repository_by_tag(t)
-        t.set_ref repo.latest_version(t.ref)
-      end
-    end
 
     def move_context_by_tag!(context, tag)
       if tag.has_repo?
@@ -83,16 +75,20 @@ module SocialSnippet
 
     # Resolve tag's ref
     def resolve_tag_repo_ref!(tag)
-      repo = core.repo_manager.find_repository_by_tag(tag)
-
-      # not found
-      return if repo.nil?
-
-      if tag.has_ref? === false || tag.ref != repo.latest_version(tag.ref)
+      return unless tag.has_repo?
+      repo = core.repo_manager.find_repository(tag.repo)
+      # set latest version
+      if tag.has_ref? === false
         if repo.has_versions?
-          tag.set_ref repo.latest_version(tag.ref)
+          tag.set_ref repo.latest_version
         else
-          tag.set_ref repo.short_commit_id
+          tag.set_ref repo.current_ref
+        end
+      else
+        unless repo.has_ref?(tag.ref)
+          new_ref = repo.latest_version(tag.ref)
+          raise "error" if new_ref.nil?
+          tag.set_ref new_ref
         end
       end
     end

@@ -5,8 +5,21 @@ describe SocialSnippet::Resolvers::InsertResolver do
   context "prepare stubs" do
 
     before do
-      allow(fake_core.repo_manager).to receive(:resolve_snippet_path) do |c, t|
-        t.repo
+      allow(fake_core.repo_manager).to receive(:find_repository) do |name|
+        repo = ::SocialSnippet::Repository::Models::Repository.new(
+          :repo_name => name,
+        )
+        repo
+      end
+      allow(fake_core.repo_manager).to receive(:find_package) do |name|
+        pkg = ::SocialSnippet::Repository::Models::Package.new(
+          :repo_name => name,
+          :rev_hash => "rev-#{name}",
+        )
+        pkg.add_file "snippet.json", {
+          :name => name,
+        }.to_json
+        pkg
       end
       allow(fake_core.repo_manager).to receive(:get_snippet) do |c, t|
         ::SocialSnippet::Snippet.new_text(t.repo)

@@ -39,24 +39,24 @@ EOF
     def install_by_snippet_json
       snippet_json = ::JSON.parse(File.read("snippet.json"))
       snippet_json["dependencies"].each do |name, ref|
-        core.api.install_repository_by_name name, ref, options
+        url = core.api.resolve_name_by_registry(name)
+        core.api.install_repository url, ref, options
       end
     end
 
     def install_by_names
       while has_next_token?
         token_str = next_token
+        repo_info = parse_repo_token(token_str)
         if is_name?(token_str)
-          repo_info = parse_repo_token(token_str)
-          core.api.install_repository_by_name repo_info[:name], repo_info[:ref], options
+          url = core.api.resolve_name_by_registry(repo_info[:name])
+          core.api.install_repository url, repo_info[:ref], options
         elsif is_url?(token_str)
-          repo_info = parse_repo_token(token_str)
           repo_url  = repo_info[:name]
-          core.api.install_repository_by_url repo_url, repo_info[:ref], options
+          core.api.install_repository repo_url, repo_info[:ref], options
         elsif is_path?(token_str)
-          repo_info = parse_repo_token(token_str)
           repo_path = repo_info[:name]
-          core.api.install_repository_by_path repo_path, repo_info[:ref], options
+          core.api.install_repository repo_path, repo_info[:ref], options
         end
       end
     end
