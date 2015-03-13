@@ -7,7 +7,7 @@ module SocialSnippet::Repository::Models
     field :repo_name, :type => String  # key
     field :rev_hash, :type => String   # key
     field :paths, :type => Array, :default => ::Array.new
-    field :dependencies, :type => Array, :default => ::Array.new
+    field :dependencies, :type => Hash, :default => ::Hash.new
 
     def normalize_path(path)
       ::Pathname.new(path).cleanpath.to_s
@@ -30,6 +30,16 @@ module SocialSnippet::Repository::Models
       file_path = real_path(path)
       core.storage.mkdir_p ::File.dirname(file_path)
       core.storage.write file_path, data
+    end
+
+    def add_dependency(name, ref)
+      modifier = {}
+      modifier[name] = ref
+      push :dependencies => modifier
+    end
+
+    def has_dependencies?
+      not dependencies.empty?
     end
 
     def snippet_json_text
