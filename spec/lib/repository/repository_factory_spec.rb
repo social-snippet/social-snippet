@@ -67,10 +67,10 @@ describe ::SocialSnippet::Repository::RepositoryFactory do
 
       context "clone git://github.com/user/repo" do
 
-        let(:repo) { repo_factory.clone "git://github.com/user/repo" }
-        it { expect(repo.name).to eq "fake-repo" }
-        it { expect(repo.refs.length).to eq 1 }
-        it { expect(repo.refs).to include "1.2.3" }
+        let(:driver) { repo_factory.clone "git://github.com/user/repo" }
+        it { expect(driver.repo.name).to eq "fake-repo" }
+        it { expect(driver.repo.refs.length).to eq 1 }
+        it { expect(driver.repo.refs).to include "1.2.3" }
 
       end
 
