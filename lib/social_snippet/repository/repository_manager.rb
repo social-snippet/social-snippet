@@ -125,11 +125,7 @@ module SocialSnippet::Repository
       /^[^@]*@[^<]+<[^#:]+:[^>]*$/ === keyword
     end
 
-    def update(repo_name, repo_ref, repo, options)
-      raise "not implemented"
-    end
-
-    def install(url, ref, options)
+    def install(url, ref, options = ::Hash.new)
       driver = core.repo_factory.clone(url, ref)
       driver.package
     end
