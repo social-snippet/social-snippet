@@ -129,8 +129,9 @@ module SocialSnippet::Repository
       raise "not implemented"
     end
 
-    def install(repo_name, repo_ref, repo, options)
-      repo = Models::Repository.find_or_create_by(:name => repo_name)
+    def install(url, ref, options)
+      driver = core.repo_factory.clone(url, ref)
+      driver.package
     end
 
     def exists?(repo_name, repo_ref = nil)
