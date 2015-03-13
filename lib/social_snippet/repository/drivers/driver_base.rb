@@ -69,6 +69,10 @@ module SocialSnippet::Repository
       refs.select {|ref| ::SocialSnippet::Version.is_version(ref) }
     end
 
+    def has_versions?
+      not versions.empty?
+    end
+
     def refs
       raise "not implemented"
     end
