@@ -41,7 +41,7 @@ module SocialSnippet::Repository
     end
 
     def create_package
-      @package = Models::Package.new(
+      @package = Models::Package.create(
         :repo_name => snippet_json["name"],
         :rev_hash => rev_hash(ref),
       )
