@@ -43,7 +43,6 @@ module SocialSnippet::Repository
         :repo_name => snippet_json["name"],
         :rev_hash => rev_hash(ref),
       )
-      pkg.add_system_file "snippet.json", snippet_json.to_json
       each_directory do |dir|
         pkg.add_directory dir.path
       end
