@@ -25,7 +25,6 @@ module SocialSnippet::Repository
     def cache(new_ref = nil)
       resolve_ref new_ref
       create_package
-      update_repository
     end
 
     def resolve_ref(new_ref)
