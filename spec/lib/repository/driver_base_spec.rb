@@ -90,7 +90,10 @@ describe ::SocialSnippet::Repository::Drivers::DriverBase do
 
   context "driver.fetch" do
 
-    before { driver.fetch }
+    before do
+      driver.fetch
+      driver.update_repository
+    end
 
     context "driver.cache" do
 
