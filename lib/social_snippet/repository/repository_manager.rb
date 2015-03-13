@@ -2,9 +2,6 @@ module SocialSnippet::Repository
 
   class RepositoryManager
 
-    attr_reader :installer
-    attr_reader :repo_paths
-    attr_reader :repo_cache_path
     attr_reader :core
 
     # Constructor
@@ -12,21 +9,6 @@ module SocialSnippet::Repository
     # @param new_core [::SocialSnippet::Core]
     def initialize(new_core)
       @core = new_core
-      @installer = ::SocialSnippet::Repository::RepositoryInstaller.new(core)
-      @repo_cache_path = core.config.repository_cache_path
-      @repo_paths = []
-
-      init_repo_paths
-      init_repo_cache_path
-    end
-
-    def init_repo_cache_path
-      ::FileUtils.mkdir_p repo_cache_path
-    end
-
-    def init_repo_paths
-      repo_paths.push installer.path
-      repo_paths.each {|path| ::FileUtils.mkdir_p path }
     end
 
     def deps(repo_name, repo_ref = nil)
@@ -88,10 +70,7 @@ module SocialSnippet::Repository
     end
 
     def find_repositories_start_with(prefix)
-      glob_path = ::File.join(installer.path, "#{prefix}*")
-      ::Dir.glob(glob_path).map do |repopath|
-        Pathname(repopath).basename.to_s
-      end
+      raise "not implemented"
     end
 
     def complete_repo_name(keyword)
@@ -144,30 +123,31 @@ module SocialSnippet::Repository
       /^[^@]*@[^<]+<[^#:]+:[^>]*$/ === keyword
     end
 
-    def cache_installing_repo(repo, options = {})
-      repo.create_cache repo_cache_path
-    end
-
-    def fetch(repo_name, options)
-      installer.fetch repo_name, options
-    end
-
     def update(repo_name, repo_ref, repo, options)
-      cache_installing_repo repo, options
-      installer.add repo_name, repo_ref
+      raise "not implemented"
     end
 
     def install(repo_name, repo_ref, repo, options)
-      installer.copy_repository repo, options
-      update repo_name, repo_ref, repo, options
+      repo = Models::Repository.find_or_create_by(:name => repo_name)
     end
 
     def exists?(repo_name, repo_ref = nil)
-      installer.exists? repo_name, repo_ref
+      # not found repo
+      return false unless Models::Repository.where(:name => repo_name).exists?
+
+      repo = Models::Repository.find_by(:name => repo_name)
+      if repo_ref.nil?
+        true
+      else
+        pkg = Models::Package.where(
+          :repo_name => repo_name,
+          :rev_hash => repo.rev_hash[repo_ref],
+        ).exists?
+      end
     end
 
     def each_installed_repo(&block)
-      installer.each &block
+      raise "not implemented"
     end
 
   end # RepositoryManager
