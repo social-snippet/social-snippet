@@ -145,8 +145,8 @@ module SocialSnippet::Repository
       end
     end
 
-    def each_installed_repo(&block)
-      raise "not implemented"
+    def each_repo(&block)
+      Models::Repository.all.each &block
     end
 
   end # RepositoryManager
