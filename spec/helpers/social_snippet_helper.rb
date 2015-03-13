@@ -100,6 +100,7 @@ module SocialSnippet
   ::RSpec.configure do |config|
     config.include SpecHelpers
     config.before { reset_fake_core }
+    config.before { fake_core.repo_factory.reset_drivers }
   end
 
   # setup yaml document
