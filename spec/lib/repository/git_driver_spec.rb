@@ -8,25 +8,25 @@ module SocialSnippet::Repository::Drivers
 
       context "clone social-snippet/example-repo" do
 
-        subject(:repo) { fake_core.repo_factory.clone("git://github.com/social-snippet/example-repo.git") }
-        it { expect(repo.name).to eq "example-repo" }
+        subject(:driver) { fake_core.repo_factory.clone("git://github.com/social-snippet/example-repo.git") }
+        it { expect(driver.repo.name).to eq "example-repo" }
 
         describe "#refs" do
-          subject { repo.refs }
+          subject { driver.repo.refs }
           it { should include "master" }
           it { should include "1.0.0" }
           it { should include "1.0.1" }
         end
 
         describe "#versions" do
-          subject { repo.versions }
+          subject { driver.repo.versions }
           it { should_not include "master" }
           it { should include "1.0.0" }
           it { should include "1.0.1" }
         end
 
         describe "#latest_version" do
-          subject { repo.latest_version("1.0") }
+          subject { driver.repo.latest_version("1.0") }
           it { should eq "1.0.2" }
         end
 
