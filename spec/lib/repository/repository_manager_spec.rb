@@ -2,7 +2,7 @@ require "spec_helper"
 
 module SocialSnippet::Repository
 
-  describe RepositoryManager do
+  describe RepositoryManager, :current => true do
 
     before { stub_const "ENV", "SOCIAL_SNIPPET_HOME" => "/path/to" }
 
@@ -140,30 +140,38 @@ module SocialSnippet::Repository
 
     describe "find_repositories_start_with" do
 
-      # TODO: rewrite here
+      context "prepare repositories" do
 
-      context "find my-" do
-        subject { repo_manager.find_repositories_start_with("my-") }
-        it { should     include "my-repo" }
-        it { should_not include "new-repo" }
-        it { should     include "my-graph-lib" }
-        it { should     include "my-math-lib" }
-      end
+        before do
+          ::SocialSnippet::Repository::Models::Repository.create :name => "my-repo"
+          ::SocialSnippet::Repository::Models::Repository.create :name => "my-graph-lib"
+          ::SocialSnippet::Repository::Models::Repository.create :name => "my-math-lib"
+        end
 
-      context "find my-re" do
-        subject { repo_manager.find_repositories_start_with("my-re") }
-        it { should     include "my-repo" }
-        it { should_not include "new-repo" }
-        it { should_not include "my-graph-lib" }
-        it { should_not include "my-math-lib" }
-      end
+        context "find my-" do
+          subject { repo_manager.find_repositories_start_with("my-") }
+          it { should     include "my-repo" }
+          it { should_not include "new-repo" }
+          it { should     include "my-graph-lib" }
+          it { should     include "my-math-lib" }
+        end
 
-      context "find new-" do
-        subject { repo_manager.find_repositories_start_with("new-") }
-        it { should     include "new-repo" }
-        it { should_not include "my-repo" }
-        it { should_not include "my-graph-lib" }
-        it { should_not include "my-math-lib" }
+        context "find my-re" do
+          subject { repo_manager.find_repositories_start_with("my-re") }
+          it { should     include "my-repo" }
+          it { should_not include "new-repo" }
+          it { should_not include "my-graph-lib" }
+          it { should_not include "my-math-lib" }
+        end
+
+        context "find new-" do
+          subject { repo_manager.find_repositories_start_with("new-") }
+          it { should_not     include "new-repo" }
+          it { should_not include "my-repo" }
+          it { should_not include "my-graph-lib" }
+          it { should_not include "my-math-lib" }
+        end
+
       end
 
     end # find_repositories_start_with
