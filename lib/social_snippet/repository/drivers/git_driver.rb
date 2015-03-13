@@ -94,7 +94,7 @@ module SocialSnippet::Repository::Drivers
       end
 
       def is_git_uri(uri)
-        uri.scheme === "git"
+        /git|https?/ === uri.scheme
       end
 
       def target_path?(path)
