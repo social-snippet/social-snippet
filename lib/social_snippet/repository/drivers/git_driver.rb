@@ -33,15 +33,21 @@ module SocialSnippet::Repository::Drivers
       end
     end
 
-    def each_content(tree = nil)
-      tree = rugged_ref(ref).target.tree if tree.nil?
+    def each_content(&block)
+      walk_tree rugged_ref(ref).target.tree, ::Array.new, &block
+    end
+
+    def walk_tree(tree, parents)
       tree.each_blob do |c|
-        yield ::SocialSnippet::Repository::Drivers::Entry.new(c[:name], read_file(c[:oid]))
+        path = ::File.join(*parents, c[:name])
+        yield ::SocialSnippet::Repository::Drivers::Entry.new(path, read_file(c[:oid]))
       end
       tree.each_tree do |t|
-        each_content(rugged_repo.lookup(t[:oid])) do |content|
+        parents.push t[:name]
+        walk_tree(rugged_repo.lookup(t[:oid]), parents) do |content|
           yield content
         end
+        parents.pop
       end
     end
 
