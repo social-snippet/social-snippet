@@ -11,14 +11,6 @@ module SocialSnippet::Repository
       @core = new_core
     end
 
-    def deps(repo_name, repo_ref = nil)
-      find_package(repo_name).dependencies
-    end
-
-    def has_deps?(repo_name, repo_ref = nil)
-      not deps(repo_name, repo_ref).empty?
-    end
-
     # Get snippet by context and tag
     #
     # @param context [::SocialSnippet::Context] The context of snippet
