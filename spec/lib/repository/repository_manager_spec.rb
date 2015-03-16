@@ -21,6 +21,9 @@ module SocialSnippet::Repository
       repo.add_ref "develop", "rev-develop"
       repo.add_ref "1.2.3", "rev-1.2.3"
       repo.update_attributes! :current_ref => "master"
+
+      # prepare package
+      repo.add_package "1.2.3"
       package = ::SocialSnippet::Repository::Models::Package.create(
         :repo_name => "repo_a",
         :rev_hash => "rev-1.2.3",
