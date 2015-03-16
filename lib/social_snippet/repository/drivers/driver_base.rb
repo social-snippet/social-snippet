@@ -6,50 +6,14 @@ module SocialSnippet::Repository
 
     attr_reader :core
     attr_reader :url
-    attr_reader :ref
-
-    attr_reader :repo
-    attr_reader :package
 
     # @example
     # driver = Driver.new(core, url, ref)
     # driver.fetch
     # driver.cache # => save data into storage
-    def initialize(new_core, new_url, new_ref = nil)
+    def initialize(new_core, new_url)
       @core = new_core
       @url  = new_url
-      @ref  = new_ref
-      @repo = nil
-    end
-
-    def cache(new_ref = nil)
-      resolve_ref new_ref
-      create_package
-    end
-
-    def resolve_ref(new_ref)
-      @ref ||= new_ref || latest_version || current_ref
-    end
-
-    def update_repository
-      @repo = Models::Repository.find_or_create_by(
-        :url => url,
-      )
-      repo.update_attributes! :name => snippet_json["name"]
-      each_ref {|ref| repo.add_ref ref, rev_hash(ref) }
-    end
-
-    def create_package
-      @package = Models::Package.create(
-        :repo_name => snippet_json["name"],
-        :rev_hash => rev_hash(ref),
-      )
-      each_directory do |dir|
-        package.add_directory dir.path
-      end
-      each_content do |content|
-        package.add_file content.path, content.data
-      end
     end
 
     # Returns latest version
