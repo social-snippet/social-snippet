@@ -125,7 +125,6 @@ module SocialSnippet::Repository
       driver = core.repo_factory.clone(url)
       ref ||= resolve_ref_by_driver(driver)
       repo = update_repository(driver, url)
-      repo.add_package ref
       create_package driver, ref
     end
 
@@ -141,11 +140,15 @@ module SocialSnippet::Repository
     end
 
     def create_package(driver, ref)
+      repo_name = driver.snippet_json["name"]
       package = Models::Package.create(
-        :repo_name => driver.snippet_json["name"],
+        :repo_name => repo_name,
         :rev_hash => driver.rev_hash(ref),
         :name => "#{driver.snippet_json["name"]}##{ref}",
       )
+
+      repo = find_repository(repo_name)
+      repo.add_package ref
 
       driver.each_directory(ref) do |dir|
         package.add_directory dir.path
