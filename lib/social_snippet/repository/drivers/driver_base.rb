@@ -61,11 +61,11 @@ module SocialSnippet::Repository
       raise "not implemented"
     end
 
-    def each_directory
+    def each_directory(ref)
       raise "not implemented"
     end
 
-    def each_content
+    def each_content(ref)
       raise "not implemented"
     end
 
