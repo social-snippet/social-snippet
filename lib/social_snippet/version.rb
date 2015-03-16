@@ -13,12 +13,17 @@ module SocialSnippet
 
         # "2.1.0" and "2.1.1" match "2.1"
         # "2.11.0" and "2.11.1" do not match "2.1"
-        return version.start_with?("#{pattern}.")
+        version.start_with?("#{pattern}.")
       end
 
       # Check given text is version string
       def is_version(s)
-        return /^([0]|[1-9][0-9]*)\.([0]|[1-9][0-9]*)\.([0]|[1-9][0-9]*)$/ === s
+        /^([0]|[1-9][0-9]*)\.([0]|[1-9][0-9]*)\.([0]|[1-9][0-9]*)$/ === s
+      end
+
+      # "1.2.3" => "1.2"
+      def minor(s)
+        /^(([0]|[1-9][0-9]*)\.([0]|[1-9][0-9]*))\.([0]|[1-9][0-9]*)$/.match(s)[1]
       end
 
     end
