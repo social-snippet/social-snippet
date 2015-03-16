@@ -12,12 +12,12 @@ module SocialSnippet::Api::InstallRepositoryApi
   # @param url [String]
   # @param ref [String]
   def install_repository(url, ref, options = {})
-    output "Installing #{url}..."
+    output "Fetching #{url}..."
 
     unless options[:dry_run]
       package = core.repo_manager.install(url, ref, options)
     end
-    output "Success #{url}"
+    output "Success #{package.display_name}"
 
     if package.has_dependencies?
       output "Finding package dependencies..."

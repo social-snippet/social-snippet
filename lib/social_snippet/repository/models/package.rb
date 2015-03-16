@@ -6,8 +6,13 @@ module SocialSnippet::Repository::Models
 
     field :repo_name, :type => String  # key
     field :rev_hash, :type => String   # key
+    field :name, :type => String
     field :paths, :type => Array, :default => ::Array.new
     field :dependencies, :type => Hash, :default => ::Hash.new
+
+    def display_name
+      name || "#{repo_name}@#{rev_hash}"
+    end
 
     def normalize_path(path)
       ::Pathname.new(path).cleanpath.to_s

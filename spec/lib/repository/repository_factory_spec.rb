@@ -40,7 +40,7 @@ describe ::SocialSnippet::Repository::RepositoryFactory do
       end
     end
 
-    def each_content
+    def each_file
       [
         ::SocialSnippet::Repository::Drivers::Entry.new("snippet.json", {:name => "fake-repo"}.to_json),
         ::SocialSnippet::Repository::Drivers::Entry.new("path/to/file", "file"),
@@ -49,10 +49,8 @@ describe ::SocialSnippet::Repository::RepositoryFactory do
       end
     end
 
-    def each_ref
-      ["1.2.3"].each do |ref|
-        yield ref
-      end
+    def refs
+      ["1.2.3"]
     end
 
   end
@@ -66,12 +64,8 @@ describe ::SocialSnippet::Repository::RepositoryFactory do
       before { repo_factory.add_driver FakeGitDriver }
 
       context "clone git://github.com/user/repo" do
-
         let(:driver) { repo_factory.clone "git://github.com/user/repo" }
-        it { expect(driver.repo.name).to eq "fake-repo" }
-        it { expect(driver.repo.refs.length).to eq 1 }
-        it { expect(driver.repo.refs).to include "1.2.3" }
-
+        it { expect(driver.snippet_json["name"]).to eq "fake-repo" }
       end
 
     end

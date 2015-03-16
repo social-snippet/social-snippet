@@ -11,14 +11,6 @@ module SocialSnippet::Repository
       @core = new_core
     end
 
-    def deps(repo_name, repo_ref = nil)
-      find_package(repo_name).dependencies
-    end
-
-    def has_deps?(repo_name, repo_ref = nil)
-      not deps(repo_name, repo_ref).empty?
-    end
-
     # Get snippet by context and tag
     #
     # @param context [::SocialSnippet::Context] The context of snippet
@@ -57,7 +49,7 @@ module SocialSnippet::Repository
     # @param name [String] The name of repository
     def find_package(name, ref = nil)
       repo = find_repository(name)
-      ref ||= repo.latest_version || repo.current_ref
+      ref ||= repo.latest_package_version || repo.current_ref
       raise "invalid references" unless repo.has_ref?(ref)
       Models::Package.find_by(
         :repo_name => name,
@@ -67,6 +59,10 @@ module SocialSnippet::Repository
 
     def find_repository(name)
       Models::Repository.find_by(:name => name)
+    end
+
+    def find_repository_by_url(url)
+      Models::Repository.find_by(:url => url)
     end
 
     def find_repositories_start_with(prefix)
@@ -126,9 +122,48 @@ module SocialSnippet::Repository
     end
 
     def install(url, ref, options = ::Hash.new)
-      driver = core.repo_factory.clone(url, ref)
-      driver.cache(ref)
-      driver.package
+      driver = core.repo_factory.clone(url)
+      ref ||= resolve_ref_by_driver(driver)
+      repo = update_repository(driver, url)
+      create_package driver, ref
+    end
+
+    def resolve_ref_by_driver(driver)
+      driver.latest_version || driver.current_ref
+    end
+
+    def update_repository(driver, url)
+      repo = Models::Repository.find_or_create_by(:url => url)
+      repo.update_attributes! :name => driver.snippet_json["name"]
+      driver.each_ref {|ref| repo.add_ref ref, driver.rev_hash(ref) }
+      repo
+    end
+
+    def create_package(driver, ref)
+      repo_name = driver.snippet_json["name"]
+      package = Models::Package.create(
+        :repo_name => repo_name,
+        :rev_hash => driver.rev_hash(ref),
+        :name => "#{driver.snippet_json["name"]}##{ref}",
+      )
+
+      repo = find_repository(repo_name)
+      repo.add_package ref
+
+      driver.each_directory(ref) do |dir|
+        package.add_directory dir.path
+      end
+      driver.each_file(ref) do |content|
+        package.add_file content.path, content.data
+      end
+
+      unless package.snippet_json["dependencies"].nil?
+        package.snippet_json["dependencies"].each do |dep_name, dep_ref|
+          package.add_dependency dep_name, dep_ref
+        end
+      end
+
+      package
     end
 
     def exists?(repo_name, repo_ref = nil)

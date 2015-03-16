@@ -27,7 +27,11 @@ describe ::SocialSnippet::Repository::Drivers::DriverBase do
   end
 
   before do
-    allow(driver).to receive(:latest_version).and_return "0.0.2"
+    allow(driver).to receive(:refs).and_return [
+      "0.0.0",
+      "0.0.1",
+      "0.0.2",
+    ]
   end
 
   before do
@@ -65,7 +69,7 @@ describe ::SocialSnippet::Repository::Drivers::DriverBase do
 
   before do
     allow(driver).to(
-      receive(:each_content)
+      receive(:each_file)
         .and_yield(::SocialSnippet::Repository::Drivers::Entry.new "file1", "")
         .and_yield(::SocialSnippet::Repository::Drivers::Entry.new "dir1/file2", "")
         .and_yield(::SocialSnippet::Repository::Drivers::Entry.new "dir1/subdir1/file3", "")
@@ -76,82 +80,9 @@ describe ::SocialSnippet::Repository::Drivers::DriverBase do
     )
   end
 
-  before do
-    allow(driver).to(
-      receive(:each_ref)
-        .and_yield("master")
-        .and_yield("develop")
-        .and_yield("feature/abc")
-        .and_yield("0.0.0")
-        .and_yield("0.0.1")
-        .and_yield("0.0.2")
-    )
-  end
-
-  context "driver.fetch" do
-
-    before do
-      driver.fetch
-      driver.update_repository
-    end
-
-    context "driver.cache" do
-
-      before { driver.cache }
-
-      context "storage.exists? file1" do
-        subject { fake_core.storage.exists? fake_core.config.package_path(repo_name, "rev-0.0.2", "file1") }
-        it { should be_truthy }
-      end
-
-      context "find repository by url" do
-
-        let(:repo) do
-          ::SocialSnippet::Repository::Models::Repository.find_by(:url => repo_url)
-        end
-
-        context "repo.name" do
-          subject { repo.name }
-          it { should eq repo_name }
-        end
-
-        context "repo.has_versions?" do
-          subject { repo.has_versions? }
-          it { should be_truthy }
-        end
-
-        context "repo.latest_version" do
-          subject { repo.latest_version }
-          it { should eq "0.0.2" }
-        end
-
-      end
-
-      context "find package 0.0.2" do
-
-        let(:package) do
-          ::SocialSnippet::Repository::Models::Package.find_by(
-            :repo_name => repo_name,
-            :rev_hash => "rev-0.0.2",
-          )
-        end
-
-        context "package.paths" do
-          subject { package.paths }
-          it { should_not be_empty }
-          it { expect(subject).to include "file1" }
-          it { expect(subject).to include "dir1/file2" }
-          it { expect(subject).to include "dir1/subdir1/file3" }
-          it { expect(subject).to include "dir1/subdir2/file4" }
-          it { expect(subject).to include "dir1/subdir3/file5" }
-          it { expect(subject).to include "dir2/file6" }
-          it { expect(subject).to include "dir3/file7" }
-        end
-
-      end
-
-    end
-
+  context "driver.latest_version" do
+    subject { driver.latest_version }
+    it { should eq "0.0.2" }
   end
 
 end # ::SocialSnippet::Repository::Drivers::DriverBase

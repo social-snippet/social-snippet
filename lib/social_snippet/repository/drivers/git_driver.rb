@@ -4,10 +4,6 @@ module SocialSnippet::Repository::Drivers
 
     attr_reader :rugged_repo
 
-    def initialize(new_core, new_url, new_ref = nil)
-      super new_core, new_url
-    end
-
     def fetch
       dest_dir = ::Dir.mktmpdir
       @rugged_repo = ::Rugged::Repository.clone_at(url, dest_dir)
@@ -26,14 +22,14 @@ module SocialSnippet::Repository::Drivers
       rugged_repo.lookup(oid).read_raw.data
     end
 
-    def each_directory
+    def each_directory(ref)
       rugged_ref(ref).target.tree.each do |c|
         next unless c[:type] == :tree
         yield ::SocialSnippet::Repository::Drivers::Entry.new(c[:name])
       end
     end
 
-    def each_content(&block)
+    def each_file(ref, &block)
       walk_tree rugged_ref(ref).target.tree, ::Array.new, &block
     end
 
@@ -51,10 +47,6 @@ module SocialSnippet::Repository::Drivers
       end
     end
 
-    def each_ref
-      refs.each {|r| yield r }
-    end
-
     def current_ref
       rugged_repo.head.name.gsub /^refs\/heads\//, ""
     end
@@ -65,16 +57,6 @@ module SocialSnippet::Repository::Drivers
 
     def rev_hash(ref)
       rugged_ref(ref).target_id
-    end
-
-    def update
-      # TODO: write tests
-      fetch_status = rugged_repo.fetch("origin")
-      fetch_status[:received_bytes]
-    end
-
-    def checkout(ref_name)
-      rugged_repo.checkout ref_name, :strategy => [:force]
     end
 
     def refs

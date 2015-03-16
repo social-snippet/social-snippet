@@ -20,10 +20,9 @@ module SocialSnippet::Repository
 
     # @param url [String] The URL of repository
     # @reutrn [::SocialSnippet::Repository::Drivers::DriverBase]
-    def clone(url, ref = nil)
+    def clone(url)
       driver = resolve_driver(url)
       driver.fetch
-      driver.update_repository
       driver
     end
 

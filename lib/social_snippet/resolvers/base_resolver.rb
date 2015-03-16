@@ -79,8 +79,8 @@ module SocialSnippet
       repo = core.repo_manager.find_repository(tag.repo)
       # set latest version
       if tag.has_ref? === false
-        if repo.has_versions?
-          tag.set_ref repo.latest_version
+        if repo.has_package_versions?
+          tag.set_ref repo.latest_package_version
         else
           tag.set_ref repo.current_ref
         end
