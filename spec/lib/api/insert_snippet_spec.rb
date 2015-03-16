@@ -96,7 +96,7 @@ module SocialSnippet
       end
 
       before do
-        fake_core.repo_factory.add_driver FakeDriver
+        fake_core.driver_factory.add_driver FakeDriver
       end
 
       let(:example_repo_info) do

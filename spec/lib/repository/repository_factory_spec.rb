@@ -1,8 +1,8 @@
 require "spec_helper"
 
-describe ::SocialSnippet::Repository::RepositoryFactory do
+describe ::SocialSnippet::Repository::DriverFactory do
 
-  let(:repo_factory) { ::SocialSnippet::Repository::RepositoryFactory.new fake_core }
+  let(:driver_factory) { ::SocialSnippet::Repository::DriverFactory.new fake_core }
 
   class FakeGitDriver < ::SocialSnippet::Repository::Drivers::DriverBase
 
@@ -57,14 +57,14 @@ describe ::SocialSnippet::Repository::RepositoryFactory do
 
   context "reset drivers" do
   
-    before { repo_factory.reset_drivers }
+    before { driver_factory.reset_drivers }
 
     context "add FakeGitDriver" do
 
-      before { repo_factory.add_driver FakeGitDriver }
+      before { driver_factory.add_driver FakeGitDriver }
 
       context "clone git://github.com/user/repo" do
-        let(:driver) { repo_factory.clone "git://github.com/user/repo" }
+        let(:driver) { driver_factory.clone "git://github.com/user/repo" }
         it { expect(driver.snippet_json["name"]).to eq "fake-repo" }
       end
 
@@ -72,5 +72,5 @@ describe ::SocialSnippet::Repository::RepositoryFactory do
 
   end
 
-end # repo_factory
+end # driver_factory
 

@@ -107,8 +107,8 @@ describe ::SocialSnippet::Api::UpdateRepositoryApi do
         end # class FakeDriverGraphAlgo
 
         before do
-          fake_core.repo_factory.reset_drivers
-          fake_core.repo_factory.add_driver FakeDriverGraphAlgo
+          fake_core.driver_factory.reset_drivers
+          fake_core.driver_factory.add_driver FakeDriverGraphAlgo
         end
 
         context "update graph-algo" do
@@ -172,8 +172,8 @@ describe ::SocialSnippet::Api::UpdateRepositoryApi do
     end # class FakeDriverUpdateTest
 
     before do
-      fake_core.repo_factory.reset_drivers
-      fake_core.repo_factory.add_driver FakeDriverUpdateTest
+      fake_core.driver_factory.reset_drivers
+      fake_core.driver_factory.add_driver FakeDriverUpdateTest
     end
 
     context "install my-repo#1.0.0" do

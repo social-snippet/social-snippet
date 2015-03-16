@@ -72,8 +72,8 @@ module SocialSnippet::SpecHelpers
     @fake_repo_manager ||= ::SocialSnippet::Repository::RepositoryManager.new(fake_core)
   end
 
-  def fake_repo_factory
-    @fake_repo_factory ||= ::SocialSnippet::Repository::RepositoryFactory.new(fake_core)
+  def fake_driver_factory
+    @fake_driver_factory ||= ::SocialSnippet::Repository::DriverFactory.new(fake_core)
   end
 
   def fake_registry_client
@@ -89,7 +89,7 @@ module SocialSnippet::SpecHelpers
     allow(fake_core).to receive(:config).and_return fake_config
     allow(fake_core).to receive(:api).and_return fake_api
     allow(fake_core).to receive(:repo_manager).and_return fake_repo_manager
-    allow(fake_core).to receive(:repo_factory).and_return fake_repo_factory
+    allow(fake_core).to receive(:driver_factory).and_return fake_driver_factory
     allow(fake_core).to receive(:registry_client).and_return fake_registry_client
     allow_any_instance_of(::SocialSnippet::CommandLine::Command).to receive(:core).and_return fake_core
   end
@@ -100,7 +100,7 @@ module SocialSnippet
   ::RSpec.configure do |config|
     config.include SpecHelpers
     config.before { reset_fake_core }
-    config.before { fake_core.repo_factory.reset_drivers }
+    config.before { fake_core.driver_factory.reset_drivers }
   end
 
   # setup yaml document
