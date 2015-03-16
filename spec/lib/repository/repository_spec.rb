@@ -11,7 +11,7 @@ describe ::SocialSnippet::Repository::Models::Repository do
 
   before { ::SocialSnippet::Repository::Models::Repository.core = fake_core }
 
-  describe "#package_versions", :current => true do
+  describe "#package_versions" do
 
     context "add refs" do
 
@@ -54,6 +54,36 @@ describe ::SocialSnippet::Repository::Models::Repository do
         context "check latest_package_version" do
           subject { repo.latest_package_version }
           it { should eq "1.0.1" }
+        end
+
+        context "check package_minor_versions" do
+          subject { repo.package_minor_versions }
+          it { should include "1.0" }
+          it { should_not include "1.1" }
+        end
+
+        context "add package" do
+
+          before do
+            repo.add_package "1.1.0"
+          end
+
+          context "check latest_version" do
+            subject { repo.latest_version }
+            it { should eq "1.1.0" }
+          end
+
+          context "check latest_package_version" do
+            subject { repo.latest_package_version }
+            it { should eq "1.1.0" }
+          end
+
+          context "check package_minor_versions" do
+            subject { repo.package_minor_versions }
+            it { should include "1.0" }
+            it { should include "1.1" }
+          end
+
         end
 
       end
