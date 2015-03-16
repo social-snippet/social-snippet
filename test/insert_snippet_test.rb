@@ -24,6 +24,7 @@ describe SocialSnippet::Api::InsertSnippetApi do
       repo_ref = ::File.basename(s)
       repo.add_ref repo_ref, "rev-#{repo_ref}"
       repo.update_attributes! :current_ref => repo_ref if repo.current_ref.nil?
+      repo.add_package repo_ref
       pkg = ::SocialSnippet::Repository::Models::Package.find_or_create_by(
         :repo_name => repo_name,
         :rev_hash => "rev-#{repo_ref}",
