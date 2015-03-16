@@ -157,6 +157,12 @@ module SocialSnippet::Repository
         package.add_file content.path, content.data
       end
 
+      unless package.snippet_json["dependencies"].nil?
+        package.snippet_json["dependencies"].each do |dep_name, dep_ref|
+          package.add_dependency dep_name, dep_ref
+        end
+      end
+
       package
     end
 
