@@ -4,15 +4,13 @@ module SocialSnippet::Repository
   # usage: class GitDriver < DriverBase
   class Drivers::DriverBase
 
-    attr_reader :core
     attr_reader :url
 
     # @example
-    # driver = Driver.new(core, url, ref)
+    # driver = Driver.new(url, ref)
     # driver.fetch
     # driver.cache # => save data into storage
-    def initialize(new_core, new_url)
-      @core = new_core
+    def initialize(new_url)
       @url  = new_url
     end
 
