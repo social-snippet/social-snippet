@@ -11,6 +11,7 @@ require_relative "helpers/fakefs_helper"
 require_relative "helpers/social_snippet_helper"
 require "social_snippet/rspec/test_document"
 require "social_snippet/rspec/test_storage"
+require "social_snippet/rspec/test_driver"
 
 RSpec.configure do |config|
   config.before(:example, :without_fakefs => true) do

@@ -33,7 +33,7 @@ module SocialSnippet::Repository
       if driver_class.nil?
         raise "ERROR: driver not found"
       else
-        driver_class.new core, url
+        driver_class.new url
       end
     end
 

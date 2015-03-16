@@ -6,7 +6,7 @@ describe ::SocialSnippet::Repository::Drivers::DriverBase do
 
     context "new path/to/repo" do
 
-      let(:repo) { ::SocialSnippet::Repository::Drivers::DriverBase.new(fake_core, '/path/to/repo') }
+      let(:repo) { ::SocialSnippet::Repository::Drivers::DriverBase.new("/path/to/repo") }
 
       context "version only cases" do
 
