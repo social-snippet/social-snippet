@@ -29,7 +29,7 @@ module SocialSnippet::Repository::Drivers
       end
     end
 
-    def each_content(ref, &block)
+    def each_file(ref, &block)
       walk_tree rugged_ref(ref).target.tree, ::Array.new, &block
     end
 
