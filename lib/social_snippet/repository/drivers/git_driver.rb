@@ -4,10 +4,6 @@ module SocialSnippet::Repository::Drivers
 
     attr_reader :rugged_repo
 
-    def initialize(new_core, new_url, new_ref = nil)
-      super new_core, new_url
-    end
-
     def fetch
       dest_dir = ::Dir.mktmpdir
       @rugged_repo = ::Rugged::Repository.clone_at(url, dest_dir)
@@ -26,14 +22,14 @@ module SocialSnippet::Repository::Drivers
       rugged_repo.lookup(oid).read_raw.data
     end
 
-    def each_directory
+    def each_directory(ref)
       rugged_ref(ref).target.tree.each do |c|
         next unless c[:type] == :tree
         yield ::SocialSnippet::Repository::Drivers::Entry.new(c[:name])
       end
     end
 
-    def each_content(&block)
+    def each_content(ref, &block)
       walk_tree rugged_ref(ref).target.tree, ::Array.new, &block
     end
 
