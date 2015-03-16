@@ -65,7 +65,7 @@ module SocialSnippet::Repository
       raise "not implemented"
     end
 
-    def each_content(ref)
+    def each_file(ref)
       raise "not implemented"
     end
 
