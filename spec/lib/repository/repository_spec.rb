@@ -11,6 +11,57 @@ describe ::SocialSnippet::Repository::Models::Repository do
 
   before { ::SocialSnippet::Repository::Models::Repository.core = fake_core }
 
+  describe "#package_versions", :current => true do
+
+    context "add refs" do
+
+      before do
+        repo.add_ref "master", "rev-master"
+        repo.add_ref "1.0.0", "rev-1.0.0"
+        repo.add_ref "1.0.1", "rev-1.0.1"
+        repo.add_ref "1.1.0", "rev-1.1.0"
+      end
+
+      context "check package versions" do
+        subject { repo.package_versions }
+        it { should be_empty }
+      end
+
+      context "check package_ref_keys" do
+        subject { repo.package_ref_keys }
+        it { should be_empty }
+      end
+
+      context "add packages" do
+
+        before do
+          repo.add_package "master"
+          repo.add_package "1.0.0"
+          repo.add_package "1.0.1"
+        end
+
+        context "check package_ref_keys" do
+          subject { repo.package_ref_keys }
+          it { should_not be_empty }
+          it { should include "master" }
+        end
+
+        context "check latest_version" do
+          subject { repo.latest_version }
+          it { should eq "1.1.0" }
+        end
+
+        context "check latest_package_version" do
+          subject { repo.latest_package_version }
+          it { should eq "1.0.1" }
+        end
+
+      end
+
+    end
+
+  end #add_package
+
   describe "#add_ref" do
     context "add master" do
       before { repo.add_ref "master", "rev-master" }
