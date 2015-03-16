@@ -19,8 +19,8 @@ describe ::SocialSnippet::Api::UpdateRepositoryApi, :current => true do
       end
     end
 
-    def each_directory; end
-    def each_content; end
+    def each_directory(ref); end
+    def each_content(ref); end
     def each_ref(&block)
       refs.each &block
     end
