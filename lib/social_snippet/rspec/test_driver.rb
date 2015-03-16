@@ -17,6 +17,28 @@ RSpec.configure do
 
           before { driver.fetch }
 
+          describe "#each_file" do
+            context "get files" do
+              let(:files) { ::Hash.new }
+              before do
+                driver.each_file("1.0.2") do |file|
+                  files[file.path] = file.data
+                end
+              end
+              context "check files" do
+                subject { files }
+                it { should include "README.md" }
+                it { should include "snippet.json" }
+                it { should include "src/func.cpp" }
+                it { should include "src/func/sub_func_1.cpp" }
+                it { should include "src/func/sub_func_2.cpp" }
+                it { should include "src/func/sub_func_3.cpp" }
+                it { expect(files["snippet.json"]).to match "example-repo" }
+                it { expect(files["src/func/sub_func_1.cpp"]).to match "int sub_func_1()" }
+              end
+            end
+          end
+
           describe "#refs" do
             subject { driver.refs }
             it { should include "master" }
