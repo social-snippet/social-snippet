@@ -31,14 +31,14 @@ module SocialSnippet
           "rev-#{ref}"
         end
 
-        def each_directory(&block)
+        def each_directory(ref, &block)
           [
             ::SocialSnippet::Repository::Drivers::Entry.new("src", ""),
             ::SocialSnippet::Repository::Drivers::Entry.new("src/func", ""),
           ].each &block
         end
 
-        def each_content(&block)
+        def each_content(ref, &block)
           files = []
 
           # snippet.json
