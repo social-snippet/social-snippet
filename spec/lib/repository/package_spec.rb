@@ -13,6 +13,13 @@ describe ::SocialSnippet::Repository::Models::Package do
 
   before { ::SocialSnippet::Repository::Models::Package.core = fake_core }
 
+  describe "#display_name" do
+    context "package.display_name" do
+      subject { package.display_name }
+      it { should eq "#{repo_name}@#{rev_hash}" }
+    end
+  end
+
   context "add snippet.json" do
 
     before do
