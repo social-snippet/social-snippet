@@ -67,9 +67,13 @@ module SocialSnippet::Repository::Models
       refs.select {|ref| ::SocialSnippet::Version.is_version(ref) }
     end
 
+    def has_package_versions?
+      not package_versions.empty?
+    end
+
     # Check repository has version ref
     def has_versions?
-      versions.empty? === false
+      not versions.empty?
     end
 
     def core
