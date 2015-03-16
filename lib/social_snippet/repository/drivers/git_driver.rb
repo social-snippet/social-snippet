@@ -47,10 +47,6 @@ module SocialSnippet::Repository::Drivers
       end
     end
 
-    def each_ref
-      refs.each {|r| yield r }
-    end
-
     def current_ref
       rugged_repo.head.name.gsub /^refs\/heads\//, ""
     end
