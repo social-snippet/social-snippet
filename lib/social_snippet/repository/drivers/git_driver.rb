@@ -63,16 +63,6 @@ module SocialSnippet::Repository::Drivers
       rugged_ref(ref).target_id
     end
 
-    def update
-      # TODO: write tests
-      fetch_status = rugged_repo.fetch("origin")
-      fetch_status[:received_bytes]
-    end
-
-    def checkout(ref_name)
-      rugged_repo.checkout ref_name, :strategy => [:force]
-    end
-
     def refs
       all_refs = []
       all_refs.concat remote_refs
