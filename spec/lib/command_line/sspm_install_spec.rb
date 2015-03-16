@@ -156,7 +156,7 @@ describe ::SocialSnippet::CommandLine::SSpm::SubCommands::InstallCommand do
 
       end # already installed my-repo
 
-      context "prepare args" do
+      context "install new-repo" do
 
         let(:install_command) { ::SocialSnippet::CommandLine::SSpm::SubCommands::InstallCommand.new ["new-repo"] }
         before { install_command.init }
@@ -164,28 +164,41 @@ describe ::SocialSnippet::CommandLine::SSpm::SubCommands::InstallCommand do
         context "prepare stubs" do
 
           before do
-            allow(fake_core.repo_manager).to receive(:install).with("git://driver.test/user/my-repo", "1.2.3", kind_of(::Hash)).once do
-              ::SocialSnippet::Repository::Models::Repository.find_or_create_by :name => "my-repo"
+            allow(fake_core.repo_manager).to receive(:install).with("git://driver.test/user/my-repo", "1.2.3", kind_of(::Hash)) do
+              repo = ::SocialSnippet::Repository::Models::Repository.find_or_create_by(:name => "my-repo")
+              repo.add_ref "1.2.3", "rev-1.2.3"
+              repo.add_package "1.2.3"
               ::SocialSnippet::Repository::Models::Package.create(
                 :repo_name => "my-repo",
                 :rev_hash => "rev-1.2.3",
               )
             end
-            allow(fake_core.repo_manager).to receive(:install).with("git://driver.test/user/new-repo", nil, kind_of(::Hash)).once do
+            allow(fake_core.repo_manager).to receive(:install).with("git://driver.test/user/new-repo", nil, kind_of(::Hash)) do
+              repo = ::SocialSnippet::Repository::Models::Repository.find_or_create_by(:name => "new-repo")
               pkg = ::SocialSnippet::Repository::Models::Package.new
               pkg.add_dependency "my-repo", "1.2.3"
               pkg
             end
           end
 
-          before do
-            allow(fake_core.api).to receive(:install_repository).and_call_original
-          end
+          before { allow(fake_core.api).to receive(:install_repository).and_call_original }
 
           context "run-command" do
+
             before { install_command.run }
             it { expect(fake_core.api).to have_received(:install_repository).with("git://driver.test/user/my-repo", "1.2.3", kind_of(::Hash)).once }
             it { expect(fake_core.api).to have_received(:install_repository).with("git://driver.test/user/new-repo", nil, kind_of(::Hash)).once }
+
+            context "re-install new-repo" do
+              let(:re_install_command) { ::SocialSnippet::CommandLine::SSpm::SubCommands::InstallCommand.new ["new-repo"] }
+              before { re_install_command.init }
+              context "run-command" do
+                before { re_install_command.run }
+                it { expect(fake_core.api).to have_received(:install_repository).with("git://driver.test/user/my-repo", "1.2.3", kind_of(::Hash)).once }
+                it { expect(fake_core.api).to have_received(:install_repository).with("git://driver.test/user/new-repo", nil, kind_of(::Hash)).twice }
+              end
+            end
+
           end
 
         end # prepare stubs
