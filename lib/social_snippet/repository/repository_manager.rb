@@ -153,7 +153,7 @@ module SocialSnippet::Repository
       driver.each_directory(ref) do |dir|
         package.add_directory dir.path
       end
-      driver.each_content(ref) do |content|
+      driver.each_file(ref) do |content|
         package.add_file content.path, content.data
       end
 
