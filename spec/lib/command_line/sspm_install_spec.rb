@@ -10,12 +10,23 @@ describe ::SocialSnippet::CommandLine::SSpm::SubCommands::InstallCommand do
     end
   end
 
-  describe "$ sspm install" do
+  let(:spy_api) do
+    double "api", {
+      :on => nil,
+      :install_repository => nil,
+    }
+  end
 
-    before do
-      allow(fake_core.api).to receive(:install_repository).and_return false
-      allow(fake_core.api).to receive(:resolve_name_by_registry).and_return false
+  before do
+    allow(spy_api).to receive(:resolve_name_by_registry).with("foo") do
+      "url-foo"
     end
+    allow(spy_api).to receive(:resolve_name_by_registry).with("bar") do
+      "url-bar"
+    end
+  end # prepare spy_api
+
+  describe "$ sspm install" do
 
     context "create snippet.json" do
 
@@ -29,24 +40,41 @@ describe ::SocialSnippet::CommandLine::SSpm::SubCommands::InstallCommand do
         }.to_json
       end
 
-      before do
-        allow(fake_core.api).to receive(:resolve_name_by_registry).with("foo") do
-          "url-foo"
-        end
-        allow(fake_core.api).to receive(:resolve_name_by_registry).with("bar") do
-          "url-bar"
-        end
-      end
+      context "prepare command" do
 
-      context "install by snippet.json" do
         let(:install_command) { ::SocialSnippet::CommandLine::SSpm::SubCommands::InstallCommand.new [] }
-        it { expect(fake_core.api).to receive(:install_repository).with("url-foo", "1.2.3", kind_of(::Hash)).once }
-        it { expect(fake_core.api).to receive(:install_repository).with("url-bar", "0.0.1", kind_of(::Hash)).once }
-        after do
-          install_command.init
-          install_command.run
+
+        before do
+          allow(fake_core).to receive(:api).and_return spy_api
         end
-      end
+
+        context "run command" do
+
+          before do
+            install_command.init
+            install_command.run
+          end
+
+          it { expect(spy_api).to have_received(:install_repository).with("url-foo", "1.2.3", kind_of(::Hash)).once }
+          it { expect(spy_api).to have_received(:install_repository).with("url-bar", "0.0.1", kind_of(::Hash)).once }
+
+          context "re-install" do
+
+            let(:re_install_command) { ::SocialSnippet::CommandLine::SSpm::SubCommands::InstallCommand.new [] }
+
+            before do
+              re_install_command.init
+              re_install_command.run
+            end
+
+            it { expect(spy_api).to have_received(:install_repository).with("url-foo", "1.2.3", kind_of(::Hash)).twice }
+            it { expect(spy_api).to have_received(:install_repository).with("url-bar", "0.0.1", kind_of(::Hash)).twice }
+
+          end # re-install
+
+        end # run command
+
+      end # prepare command
 
     end # create snippet.json
 
