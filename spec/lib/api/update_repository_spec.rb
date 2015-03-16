@@ -91,7 +91,7 @@ describe ::SocialSnippet::Api::UpdateRepositoryApi do
           end
 
           def each_directory(ref); end
-          def each_content(ref, &block)
+          def each_file(ref, &block)
             [
               ::SocialSnippet::Repository::Drivers::Entry.new("snippet.json", snippet_json.to_json)
             ].each(&block)
@@ -144,7 +144,7 @@ describe ::SocialSnippet::Api::UpdateRepositoryApi do
       end
 
       def each_directory(ref); end
-      def each_content(ref, &block)
+      def each_file(ref, &block)
         [
           ::SocialSnippet::Repository::Drivers::Entry.new("snippet.json", snippet_json.to_json),
         ].each(&block)

@@ -40,7 +40,7 @@ describe ::SocialSnippet::Repository::RepositoryFactory do
       end
     end
 
-    def each_content
+    def each_file
       [
         ::SocialSnippet::Repository::Drivers::Entry.new("snippet.json", {:name => "fake-repo"}.to_json),
         ::SocialSnippet::Repository::Drivers::Entry.new("path/to/file", "file"),

@@ -38,7 +38,7 @@ module SocialSnippet
           ].each &block
         end
 
-        def each_content(ref, &block)
+        def each_file(ref, &block)
           files = []
 
           # snippet.json

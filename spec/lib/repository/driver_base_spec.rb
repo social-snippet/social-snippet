@@ -69,7 +69,7 @@ describe ::SocialSnippet::Repository::Drivers::DriverBase do
 
   before do
     allow(driver).to(
-      receive(:each_content)
+      receive(:each_file)
         .and_yield(::SocialSnippet::Repository::Drivers::Entry.new "file1", "")
         .and_yield(::SocialSnippet::Repository::Drivers::Entry.new "dir1/file2", "")
         .and_yield(::SocialSnippet::Repository::Drivers::Entry.new "dir1/subdir1/file3", "")
