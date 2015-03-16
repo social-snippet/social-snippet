@@ -2,7 +2,7 @@ require "spec_helper"
 
 module SocialSnippet::Repository
 
-  describe RepositoryManager, :current => true do
+  describe RepositoryManager do
 
     let(:rest_resource) { ::RestClient::Resource.new "http://api.server/api/dummy" }
 
