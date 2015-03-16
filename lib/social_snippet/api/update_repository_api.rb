@@ -3,39 +3,16 @@ module SocialSnippet::Api::UpdateRepositoryApi
   # Update a repository
   # $ sspm update repo-name
   def update_repository(name, options = {})
-    display_name = name
-
     unless core.repo_manager.exists?(name)
-      raise "ERROR: #{display_name} is not installed"
+      raise "ERROR: #{name} is not installed"
     end
 
-    output "Fetching update for #{display_name}"
+    output "Fetching update for #{name}"
     repo = core.repo_manager.find_repository(name)
     driver = core.repo_factory.clone(repo.url)
 
-    # nothing to update
-    if core.repo_manager.exists?(name, repo.latest_version)
+    unless update_repository_for_each_minor_version(driver, repo, options)
       output "Everything up-to-date"
-      return
-    end
-
-    output "Updating #{display_name}"
-    unless options[:dry_run]
-      if repo.has_versions?
-        version = repo.latest_version
-        output "Bumping version into #{version}"
-        display_name = "#{name}##{version}"
-        driver.cache version
-      end
-    end
-
-    output "Success #{display_name}"
-
-    # update deps
-    if driver.package.has_dependencies?
-      output "Updating #{display_name}'s dependencies"
-      install_missing_dependencies driver.package.dependencies, options
-      output "Finish updating #{display_name}'s dependencies"
     end
   end
 
@@ -45,6 +22,30 @@ module SocialSnippet::Api::UpdateRepositoryApi
     core.repo_manager.each_repo do |repo|
       update_repository repo.name, options
     end
+  end
+
+  def update_repository_for_each_minor_version(driver, repo, options)
+    repo.package_minor_versions.any? do |minor_version|
+      latest_version = repo.latest_version(minor_version)
+      next false if core.repo_manager.exists?(repo.name, latest_version)
+
+      output "Updating #{repo.name}"
+      package = create_new_version_package(driver, repo, latest_version)
+      output "Success #{package.display_name}"
+
+      if package.has_dependencies?
+        output "Updating #{display_name}'s dependencies"
+        install_missing_dependencies driver.package.dependencies, options
+        output "Finish updating #{display_name}'s dependencies"
+      end
+
+      true
+    end
+  end
+
+  def create_new_version_package(driver, repo, new_version)
+    output "Bumping version into #{new_version}"
+    core.repo_manager.create_package driver, new_version
   end
 
 end
