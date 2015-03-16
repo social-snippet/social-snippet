@@ -9,7 +9,7 @@ module SocialSnippet::Api::UpdateRepositoryApi
 
     output "Fetching update for #{name}"
     repo = core.repo_manager.find_repository(name)
-    driver = core.repo_factory.clone(repo.url)
+    driver = core.driver_factory.clone(repo.url)
     # reload repository
     repo = core.repo_manager.update_repository(driver, repo.url)
 

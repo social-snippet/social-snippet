@@ -1,6 +1,6 @@
 module SocialSnippet::Repository
 
-  class RepositoryFactory
+  class DriverFactory
 
     @@drivers = [Drivers::GitDriver]
 
@@ -39,4 +39,4 @@ module SocialSnippet::Repository
 
   end # class << self
 
-end # RepositoryFactory
+end # DriverFactory

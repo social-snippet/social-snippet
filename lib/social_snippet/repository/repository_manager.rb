@@ -122,7 +122,7 @@ module SocialSnippet::Repository
     end
 
     def install(url, ref, options = ::Hash.new)
-      driver = core.repo_factory.clone(url)
+      driver = core.driver_factory.clone(url)
       ref ||= resolve_ref_by_driver(driver)
       repo = update_repository(driver, url)
       create_package driver, ref

@@ -3,7 +3,7 @@ class SocialSnippet::Core
   attr_reader :input_stream
   attr_reader :output_stream
   attr_reader :repo_manager
-  attr_reader :repo_factory
+  attr_reader :driver_factory
   attr_reader :config
   attr_reader :registry_client
   attr_reader :logger
@@ -25,7 +25,7 @@ class SocialSnippet::Core
     ::SocialSnippet::Repository::Models::Package.core = self
     ::SocialSnippet::Repository::Models::Repository.core = self
     @repo_manager = ::SocialSnippet::Repository::RepositoryManager.new(self)
-    @repo_factory = ::SocialSnippet::Repository::RepositoryFactory.new(self)
+    @driver_factory = ::SocialSnippet::Repository::DriverFactory.new(self)
     @registry_client = ::SocialSnippet::Registry::RegistryClient.new(self)
     @api = ::SocialSnippet::Api.new(self)
   end
