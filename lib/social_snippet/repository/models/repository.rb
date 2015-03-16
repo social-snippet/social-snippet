@@ -6,6 +6,7 @@ module SocialSnippet::Repository::Models
 
     field :url, :type => String
     field :name, :type => String
+    field :current_ref, :type => String
     field :refs, :type => Array, :default => ::Array.new
     # rev_hash[ref] => Commit ID
     field :rev_hash, :type => Hash, :default => ::Hash.new
@@ -31,6 +32,12 @@ module SocialSnippet::Repository::Models
 
     def package_ref_keys
       package_refs.map {|k, _| k }
+    end
+
+    def package_minor_versions
+      package_versions.map do |v|
+        ::SocialSnippet::Version.minor v
+      end.uniq
     end
 
     def latest_package_version(pattern = "")
