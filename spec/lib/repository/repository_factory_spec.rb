@@ -49,10 +49,8 @@ describe ::SocialSnippet::Repository::RepositoryFactory do
       end
     end
 
-    def each_ref
-      ["1.2.3"].each do |ref|
-        yield ref
-      end
+    def refs
+      ["1.2.3"]
     end
 
   end

@@ -96,9 +96,6 @@ describe ::SocialSnippet::Api::UpdateRepositoryApi do
               ::SocialSnippet::Repository::Drivers::Entry.new("snippet.json", snippet_json.to_json)
             ].each(&block)
           end
-          def each_ref(&block)
-            refs.each &block
-          end
 
           def refs
             ["1.0.0", "1.0.1"]
@@ -151,9 +148,6 @@ describe ::SocialSnippet::Api::UpdateRepositoryApi do
         [
           ::SocialSnippet::Repository::Drivers::Entry.new("snippet.json", snippet_json.to_json),
         ].each(&block)
-      end
-      def each_ref(&block)
-        refs.each &block
       end
 
       def refs

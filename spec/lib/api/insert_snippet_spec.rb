@@ -90,10 +90,6 @@ module SocialSnippet
           files.each &block
         end
 
-        def each_ref(&block)
-          refs.each &block
-        end
-
         def self.target_url?(url)
           "dummy" === ::URI.parse(url).scheme
         end
