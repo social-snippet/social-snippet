@@ -4,7 +4,7 @@ describe ::SocialSnippet::Repository::Drivers::GitDriver, :without_fakefs => tru
 
   let(:driver) do
     url = "git://github.com/social-snippet/example-repo"
-    ::SocialSnippet::Repository::Drivers::GitDriver.new fake_core, url
+    ::SocialSnippet::Repository::Drivers::GitDriver.new url
   end
 
   context "fetch" do
