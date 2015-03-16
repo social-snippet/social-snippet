@@ -33,6 +33,10 @@ module SocialSnippet::Repository
       refs.select {|ref| ::SocialSnippet::Version.is_version(ref) }
     end
 
+    def each_ref(&block)
+      refs.each &block
+    end
+
     def has_versions?
       not versions.empty?
     end
@@ -54,10 +58,6 @@ module SocialSnippet::Repository
     end
 
     def fetch
-      raise "not implemented"
-    end
-
-    def each_ref
       raise "not implemented"
     end
 
