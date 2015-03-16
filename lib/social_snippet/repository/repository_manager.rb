@@ -144,7 +144,7 @@ module SocialSnippet::Repository
       package = Models::Package.create(
         :repo_name => driver.snippet_json["name"],
         :rev_hash => driver.rev_hash(ref),
-        :name => "#{driver.snippet_json["name"]}@#{ref}",
+        :name => "#{driver.snippet_json["name"]}##{ref}",
       )
 
       driver.each_directory(ref) do |dir|
