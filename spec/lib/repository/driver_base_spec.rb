@@ -5,7 +5,7 @@ describe ::SocialSnippet::Repository::Drivers::DriverBase do
   let(:repo_url) { "git://github.com/user/repo" }
   let(:repo_name) { "my-repo" }
   let(:driver) do
-    ::SocialSnippet::Repository::Drivers::DriverBase.new fake_core, repo_url
+    ::SocialSnippet::Repository::Drivers::DriverBase.new repo_url
   end
 
   before do
