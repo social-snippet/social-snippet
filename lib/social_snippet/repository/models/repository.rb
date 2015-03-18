@@ -16,14 +16,21 @@ module SocialSnippet::Repository::Models
     def add_package(ref)
       modifier = ::Hash.new
       modifier[ref] = rev_hash[ref]
-      push :package_refs => modifier
+      push_to_hash :package_refs => modifier
     end
 
     def add_ref(ref, rev_hash)
       add_to_set :refs => ref
       modifier = ::Hash.new
       modifier[ref] = rev_hash
-      push :rev_hash => modifier
+      push_to_hash :rev_hash => modifier
+    end
+
+    def push_to_hash(attrs)
+      attrs.each do |key, modifier|
+        send(key).merge! modifier
+      end
+      save!
     end
 
     def has_ref?(ref)
