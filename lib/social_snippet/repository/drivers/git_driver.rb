@@ -22,34 +22,35 @@ module SocialSnippet::Repository::Drivers
       rugged_repo.lookup(oid).read_raw.data
     end
 
-    def each_directory(ref)
+    def each_directory(ref, &block)
+      yield_entry ref, :tree, &block
+    end
+
+    def each_file(ref, &block)
+      yield_entry(ref, :blob, &block)
+    end
+
+    def yield_entry(ref, target_type)
       root = rugged_ref(ref).target.tree
-      walk_tree(root, ::Array.new) do |path, item|
-        if item[:type] === :tree
+      walk_tree(root, target_type) do |path, item|
+        if target_type === :blob
           yield ::SocialSnippet::Repository::Drivers::Entry.new(path, read_file(item[:oid]))
+        else
+          yield ::SocialSnippet::Repository::Drivers::Entry.new(path)
         end
       end
     end
 
-    def each_file(ref)
-      root = rugged_ref(ref).target.tree
-      walk_tree(root, ::Array.new) do |path, item|
-        if item[:type] === :blob
-          yield ::SocialSnippet::Repository::Drivers::Entry.new(path, read_file(item[:oid]))
-        end
-      end
-    end
-
-    def walk_tree(tree, parents, &block)
+    def walk_tree(tree, target_type, parents = ::Array.new, &block)
       tree.each do |item|
         if item[:type] === :tree
-          yield ::File.join(*parents, item[:name]), item
+          yield ::File.join(*parents, item[:name]), item if target_type === :tree
           parents.push item[:name]
           sub_tree = rugged_repo.lookup(item[:oid])
-          walk_tree(sub_tree, parents, &block)
+          walk_tree(sub_tree, target_type, parents, &block)
           parents.pop
         elsif item[:type] === :blob
-          yield ::File.join(*parents, item[:name]), item
+          yield ::File.join(*parents, item[:name]), item if target_type === :blob
         end
       end
     end
