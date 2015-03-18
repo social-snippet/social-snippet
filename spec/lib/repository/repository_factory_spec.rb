@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe ::SocialSnippet::Repository::DriverFactory do
 
-  let(:driver_factory) { ::SocialSnippet::Repository::DriverFactory.new fake_core }
+  let(:driver_factory) { ::SocialSnippet::Repository::DriverFactory }
 
   class FakeGitDriver < ::SocialSnippet::Repository::Drivers::DriverBase
 

@@ -73,7 +73,7 @@ module SocialSnippet::SpecHelpers
   end
 
   def fake_driver_factory
-    @fake_driver_factory ||= ::SocialSnippet::Repository::DriverFactory.new(fake_core)
+    @fake_driver_factory ||= ::SocialSnippet::Repository::DriverFactory
   end
 
   def fake_registry_client
