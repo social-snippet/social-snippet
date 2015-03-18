@@ -38,9 +38,16 @@ module SocialSnippet::Repository::Models
     end
 
     def add_dependency(name, ref)
-      modifier = {}
+      modifier = ::Hash.new
       modifier[name] = ref
-      push :dependencies => modifier
+      push_to_hash :dependencies => modifier
+    end
+
+    def push_to_hash(attrs)
+      attrs.each do |key, modifier|
+        send(key).merge! modifier
+      end
+      save!
     end
 
     def has_dependencies?
