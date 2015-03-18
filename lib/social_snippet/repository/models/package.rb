@@ -8,7 +8,7 @@ module SocialSnippet::Repository::Models
     field :rev_hash, :type => String   # key
     field :name, :type => String
     field :paths, :type => Array, :default => ::Array.new
-    field :dependencies, :type => Hash, :default => ::Hash.new
+    field :dependencies_array, :type => Array, :default => ::Array.new
 
     def display_name
       name || "#{repo_name}@#{rev_hash}"
@@ -37,17 +37,19 @@ module SocialSnippet::Repository::Models
       core.storage.write file_path, data
     end
 
-    def add_dependency(name, ref)
-      modifier = ::Hash.new
-      modifier[name] = ref
-      push_to_hash :dependencies => modifier
+    def add_dependency(new_name, new_ref)
+      add_to_set :dependencies_array => {
+        :name => new_name,
+        :ref => new_ref,
+      }
+      @dependencies_cache = nil
     end
 
-    def push_to_hash(attrs)
-      attrs.each do |key, modifier|
-        send(key).merge! modifier
+    def dependencies
+      @dependencies_cache ||= dependencies_array.inject(::Hash.new) do |dependencies, info|
+        dependencies[info[:name]] = info[:ref]
+        dependencies
       end
-      save!
     end
 
     def has_dependencies?
