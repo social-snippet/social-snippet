@@ -25,7 +25,7 @@ class SocialSnippet::Core
     ::SocialSnippet::Repository::Models::Package.core = self
     ::SocialSnippet::Repository::Models::Repository.core = self
     @repo_manager = ::SocialSnippet::Repository::RepositoryManager.new(self)
-    @driver_factory = ::SocialSnippet::Repository::DriverFactory.new(self)
+    @driver_factory = ::SocialSnippet::Repository::DriverFactory # TODO
     @registry_client = ::SocialSnippet::Registry::RegistryClient.new(self)
     @api = ::SocialSnippet::Api.new(self)
   end
