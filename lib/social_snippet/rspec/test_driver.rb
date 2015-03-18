@@ -25,17 +25,35 @@ RSpec.configure do
                   files[file.path] = file.data
                 end
               end
-              context "check files" do
-                subject { files }
-                it { should include "README.md" }
-                it { should include "snippet.json" }
-                it { should include "src/func.cpp" }
-                it { should include "src/func/sub_func_1.cpp" }
-                it { should include "src/func/sub_func_2.cpp" }
-                it { should include "src/func/sub_func_3.cpp" }
-                it { expect(files["snippet.json"]).to match "example-repo" }
-                it { expect(files["src/func/sub_func_1.cpp"]).to match "int sub_func_1()" }
+              subject { files }
+              it { should include "README.md" }
+              it { should include "snippet.json" }
+              it { should include "src/func.cpp" }
+              it { should include "src/func/sub_func_1.cpp" }
+              it { should include "src/func/sub_func_2.cpp" }
+              it { should include "src/func/sub_func_3.cpp" }
+              it { expect(files["snippet.json"]).to match "example-repo" }
+              it { expect(files["src/func/sub_func_1.cpp"]).to match "int sub_func_1()" }
+            end
+          end
+
+          describe "#each_directory" do
+            context "find directories" do
+              let(:directories) { ::Array.new }
+              before do
+                driver.each_directory("1.0.2") do |dir|
+                  directories.push dir.path
+                end
               end
+              subject { directories }
+              it { should include "src" }
+              it { should include "src/func" }
+              it { should_not include "README.md" }
+              it { should_not include "snippet.json" }
+              it { should_not include "src/func.cpp" }
+              it { should_not include "src/func/sub_func_1.cpp" }
+              it { should_not include "src/func/sub_func_2.cpp" }
+              it { should_not include "src/func/sub_func_3.cpp" }
             end
           end
 
