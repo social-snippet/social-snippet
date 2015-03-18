@@ -9,28 +9,39 @@ module SocialSnippet::Repository::Models
     field :current_ref, :type => String
     field :refs, :type => Array, :default => ::Array.new
     # rev_hash[ref] => Commit ID
-    field :rev_hash, :type => Hash, :default => ::Hash.new
+    field :rev_hash_array, :type => Array, :default => ::Array.new
     # package_refs[ref] => rev_hash
-    field :package_refs, :type => Hash, :default => ::Hash.new
+    field :package_refs_array, :type => Array, :default => ::Array.new
 
-    def add_package(ref)
-      modifier = ::Hash.new
-      modifier[ref] = rev_hash[ref]
-      push_to_hash :package_refs => modifier
-    end
-
-    def add_ref(ref, rev_hash)
-      add_to_set :refs => ref
-      modifier = ::Hash.new
-      modifier[ref] = rev_hash
-      push_to_hash :rev_hash => modifier
-    end
-
-    def push_to_hash(attrs)
-      attrs.each do |key, modifier|
-        send(key).merge! modifier
+    def rev_hash
+      @rev_hash_cache ||= rev_hash_array.inject(::Hash.new) do |rev_hash, info|
+        rev_hash[info[:ref]] = info[:rev_hash]
+        rev_hash
       end
-      save!
+    end
+
+    def package_refs
+      @package_refs_cache ||= package_refs_array.inject(::Hash.new) do |package_refs, info|
+        package_refs[info[:ref]] = info[:rev_hash]
+        package_refs
+      end
+    end
+
+    def add_package(new_ref)
+      add_to_set :package_refs_array => {
+        :ref => new_ref,
+        :rev_hash => rev_hash[new_ref],
+      }
+      @package_refs_cache = nil
+    end
+
+    def add_ref(new_ref, new_rev_hash)
+      add_to_set :refs => new_ref
+      add_to_set :rev_hash_array => {
+        :ref => new_ref,
+        :rev_hash => new_rev_hash,
+      }
+      @rev_hash_cache = nil
     end
 
     def has_ref?(ref)
