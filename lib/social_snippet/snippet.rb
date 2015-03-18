@@ -2,19 +2,21 @@ module SocialSnippet
 
   class Snippet
 
+    attr_reader :core
     attr_reader :filepath
     attr_reader :code
     attr_reader :flag_no_tag
 
     # Constructor
-    def initialize(snippet_path)
+    def initialize(new_core, snippet_path)
+      @core = new_core
       @filepath = snippet_path
       read_file unless filepath.nil?
     end
 
     def read_file
       begin
-        @code = ::File.read(filepath).split($/)
+        @code = core.storage.read(filepath).split($/)
       rescue ::Errno::ENOENT => e
         @code = ["ERROR: #{e.to_s}"]
       end
@@ -44,9 +46,9 @@ module SocialSnippet
     class << self
 
       # Create instance by text
-      def new_text(s)
+      def new_text(new_core, s)
         raise "must be passed string" unless s.is_a?(String)
-        snippet = self.new(nil)
+        snippet = self.new(new_core, nil)
         snippet.read_text s
         snippet
       end
