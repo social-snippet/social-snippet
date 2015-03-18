@@ -29,7 +29,7 @@ module SocialSnippet
           ]
         end
 
-        let(:snippet) { Snippet.new nil }
+        let(:snippet) { Snippet.new fake_core, nil }
         before { snippet.read_text input.join($/) }
         subject { snippet.lines }
         it { should eq expected }

@@ -22,7 +22,7 @@ describe SocialSnippet::Resolvers::InsertResolver do
         pkg
       end
       allow(fake_core.repo_manager).to receive(:get_snippet) do |c, t|
-        ::SocialSnippet::Snippet.new_text(t.repo)
+        ::SocialSnippet::Snippet.new_text(fake_core, t.repo)
       end
     end
 
@@ -32,11 +32,11 @@ describe SocialSnippet::Resolvers::InsertResolver do
 
         before do
           allow(fake_core.repo_manager).to receive(:get_snippet) do |c, t|
-            ::SocialSnippet::Snippet.new_text([
+            ::SocialSnippet::Snippet.new_text(fake_core, [
               "def foo",
               "  42",
               "end",
-            ].join $/)
+            ].join($/))
           end
         end # prepare snippet
 
