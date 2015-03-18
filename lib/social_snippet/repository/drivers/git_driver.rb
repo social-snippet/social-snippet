@@ -92,4 +92,6 @@ module SocialSnippet::Repository::Drivers
 
   end # GitDriver
 
+  ::SocialSnippet::Repository::DriverFactory.add_driver GitDriver
+
 end # SocialSnippet
