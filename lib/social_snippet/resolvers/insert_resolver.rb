@@ -26,7 +26,7 @@ module SocialSnippet
     def insert(text)
       raise "must be passed string" unless text.is_a?(String)
 
-      snippet = Snippet.new_text(text)
+      snippet = Snippet.new_text(core, text)
       snippet.snippet_tags.each do |tag_info|
         visit tag_info[:tag]
       end
