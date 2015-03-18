@@ -17,6 +17,15 @@ RSpec.configure do
 
           before { driver.fetch }
 
+          describe "#snippet_json" do
+
+            context "driver.snippet_json" do
+              subject { driver.snippet_json }
+              it { should include "name" => "example-repo" }
+            end
+
+          end
+
           describe "#each_file" do
             context "get files" do
               let(:files) { ::Hash.new }
