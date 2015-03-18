@@ -1,13 +1,11 @@
-module SocialSnippet::Repository
+module SocialSnippet::Repository::DriverFactory
 
-  class DriverFactory
+  @@drivers = []
 
-    @@drivers = [Drivers::GitDriver]
+  class << self
 
-    attr_reader :core
-
-    def initialize(new_core)
-      @core = new_core
+    def drivers
+      @@drivers
     end
 
     def reset_drivers
@@ -15,7 +13,7 @@ module SocialSnippet::Repository
     end
 
     def add_driver(driver_class)
-      @@drivers.push driver_class
+      drivers.push driver_class
     end
 
     # @param url [String] The URL of repository
@@ -27,7 +25,7 @@ module SocialSnippet::Repository
     end
 
     def resolve_driver(url)
-      driver_class = @@drivers.select do |driver_class|
+      driver_class = drivers.select do |driver_class|
         driver_class.target? url
       end.first
       if driver_class.nil?
@@ -40,3 +38,4 @@ module SocialSnippet::Repository
   end # class << self
 
 end # DriverFactory
+
