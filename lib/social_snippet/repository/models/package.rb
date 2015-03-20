@@ -24,6 +24,7 @@ module SocialSnippet::Repository::Models
 
     def add_directory(path)
       path = normalize_path(path)
+      add_path path
       add_path path + "/"
       dir_path = real_path(path)
       core.storage.mkdir_p dir_path
@@ -71,6 +72,7 @@ module SocialSnippet::Repository::Models
 
     def glob(glob_pattern)
       paths.select do |path|
+        next if /\/$/ === path
         ::File.fnmatch glob_pattern, path, ::File::FNM_PATHNAME
       end
     end
