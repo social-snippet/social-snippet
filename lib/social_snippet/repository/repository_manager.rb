@@ -80,10 +80,10 @@ module SocialSnippet::Repository
       repo_name = get_repo_name(keyword)
       package   = find_package(repo_name)
       file_path = keyword_filepath(keyword)
-      glob_path = "#{file_path}*"
+      glob_path = "#{package.snippet_json["main"]}/#{file_path}*"
 
       package.glob(glob_path).map do |cand_file_path|
-        if ::File.directory?(cand_file_path)
+        if core.storage.directory?(cand_file_path)
           Pathname(cand_file_path).basename.to_s + "/"
         else
           Pathname(cand_file_path).basename.to_s + ">"
