@@ -8,7 +8,6 @@ require "version_sorter"
 require "rest_client"
 require "optparse"
 require "uri"
-require "rugged"
 require "wisper"
 require "securerandom"
 
@@ -32,6 +31,9 @@ require_relative "social_snippet/storage_backend"
 require_relative "social_snippet/storage"
 require_relative "social_snippet/document_backend"
 require_relative "social_snippet/document"
+
+# supports
+require "social_snippet/supports/git"
 
 # use file system as default storage backend
 SocialSnippet::StorageBackend::FileSystemStorage.activate!
