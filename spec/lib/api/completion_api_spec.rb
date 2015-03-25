@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ::SocialSnippet::Api::CompletionApi, :current => true do
+describe ::SocialSnippet::Api::CompletionApi do
 
   context "prepare repos" do
 

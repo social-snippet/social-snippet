@@ -6,7 +6,7 @@ RSpec.configure do
 
       let(:storage) { ::SocialSnippet::Storage.new }
 
-      describe "#directory?", :current => true do
+      describe "#directory?" do
 
         context "mkdir dir" do
 
