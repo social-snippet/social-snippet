@@ -71,9 +71,17 @@ module SocialSnippet::Repository
       end
     end
 
+    def all_repositories
+      Models::Repository.all.map {|repo| repo.name }
+    end
+
     def complete_repo_name(keyword)
       repo_name = get_repo_name_prefix(keyword)
-      find_repositories_start_with(repo_name)
+      if repo_name.empty?
+        all_repositories
+      else
+        find_repositories_start_with(repo_name)
+      end
     end
 
     def complete_file_name(keyword)
@@ -102,11 +110,11 @@ module SocialSnippet::Repository
     end
 
     def get_repo_name(keyword)
-      /^[^@]*@[^<]+<([^:#>]*[^:#>])/.match(keyword)[1]
+      /^[^@]*@[^<]+<([^:#>]*)/.match(keyword)[1]
     end
 
     def get_repo_name_prefix(keyword)
-      /^[^@]*@[^<]+<([^:#>]*[^:#>])$/.match(keyword)[1]
+      /^[^@]*@[^<]+<([^:#>]*)$/.match(keyword)[1]
     end
 
     def keyword_filepath(keyword)
