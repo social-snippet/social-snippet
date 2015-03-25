@@ -43,16 +43,16 @@ RSpec.configure do
               it { should be_truthy }
             end
             context "file? dir" do
-              subject { storage.directory? "dir" }
+              subject { storage.file? "dir" }
               it { should be_falsey }
             end
             context "file? dir/" do
-              subject { storage.directory? "dir/" }
+              subject { storage.file? "dir/" }
               it { should be_falsey }
             end
             context "file? dir/file.txt" do
               subject { storage.file? "dir/file.txt" }
-              it { should be_truty }
+              it { should be_truthy }
             end
             context "directory? dir/file.txt" do
               subject { storage.directory? "dir/file.txt" }
