@@ -71,22 +71,38 @@ module SocialSnippet::Repository
       end
     end
 
+    def all_repositories
+      Models::Repository.all.map {|repo| repo.name }
+    end
+
     def complete_repo_name(keyword)
       repo_name = get_repo_name_prefix(keyword)
-      find_repositories_start_with(repo_name)
+      if repo_name.empty?
+        all_repositories
+      else
+        find_repositories_start_with(repo_name)
+      end
+    end
+
+    def package_glob_path(package, path)
+      if package.snippet_json["main"].nil?
+        "#{path}*"
+      else
+        "#{package.snippet_json["main"]}/#{path}*"
+      end
     end
 
     def complete_file_name(keyword)
       repo_name = get_repo_name(keyword)
       package   = find_package(repo_name)
       file_path = keyword_filepath(keyword)
-      glob_path = "#{package.snippet_json["main"]}/#{file_path}*"
+      glob_path = package_glob_path(package, file_path)
 
-      package.glob(glob_path).map do |cand_file_path|
-        if core.storage.directory?(cand_file_path)
-          Pathname(cand_file_path).basename.to_s + "/"
+      package.glob(glob_path).map do |path|
+        if package.directory?(path)
+          ::Pathname.new(path).basename.to_s + "/"
         else
-          Pathname(cand_file_path).basename.to_s + ">"
+          ::Pathname.new(path).basename.to_s + ">"
         end
       end
     end
@@ -102,11 +118,11 @@ module SocialSnippet::Repository
     end
 
     def get_repo_name(keyword)
-      /^[^@]*@[^<]+<([^:#>]*[^:#>])/.match(keyword)[1]
+      /^[^@]*@[^<]+<([^:#>]*)/.match(keyword)[1]
     end
 
     def get_repo_name_prefix(keyword)
-      /^[^@]*@[^<]+<([^:#>]*[^:#>])$/.match(keyword)[1]
+      /^[^@]*@[^<]+<([^:#>]*)$/.match(keyword)[1]
     end
 
     def keyword_filepath(keyword)

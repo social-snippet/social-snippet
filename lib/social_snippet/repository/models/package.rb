@@ -38,6 +38,10 @@ module SocialSnippet::Repository::Models
       core.storage.write file_path, data
     end
 
+    def directory?(path)
+      core.storage.directory? real_path(normalize_path path)
+    end
+
     def add_dependency(new_name, new_ref)
       add_to_set :dependencies_array => {
         :name => new_name,

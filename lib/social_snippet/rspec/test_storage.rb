@@ -6,6 +6,63 @@ RSpec.configure do
 
       let(:storage) { ::SocialSnippet::Storage.new }
 
+      describe "#directory?" do
+
+        context "mkdir dir" do
+
+          before { storage.mkdir_p "dir" }
+
+          context "directory? dir" do
+            subject { storage.directory? "dir" }
+            it { should be_truthy }
+          end
+
+          context "directory? dir/" do
+            subject { storage.directory? "dir/" }
+            it { should be_truthy }
+          end
+
+          context "file? dir" do
+            subject { storage.file? "dir" }
+            it { should be_falsey }
+          end
+
+          context "file? dir/" do
+            subject { storage.file? "dir/" }
+            it { should be_falsey }
+          end
+
+          context "write dir/file.txt" do
+            before { storage.write "dir/file.txt", "" }
+            context "directory? dir" do
+              subject { storage.directory? "dir" }
+              it { should be_truthy }
+            end
+            context "directory? dir/" do
+              subject { storage.directory? "dir/" }
+              it { should be_truthy }
+            end
+            context "file? dir" do
+              subject { storage.file? "dir" }
+              it { should be_falsey }
+            end
+            context "file? dir/" do
+              subject { storage.file? "dir/" }
+              it { should be_falsey }
+            end
+            context "file? dir/file.txt" do
+              subject { storage.file? "dir/file.txt" }
+              it { should be_truthy }
+            end
+            context "directory? dir/file.txt" do
+              subject { storage.directory? "dir/file.txt" }
+              it { should be_falsey }
+            end
+          end
+        end
+
+      end #directory?
+
       describe "no entry" do
 
         context "read not_found.txt" do
