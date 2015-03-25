@@ -70,7 +70,8 @@ describe ::SocialSnippet::Api::CompletionApi, :current => true do
 
     context "complete // @snip <" do
       subject { fake_core.api.complete_snippet_path "// @snip <" }
-      it { should be_empty }
+      it { should include "repo-a" }
+      it { should include "repo-no-main" }
     end
 
     context "complete // @snip<re" do
