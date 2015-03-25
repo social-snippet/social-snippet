@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">= 1.9.3"
 
   spec.add_runtime_dependency "version_sorter", "~> 2.0.0"
-  spec.add_runtime_dependency "rest-client", "~> 1.7.0"
+  spec.add_runtime_dependency "rest-client", "~> 1.8.0"
   spec.add_runtime_dependency "highline", "~> 1.7.0"
   spec.add_runtime_dependency "wisper", "~> 1.6.0"
   spec.add_runtime_dependency "social_snippet-supports-git", "~> 0.1.0"
