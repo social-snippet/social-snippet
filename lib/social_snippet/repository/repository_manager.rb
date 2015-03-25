@@ -84,11 +84,19 @@ module SocialSnippet::Repository
       end
     end
 
+    def package_glob_path(package, path)
+      if package.snippet_json["main"].nil?
+        "#{path}*"
+      else
+        "#{package.snippet_json["main"]}/#{path}*"
+      end
+    end
+
     def complete_file_name(keyword)
       repo_name = get_repo_name(keyword)
       package   = find_package(repo_name)
       file_path = keyword_filepath(keyword)
-      glob_path = "#{package.snippet_json["main"]}/#{file_path}*"
+      glob_path = package_glob_path(package, file_path)
 
       package.glob(glob_path).map do |path|
         if package.directory?(path)
