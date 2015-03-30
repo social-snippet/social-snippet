@@ -23,7 +23,7 @@ module SocialSnippet
       parse_snippet_css core.config.snippet_css
 
       # use default value
-      options[:margin_bottom] = options.fetch(:margin_bottom, 0)
+      options[:margin_bottom] = options.fetch(:margin_bottom, 1)
       options[:margin_top] = options.fetch(:margin_top, 0)
     end
 
