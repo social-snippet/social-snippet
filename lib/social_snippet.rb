@@ -10,6 +10,7 @@ require "optparse"
 require "uri"
 require "wisper"
 require "securerandom"
+require "css_parser"
 
 module SocialSnippet; end
 require_relative "social_snippet/core"

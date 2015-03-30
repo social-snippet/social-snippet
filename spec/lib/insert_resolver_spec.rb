@@ -191,6 +191,248 @@ describe SocialSnippet::Resolvers::InsertResolver do
 
       end # :margin_bottom
 
+      describe "snippet.css", :current => true do
+
+        context "snippet { margin-bottom: 3 }" do
+
+          before do
+            fake_core.storage.write "snippet.css", [
+              "snippet { margin-bottom: 3; }"
+            ].join($/)
+          end
+
+          let(:resolver) do
+            ::SocialSnippet::Resolvers::InsertResolver.new(fake_core, ::Hash.new)
+          end
+
+          let(:input) do
+            [
+              "// @snip <my-repo-1:path/to/file.d>",
+              "// @snip <my-repo-2:path/to/file.d>",
+              "// @snip <my-repo-3:path/to/file.d>",
+            ].join($/)
+          end
+
+          let(:expected) do
+            [
+              "// @snippet <my-repo-1:path/to/file.d>",
+              "my-repo-1",
+              "",
+              "",
+              "",
+              "// @snippet <my-repo-2:path/to/file.d>",
+              "my-repo-2",
+              "",
+              "",
+              "",
+              "// @snippet <my-repo-3:path/to/file.d>",
+              "my-repo-3",
+              "",
+              "",
+              "",
+            ].join($/)
+          end
+
+          subject { resolver.insert input }
+          it { should eq expected }
+
+        end # snippet { margin-bottom: 3 }
+
+        context "snippet { margin-top: 3; margin-bottom: 3 }" do
+
+          before do
+            fake_core.storage.write "snippet.css", [
+              "snippet {",
+              "  margin-top: 3;",
+              "  margin-bottom: 3;",
+              "}",
+            ].join($/)
+          end
+
+          let(:resolver) do
+            ::SocialSnippet::Resolvers::InsertResolver.new(fake_core, ::Hash.new)
+          end
+
+          let(:input) do
+            [
+              "// @snip <my-repo-1:path/to/file.d>",
+              "// @snip <my-repo-2:path/to/file.d>",
+              "// @snip <my-repo-3:path/to/file.d>",
+            ].join($/)
+          end
+
+          let(:expected) do
+            [
+              "",
+              "",
+              "",
+              "// @snippet <my-repo-1:path/to/file.d>",
+              "my-repo-1",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "// @snippet <my-repo-2:path/to/file.d>",
+              "my-repo-2",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "// @snippet <my-repo-3:path/to/file.d>",
+              "my-repo-3",
+              "",
+              "",
+              "",
+            ].join($/)
+          end
+
+          subject { resolver.insert input }
+          it { should eq expected }
+
+        end # snippet { margin-top: 3; margin-bottom: 3 }
+
+        context "global - snippet { margin-bottom: 3 }" do
+
+          before do
+            fake_core.storage.write fake_core.config.snippet_css, [
+              "snippet{ margin-top: 3 }"
+            ].join($/)
+          end
+
+          let(:resolver) do
+            ::SocialSnippet::Resolvers::InsertResolver.new(fake_core, ::Hash.new)
+          end
+
+          let(:input) do
+            [
+              "// @snip <my-repo-1:path/to/file.d>",
+              "// @snip <my-repo-2:path/to/file.d>",
+              "// @snip <my-repo-3:path/to/file.d>",
+            ].join($/)
+          end
+
+          let(:expected) do
+            [
+              "",
+              "",
+              "",
+              "// @snippet <my-repo-1:path/to/file.d>",
+              "my-repo-1",
+              "",
+              "",
+              "",
+              "// @snippet <my-repo-2:path/to/file.d>",
+              "my-repo-2",
+              "",
+              "",
+              "",
+              "// @snippet <my-repo-3:path/to/file.d>",
+              "my-repo-3",
+            ].join($/)
+          end
+
+          subject { resolver.insert input }
+          it { should eq expected }
+
+        end
+
+        context "local css > global css" do
+
+          before do
+            fake_core.storage.write fake_core.config.snippet_css, [
+              "snippet{ margin-top: 0 }"
+            ].join($/)
+
+            fake_core.storage.write "snippet.css", [
+              "snippet{ margin-top: 3 }"
+            ].join($/)
+          end
+
+          let(:resolver) do
+            ::SocialSnippet::Resolvers::InsertResolver.new(fake_core, ::Hash.new)
+          end
+
+          let(:input) do
+            [
+              "// @snip <my-repo-1:path/to/file.d>",
+              "// @snip <my-repo-2:path/to/file.d>",
+              "// @snip <my-repo-3:path/to/file.d>",
+            ].join($/)
+          end
+
+          let(:expected) do
+            [
+              "",
+              "",
+              "",
+              "// @snippet <my-repo-1:path/to/file.d>",
+              "my-repo-1",
+              "",
+              "",
+              "",
+              "// @snippet <my-repo-2:path/to/file.d>",
+              "my-repo-2",
+              "",
+              "",
+              "",
+              "// @snippet <my-repo-3:path/to/file.d>",
+              "my-repo-3",
+            ].join($/)
+          end
+
+          subject { resolver.insert input }
+          it { should eq expected }
+
+        end # local css > global css
+
+        context "multi-selector case" do
+
+          before do
+            fake_core.storage.write fake_core.config.snippet_css, [
+              "abcde, snippet, .test, #testtest { margin-top: 2 }"
+            ].join($/)
+          end
+
+          let(:resolver) do
+            ::SocialSnippet::Resolvers::InsertResolver.new(fake_core, ::Hash.new)
+          end
+
+          let(:input) do
+            [
+              "// @snip <my-repo-1:path/to/file.d>",
+              "// @snip <my-repo-2:path/to/file.d>",
+              "// @snip <my-repo-3:path/to/file.d>",
+            ].join($/)
+          end
+
+          let(:expected) do
+            [
+              "",
+              "",
+              "// @snippet <my-repo-1:path/to/file.d>",
+              "my-repo-1",
+              "",
+              "",
+              "// @snippet <my-repo-2:path/to/file.d>",
+              "my-repo-2",
+              "",
+              "",
+              "// @snippet <my-repo-3:path/to/file.d>",
+              "my-repo-3",
+            ].join($/)
+          end
+
+          subject { resolver.insert input }
+          it { should eq expected }
+
+        end # multi-selectors case
+
+      end # snippet.css
+
     end # test styling
 
   end # prepare stubs

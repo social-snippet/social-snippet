@@ -24,6 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "highline", "~> 1.7.0"
   spec.add_runtime_dependency "wisper", "~> 1.6.0"
   spec.add_runtime_dependency "social_snippet-supports-git", "~> 0.1.0"
+  spec.add_runtime_dependency "css_parser", "~> 1.3.6"
 
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"
