@@ -4,6 +4,16 @@ module SocialSnippet
 
   describe Api::InsertSnippetApi do
 
+    before do
+      # prepare snippet.css (global)
+      fake_core.storage.write fake_core.config.snippet_css, [
+        "snippet {",
+        "  margin-top: 0;",
+        "  margin-bottom: 0;",
+        "}",
+      ].join($/)
+    end
+
     describe "#insert_snippet()", :without_fakefs => true do
 
       class FakeDriver < ::SocialSnippet::Repository::Drivers::DriverBase

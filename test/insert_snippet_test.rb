@@ -50,6 +50,16 @@ describe SocialSnippet::Api::InsertSnippetApi do
     end
   end
 
+  before do
+    # prepare snippet.css (global)
+    fake_core.storage.write fake_core.config.snippet_css, [
+      "snippet {",
+      "  margin-top: 0;",
+      "  margin-bottom: 0;",
+      "}",
+    ].join($/)
+  end
+
   describe "#insert_snippet" do
 
     context "use commit id" do

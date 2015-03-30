@@ -26,6 +26,16 @@ describe SocialSnippet::Resolvers::InsertResolver do
       end
     end
 
+    before do
+      # prepare snippet.css (global)
+      fake_core.storage.write fake_core.config.snippet_css, [
+        "snippet {",
+        "  margin-top: 0;",
+        "  margin-bottom: 0;",
+        "}",
+      ].join($/)
+    end
+
     describe "@begin_cut / @end_cut" do
 
       describe "ruby's require()" do
@@ -299,7 +309,7 @@ describe SocialSnippet::Resolvers::InsertResolver do
 
           before do
             fake_core.storage.write fake_core.config.snippet_css, [
-              "snippet{ margin-top: 3 }"
+              "snippet{ margin-top: 3; margin-bottom: 0 }"
             ].join($/)
           end
 
@@ -344,11 +354,11 @@ describe SocialSnippet::Resolvers::InsertResolver do
 
           before do
             fake_core.storage.write fake_core.config.snippet_css, [
-              "snippet{ margin-top: 0 }"
+              "snippet{ margin-top: 0; margin-bottom: 0 }"
             ].join($/)
 
             fake_core.storage.write "snippet.css", [
-              "snippet{ margin-top: 3 }"
+              "snippet{ margin-top: 3; margin-bottom: 0 }"
             ].join($/)
           end
 
@@ -393,7 +403,7 @@ describe SocialSnippet::Resolvers::InsertResolver do
 
           before do
             fake_core.storage.write fake_core.config.snippet_css, [
-              "abcde, snippet, .test, #testtest { margin-top: 2 }"
+              "abcde, snippet, .test, #testtest { margin-top: 2; margin-bottom: 0 }"
             ].join($/)
           end
 

@@ -88,6 +88,7 @@ module SocialSnippet
               '  return 42;',
               '}',
               '',
+              '',
               'int main() {',
               '  std::cout << get_42() << std::endl;',
               '  return 0;',
