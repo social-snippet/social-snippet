@@ -387,7 +387,49 @@ describe SocialSnippet::Resolvers::InsertResolver do
           subject { resolver.insert input }
           it { should eq expected }
 
-        end
+        end # local css > global css
+
+        context "multi-selector case" do
+
+          before do
+            fake_core.storage.write fake_core.config.snippet_css, [
+              "abcde, snippet, .test, #testtest { margin-top: 2 }"
+            ].join($/)
+          end
+
+          let(:resolver) do
+            ::SocialSnippet::Resolvers::InsertResolver.new(fake_core, ::Hash.new)
+          end
+
+          let(:input) do
+            [
+              "// @snip <my-repo-1:path/to/file.d>",
+              "// @snip <my-repo-2:path/to/file.d>",
+              "// @snip <my-repo-3:path/to/file.d>",
+            ].join($/)
+          end
+
+          let(:expected) do
+            [
+              "",
+              "",
+              "// @snippet <my-repo-1:path/to/file.d>",
+              "my-repo-1",
+              "",
+              "",
+              "// @snippet <my-repo-2:path/to/file.d>",
+              "my-repo-2",
+              "",
+              "",
+              "// @snippet <my-repo-3:path/to/file.d>",
+              "my-repo-3",
+            ].join($/)
+          end
+
+          subject { resolver.insert input }
+          it { should eq expected }
+
+        end # multi-selectors case
 
       end # snippet.css
 
