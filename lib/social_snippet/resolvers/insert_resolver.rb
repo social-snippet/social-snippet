@@ -16,8 +16,32 @@ module SocialSnippet
     end
 
     def init_options
+      parse_snippet_css
       options[:margin_bottom] = options.fetch(:margin_bottom, 0)
       options[:margin_top] = options.fetch(:margin_top, 0)
+    end
+
+    def convert_to_option_key(prop)
+      case prop
+      when "margin-bottom"
+        :margin_bottom
+      when "margin-top"
+        :margin_top
+      else
+        prop.to_sym
+      end
+    end
+
+    def parse_snippet_css
+      return unless core.storage.file?("snippet.css")
+      parser = ::CssParser::Parser.new
+      parser.add_block! core.storage.read("snippet.css")
+      style = parser.find_by_selector("snippet").first
+      rules = ::CssParser::RuleSet.new(nil, style)
+      rules.each_declaration do |prop, val, imp|
+        key = convert_to_option_key(prop)
+        options[key] = options.fetch(key, val.to_i)
+      end
     end
 
     # Insert snippets to given text
