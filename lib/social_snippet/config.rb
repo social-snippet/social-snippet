@@ -88,6 +88,10 @@ class SocialSnippet::Config
   # config helpers
   #
 
+  def snippet_css
+    ::File.join home, "snippet.css"
+  end
+
   def document_path
     ::File.join home, "documents.yml"
   end
