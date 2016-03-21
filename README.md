@@ -52,26 +52,6 @@ We recommend to use the latest versions of Ruby and Git.
 * Ruby >= 1.9.3
 * Git
 
-## Installation
-
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'social_snippet'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install social_snippet
-
-## Usage
-
-TODO: Write usage instructions here
-
 ## Contributing
 
 1. Fork it ( https://github.com/[my-github-username]/social_snippet/fork )
